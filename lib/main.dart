@@ -4,9 +4,23 @@ void main() {
   runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+// class MyApp extends StatelessWidget {
+//   const MyApp({super.key});
+//
+//   // This widget is the root of your application.
+//   @override
+//   Widget build(BuildContext context) {
+//     return ScreenUtilInit(
+//       designSize: Size(402, 874),
+//       child: MaterialApp(
+//         debugShowCheckedModeBanner: false,
+//         home: LoginPage(),
+//       ),
+//     );
+//   }
+// }
 
+<<<<<<< Updated upstream
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
@@ -120,6 +134,19 @@ class _MyHomePageState extends State<MyHomePage> {
         tooltip: 'Increment',
         child: const Icon(Icons.add),
       ), // This trailing comma makes auto-formatting nicer for build methods.
+=======
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @overide
+  Widget build (BuildContext) {
+    return GetMaterialApp(
+      title: 'Image to Text Convertor',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+      ),
+      home: ,
+>>>>>>> Stashed changes
     );
   }
 }
