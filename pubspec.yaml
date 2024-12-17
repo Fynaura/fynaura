@@ -78,6 +78,8 @@ flutter:
     - family: Urbanist
       fonts:
         - asset: assets/fonts/Urbanist-SemiBold.ttf
+        - asset: fonts/Urbanist-Bold.ttf
+          weight: 700
   #       - asset: fonts/Schyler-Regular.ttf
   #       - asset: fonts/Schyler-Italic.ttf
   #         style: italic

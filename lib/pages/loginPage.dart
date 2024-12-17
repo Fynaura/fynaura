@@ -1,5 +1,7 @@
-
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/mainSignUp.dart';
+
+import 'mainlogin.dart'; // Import the Mainlogin page
 import '../widgets/CustomButton.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,7 +48,11 @@ class _LoginPageState extends State<LoginPage> {
                   backgroundColor: const Color(0xFF1E232C), // 1E232C color
                   textColor: Colors.white,
                   onPressed: () {
-                    print("Login pressed");
+                    // Navigate to Mainlogin page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Mainlogin()),
+                    );
                   },
                 ),
                 const SizedBox(height: 18),
@@ -58,16 +64,20 @@ class _LoginPageState extends State<LoginPage> {
                   textColor: const Color(0xFF1E232C), // Text color
                   borderColor: const Color(0xFF1E232C), // Border color
                   onPressed: () {
-                    print("Register pressed");
+                    // Navigate sign up page
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Mainsignup()),
+                    );
                   },
                 ),
-                const SizedBox(height:16),
+                const SizedBox(height: 16),
 
                 // "Continue as a guest" TextButton
                 Center(
                   child: TextButton(
                     onPressed: () {
-                      print("Continue as a guest pressed");
+                      print("Continue as a guest pressed,open the home");
                     },
                     child: const Text(
                       "Continue as a guest",
