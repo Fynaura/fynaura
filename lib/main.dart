@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:fynaura/loginScreen.dart';
+=======
+import 'dart:async';
+>>>>>>> Stashed changes
 =======
 import 'dart:async';
 >>>>>>> Stashed changes
@@ -14,6 +18,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     return ScreenUtilInit(
       designSize: Size(402, 874),
       child: MaterialApp(
@@ -21,6 +26,8 @@ class MyApp extends StatelessWidget {
         home: LoginPage(),
       ),
 =======
+=======
+>>>>>>> Stashed changes
     return MaterialApp(
       home: SplashScreen(),
     );
@@ -60,6 +67,9 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(title: Text('Home Page')),
       body: Center(child: Text('Welcome to the Home Page!')),
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
     );
   }
