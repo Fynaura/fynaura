@@ -1,14 +1,7 @@
 import 'package:flutter/material.dart';
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:fynaura/loginScreen.dart';
-=======
 import 'dart:async';
->>>>>>> Stashed changes
-=======
-import 'dart:async';
->>>>>>> Stashed changes
+import 'package:fynaura/pages/home.dart';
+import 'package:fynaura/pages/DashboardScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,17 +10,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-    return ScreenUtilInit(
-      designSize: Size(402, 874),
-      child: MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: LoginPage(),
-      ),
-=======
-=======
->>>>>>> Stashed changes
     return MaterialApp(
       home: SplashScreen(),
     );
@@ -43,10 +25,10 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(Duration(seconds: 3), () {
+    Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => DashboardScreen()),
       );
     });
   }
@@ -54,23 +36,12 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Color(0xFF85C1E5), // Set the background color
       body: Center(
-        child: Image.asset('assets/splash/splash_image.png'),
+        child: Image.asset('images/fynaura.png'),
       ),
     );
   }
 }
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Home Page')),
-      body: Center(child: Text('Welcome to the Home Page!')),
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
-    );
-  }
-}
+
