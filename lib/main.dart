@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-import 'package:fynaura/pages/home.dart';
-import 'package:fynaura/pages/DashboardScreen.dart';
+import 'package:fynaura/pages/log-in/mainLogin.dart';
+
+import 'package:fynaura/pages/home/DashboardScreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -28,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => DashboardScreen()),
+        MaterialPageRoute(builder: (context) => Mainlogin()),
       );
     });
   }
