@@ -6,8 +6,15 @@ class TemporaryHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Temporary Home Page'),
-        backgroundColor: Colors.blueAccent,
+        title: Center(
+          child: Text(
+            'Temporary Home Page',
+            style: TextStyle(
+              color: Color(0xFF9DB2CE), // Set the title color
+            ),
+          ),
+        ),
+        backgroundColor: Color(0xFFEBEBEB),
       ),
       body: Center(
         child: ElevatedButton(
@@ -20,7 +27,7 @@ class TemporaryHomePage extends StatelessWidget {
           child: Text('Go to Add Transaction'),
           style: ElevatedButton.styleFrom(
             padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 12.0),
-            backgroundColor: Colors.blue,
+            backgroundColor: Color(0xFF85C1E5),
           ),
         ),
       ),

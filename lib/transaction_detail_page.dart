@@ -25,8 +25,11 @@ class TransactionDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add ${isExpense ? "Expense" : "Income"}: $category'),
-        backgroundColor: Colors.blueAccent,
+        title: Text('Add ${isExpense ? "Expense" : "Income"}: $category',
+          style: TextStyle(
+            color: Color(0xFF9DB2CE), // Set the title color
+          ),),
+        backgroundColor: Colors.white,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),

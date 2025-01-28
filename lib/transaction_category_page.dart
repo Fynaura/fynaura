@@ -70,8 +70,13 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Select Category'),
-        backgroundColor: Colors.blueAccent, // Replace with custom color
+        title: Text('Select Category',
+          style: TextStyle(
+            color: Color(0xFF9DB2CE), // Set the title color
+          ),
+        ),
+        backgroundColor: Colors.white, // Replace with custom color
+
         leading: BackButton(),
       ),
       body: Column(
@@ -82,9 +87,9 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
             children: [
               ElevatedButton(
                 onPressed: () => setState(() => isExpense = true),
-                child: Text('Expenses'),
+                child: Text('Expense'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: isExpense ? Colors.blue : Colors.grey,
+                  backgroundColor: isExpense ? Color(0xFF85C1E5) : Colors.grey,
                   foregroundColor: Colors.white,
                 ),
               ),
@@ -93,7 +98,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
                 onPressed: () => setState(() => isExpense = false),
                 child: Text('Income'),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: !isExpense ? Colors.blue : Colors.grey,
+                  backgroundColor: !isExpense ? Color(0xFF85C1E5) : Colors.grey,
                   foregroundColor: Colors.white,
                 ),
               ),
@@ -149,7 +154,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
                     );
                   },
                   child: Card(
-                    color: Colors.blue[50], // Custom background color
+                    color: Color(0xFF85C1E5), // Custom background color
                     elevation: 3,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
