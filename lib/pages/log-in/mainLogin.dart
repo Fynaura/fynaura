@@ -7,6 +7,8 @@ import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
 
+import '../home/main_screen.dart';
+
 class Mainlogin extends StatefulWidget {
   const Mainlogin({super.key});
 
@@ -109,7 +111,7 @@ class _MainloginState extends State<Mainlogin> {
                   print("Login pressed,open home");
                   Navigator.push(
                     context, 
-                    MaterialPageRoute(builder: (context)=> DashboardScreen()),
+                    MaterialPageRoute(builder: (context)=> MainScreen()),
                     );
                 },
               ),
