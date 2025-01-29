@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import '../../widgets/nav_bar.dart';
 import '../../widgets/nav_model.dart';
+import '../add-transactions/transaction_category_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -78,10 +79,14 @@ class _MainScreenState extends State<MainScreen> {
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             elevation: 0,
-            onPressed: () => debugPrint("Add Button pressed"),
+            onPressed: () =>  Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TransactionCategoryPage()),
+            ),
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
               borderRadius: BorderRadius.circular(100),
+
             ),
             child: const Icon(
               Icons.add,

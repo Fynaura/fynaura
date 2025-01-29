@@ -56,7 +56,6 @@ class NavBar extends StatelessWidget{
                 pageIndex ==3,
                 onTap: () => onTap(3),
                 label: 'Profile',
-
               ),
             ],
           ),
