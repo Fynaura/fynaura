@@ -1,5 +1,6 @@
+// Temporary Home Page
 import 'package:flutter/material.dart';
-import 'transaction_category_page.dart'; // Import the category page
+import 'transaction_detail_page.dart';
 
 class TemporaryHomePage extends StatelessWidget {
   @override
@@ -9,9 +10,7 @@ class TemporaryHomePage extends StatelessWidget {
         title: Center(
           child: Text(
             'Temporary Home Page',
-            style: TextStyle(
-              color: Color(0xFF9DB2CE), // Set the title color
-            ),
+            style: TextStyle(color: Color(0xFF9DB2CE)),
           ),
         ),
         backgroundColor: Color(0xFFEBEBEB),
@@ -21,7 +20,7 @@ class TemporaryHomePage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TransactionCategoryPage()),
+              MaterialPageRoute(builder: (context) => TransactionDetailPage()),
             );
           },
           child: Text('Go to Add Transaction'),

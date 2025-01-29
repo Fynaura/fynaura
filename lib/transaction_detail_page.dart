@@ -1,130 +1,189 @@
 import 'package:flutter/material.dart';
+import 'transaction_category_page.dart';
 
-class TransactionDetailPage extends StatelessWidget {
-  final String category;
-  final bool isExpense;
+class TransactionDetailPage extends StatefulWidget {
+  @override
+  _TransactionDetailPageState createState() => _TransactionDetailPageState();
+}
 
-  TransactionDetailPage({required this.category, required this.isExpense});
-
-  final TextEditingController descriptionController = TextEditingController();
-  final TextEditingController amountController = TextEditingController();
-
-  final List<String> currencies = [
-    'LKR - Sri Lankan Rupee',
-    'USD - US Dollar',
-    'EUR - Euro',
-    'GBP - British Pound',
-    'INR - Indian Rupee',
-    'JPY - Japanese Yen',
-    'AUD - Australian Dollar',
-  ]; // Add more as needed
-
-  String selectedCurrency = 'LKR - Sri Lankan Rupee'; // Default currency
+class _TransactionDetailPageState extends State<TransactionDetailPage> {
+  bool isExpense = true;
+  String selectedCategory = "Select Category";
+  TextEditingController amountController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  bool reminder = false;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add ${isExpense ? "Expense" : "Income"}: $category',
-          style: TextStyle(
-            color: Color(0xFF9DB2CE), // Set the title color
-          ),),
+        title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
         backgroundColor: Colors.white,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.check, color: Colors.blue),
+            onPressed: () {
+              // Add transaction logic
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Transaction Added Successfully")),
+              );
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Description Field
-            TextField(
-              controller: descriptionController,
-              decoration: InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Amount Field
-            TextField(
-              controller: amountController,
-              decoration: InputDecoration(
-                labelText: 'Amount',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-            ),
-            SizedBox(height: 20),
-
-            // Currency Dropdown
             Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Text(
-                  'Currency:',
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                ),
-                SizedBox(width: 10),
-                Expanded(
-                  child: DropdownButton<String>(
-                    value: selectedCurrency,
-                    isExpanded: true,
-                    icon: Icon(Icons.arrow_drop_down),
-                    elevation: 16,
-                    style: TextStyle(color: Colors.black, fontSize: 16),
-                    underline: Container(
-                      height: 2,
-                      color: Colors.blueAccent,
-                    ),
-                    onChanged: (String? newValue) {
-                      selectedCurrency = newValue!;
-                    },
-                    items: currencies.map<DropdownMenuItem<String>>((String value) {
-                      return DropdownMenuItem<String>(
-                        value: value,
-                        child: Text(value),
-                      );
-                    }).toList(),
-                  ),
-                ),
+                buildToggleButton("Income", !isExpense),
+                buildToggleButton("Expense", isExpense),
               ],
             ),
-            SizedBox(height: 20),
-
-            // Buttons for Save as Draft and Upload
+            SizedBox(height: 10),
+            buildModernAmountField(),
+            buildModernOptionTile("Category", Icons.toc, selectedCategory, context, true),
+            buildModernDescriptionField(),
+            buildModernOptionTile("Set Date", Icons.calendar_today, "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}", context, false),
+            buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
             Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                ElevatedButton(
-                  onPressed: () {
-                    // Save as Draft Logic
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text('Saved as Draft')),
-                    );
-                  },
-                  child: Text('Save as Draft'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.grey,
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Upload Logic
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                          content: Text(
-                              'Uploaded with ${selectedCurrency.split(" - ")[0]} currency')),
-                    );
-                  },
-                  child: Text('Upload'),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                  ),
-                ),
+                buildCameraGalleryButton("Camera", Icons.camera_alt, Colors.blue),
+                buildCameraGalleryButton("Gallery", Icons.photo, Colors.orange),
               ],
             ),
+            SizedBox(height: 20),
+            // Save Transaction Button
+            ElevatedButton(
+              onPressed: () {
+                // Save transaction logic here
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // Use backgroundColor instead of primary
+                padding: EdgeInsets.symmetric(vertical: 18),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+              ),
+              child: Text('SAVE TRANSACTION',
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+              ),
+            ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget buildToggleButton(String text, bool selected) {
+    return ElevatedButton(
+      onPressed: () => setState(() => isExpense = text == "Expense"),
+      child: Text(text),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: selected ? Color(0xFF85C1E5) : Colors.grey,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(8),
+        ),
+      ),
+    );
+  }
+
+  Widget buildModernAmountField() {
+    return TextField(
+      controller: amountController,
+      keyboardType: TextInputType.number,
+      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      textAlign: TextAlign.center,
+      decoration: InputDecoration(
+        prefixText: "LKR ",
+        hintText: "00",
+        hintStyle: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.grey),
+        border: InputBorder.none,
+      ),
+      onChanged: (value) {
+        setState(() {});
+      },
+    );
+  }
+
+  Widget buildModernDescriptionField() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: descriptionController,
+        decoration: InputDecoration(
+          hintText: "Add Description...",
+          hintStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.grey.shade600),
+          border: InputBorder.none,
+          prefixIcon: Icon(Icons.edit, color: Colors.grey.shade700),
+        ),
+        style: TextStyle(fontSize: 18),
+        onChanged: (value) {
+          setState(() {});
+        },
+      ),
+    );
+  }
+
+  Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.grey.shade700),
+        title: Text(hint, style: TextStyle(color: Colors.black54)),
+        onTap: () async {
+          if (isCategory) {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
+            );
+            if (result != null) {
+              setState(() => selectedCategory = result);
+            }
+          } else if (title == "Set Date") {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: selectedDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+            );
+            if (date != null) setState(() => selectedDate = date);
+          } else if (title == "Set Reminder") {
+            setState(() {
+              reminder = !reminder;
+            });
+          }
+        },
+      ),
+    );
+  }
+
+  Widget buildCameraGalleryButton(String title, IconData icon, Color color) {
+    return ElevatedButton.icon(
+      onPressed: () {},
+      icon: Icon(icon, color: Colors.white),
+      label: Text(title),
+      style: ElevatedButton.styleFrom(
+        backgroundColor: color,
+        foregroundColor: Colors.white,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
         ),
       ),
     );
