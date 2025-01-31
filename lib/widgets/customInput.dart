@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 class CustomInputField extends StatelessWidget {
   final String hintText; // Placeholder text
-  final TextEditingController? controller; // Optional: Input controller
+  final TextEditingController? controller;
   final bool obscureText; // For password fields
   final TextInputType keyboardType; // Type of keyboard
 
