@@ -146,7 +146,22 @@ class CustomPopup extends StatelessWidget {
               controller: TextEditingController(),
             ),
             const SizedBox(height: 30),
+            const Text(
+              "Estimated Total Budget",
+              style: TextStyle(
+                fontFamily: 'Urbanist',
+                fontWeight: FontWeight.w600,
+                fontSize: 14,
+                color: const Color(0xFF6A707C),
+              ),
+            ),
+            const SizedBox(height: 5),
 
+            CustomInputField(
+              hintText: "1000",
+              controller: TextEditingController(),
+            ),
+            const SizedBox(height: 30),
             CustomButton(
               text: "Create a New Budget",
               backgroundColor: const Color(0xFF1E232C),
