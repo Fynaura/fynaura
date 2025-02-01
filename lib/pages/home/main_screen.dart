@@ -3,6 +3,7 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 
 import '../../widgets/nav_bar.dart';
 import '../../widgets/nav_model.dart';
@@ -81,7 +82,7 @@ class _MainScreenState extends State<MainScreen> {
             elevation: 0,
             onPressed: () =>  Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TransactionCategoryPage()),
+              MaterialPageRoute(builder: (context) => TransactionDetailPage()),
             ),
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
