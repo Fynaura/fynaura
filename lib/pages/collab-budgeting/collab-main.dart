@@ -11,11 +11,19 @@ class CollabMain extends StatefulWidget {
 }
 
 class CollabMainstate extends State<CollabMain> {
+  List<Map<String, String>> createdBudgets = []; // Store created budgets
+
+  void _addBudget(String name, String amount) {
+    setState(() {
+      createdBudgets.add({"name": name, "amount": amount});
+    });
+  }
+
   void _showCreateBudgetPopup(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return CustomPopup();
+        return CustomPopup(onBudgetCreated: _addBudget);
       },
     );
   }
@@ -77,6 +85,64 @@ class CollabMainstate extends State<CollabMain> {
                 ),
               ),
               const SizedBox(height: 20),
+
+              // List of Created Budgets
+              Column(
+                children: createdBudgets.map((budget) {
+                  return Card(
+                    elevation: 3,
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            budget["name"]!,
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          SizedBox(height: 5),
+                          LinearProgressIndicator(
+                            value: 1.0, // Full progress initially
+                            backgroundColor: Color(0xFF85C1E5),
+                            color: Color(0xFF85C1E5),
+                          ),
+                          SizedBox(height: 10),
+                          Row(
+                            crossAxisAlignment: CrossAxisAlignment.start, // Align items to the top
+                            children: [
+                              Text(
+                                "LKR ${budget["amount"]}",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: Colors.grey[700],
+                                ),
+                              ),
+                              Spacer(),
+                              CircleAvatar(
+                                radius: 20,
+                                backgroundImage:  AssetImage("images/user.png"),
+                              ),
+                            ],
+                          )
+
+
+                        ],
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 20),
+
+              // Create Budget Button
               CustomButton(
                 text: "Create a New Budget",
                 backgroundColor: const Color(0xFF85C1E5),
@@ -94,7 +160,19 @@ class CollabMainstate extends State<CollabMain> {
 }
 
 // Custom Popup Widget
-class CustomPopup extends StatelessWidget {
+class CustomPopup extends StatefulWidget {
+  final Function(String, String) onBudgetCreated;
+
+  CustomPopup({required this.onBudgetCreated});
+
+  @override
+  _CustomPopupState createState() => _CustomPopupState();
+}
+
+class _CustomPopupState extends State<CustomPopup> {
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _amountController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Dialog(
@@ -110,11 +188,7 @@ class CustomPopup extends StatelessWidget {
               children: [
                 Text(
                   "Create a New Budget",
-                  style: TextStyle(
-                    fontFamily: 'Urbanist',
-                    fontWeight: FontWeight.bold,
-                    fontSize: 18,
-                  ),
+                  style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 ),
                 IconButton(
                   icon: Icon(Icons.close),
@@ -125,52 +199,35 @@ class CustomPopup extends StatelessWidget {
               ],
             ),
             const SizedBox(height: 10),
-            Text(
-              "Enter the following details!",
-              style: TextStyle(fontSize: 14),
-            ),
+            Text("Enter the following details!"),
             const SizedBox(height: 20),
-            const Text(
-              "Budget Name",
-              style: TextStyle(
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: const Color(0xFF6A707C),
-              ),
-            ),
-            const SizedBox(height: 5),
-
+            Text("Budget Name"),
             CustomInputField(
               hintText: "Christmas",
-              controller: TextEditingController(),
+              controller: _nameController,
             ),
-            const SizedBox(height: 30),
-            const Text(
-              "Estimated Total Budget",
-              style: TextStyle(
-                fontFamily: 'Urbanist',
-                fontWeight: FontWeight.w600,
-                fontSize: 14,
-                color: const Color(0xFF6A707C),
-              ),
-            ),
-            const SizedBox(height: 5),
-
+            const SizedBox(height: 20),
+            Text("Estimated Total Budget"),
             CustomInputField(
               hintText: "1000",
-              controller: TextEditingController(),
+              controller: _amountController,
             ),
             const SizedBox(height: 30),
             CustomButton(
-              text: "Create a New Budget",
+              text: "Create Budget",
               backgroundColor: const Color(0xFF1E232C),
               textColor: Colors.white,
               onPressed: () {
-                // _showCreateBudgetPopup(context);
+                if (_nameController.text.isNotEmpty &&
+                    _amountController.text.isNotEmpty) {
+                  widget.onBudgetCreated(
+                    _nameController.text,
+                    _amountController.text,
+                  );
+                  Navigator.of(context).pop();
+                }
               },
             ),
-
           ],
         ),
       ),
