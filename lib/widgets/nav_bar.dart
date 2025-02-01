@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 
 class NavBar extends StatelessWidget{
   final int pageIndex;
@@ -47,7 +48,12 @@ class NavBar extends StatelessWidget{
               navItem(
                 CupertinoIcons.calendar_today,
                 pageIndex == 2,
-                onTap: () => onTap(2),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => CollabMain()),
+                  );
+                },
                 label: 'Plan',
 
               ),
