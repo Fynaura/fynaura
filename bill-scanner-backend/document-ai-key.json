@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "fynaura",
+  "private_key_id": "862560d517917cafc4898dbbcdfbe55192613258",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCV6TnojNQTltlw\nxDiNpKvPnm5POur0o6bpZgy8RQ6liwpzpgRwoJpkZIxloSHbnDPOTOUOukG8Gh38\nL7fd2TFzdOMQ0jbzCN+HfJ2gGZSM9cECYByweG4GbXH/yk4Ncexn/tVNd77l1RZy\nPyMinxNlRxe080578nxnZIo4pt7GVmRQm1lZ+H7+axxndytkegpp3GUXuBAAswgs\n0X2+czkYnGV5fl8Q5lEsYOcPrKVUKqk0CGsqVncKm5ziz9xdgdXMXKsbMzGNzJkv\nLv4HlfM1blkPvE2YfarL3Z30c6mldS8B4+MsknmUrVZkkOHy1/YXUaWWGODAWFSn\nswJ77y4jAgMBAAECggEAAiIN6WGrmNXCJUkdduJ7cVpTPnxboHx9oP+LOdiPs0pN\nrUSU9pdKaxhFKSMITMwlro9IiROcYNVMTOzO5HC1M+vbWT9sebvMFmzu/zqt8u2C\nQArnDZnBEwVWpGmX/7f5wacOGOqVxEZqadi9Ir55s6y1ySTXHoteOshi8Rhqvg6y\nDkp54PXD+Cp0uAPGnuZoiFCEk1XB8auo/jipyjqGO3w6lpSwTESwsp7TxdcsWR8t\ndeeQTHG6p6ssrUpOAgvG27bg6P2HvzASYv9e0/PToViHHgwey6uVBNC/A5Uxjnya\n8gcce6iymuqv4rmiEbBfQ96uSqlpqJxnIrWlMHzcIQKBgQDHlzm7+AlQs1HPgiSH\nukUcnvalWohnqs/MFyDjOcMMuuhK+V72W0IhTsv28aisoD0gcvxg+lwOKISQbKSg\neQk/xTWAtwOIjN44Uj2XvEakwvZdHsoAtyuZzzTX5gy7vpqGp7OoVCtGPYPJQW3n\nso8qsw4Xu2kw08bRkgFIksQvIQKBgQDAR5RbPPhloVJvOF6udeaRoFTTrtGxAMEl\n4VlMt/BsmoXTLLoAz7mcFSrccTaSFadedCv3hGOHHBAXLY9+O45wAgJYIwBgMW+G\nUUYAxDK7hppyp7gBcRIvoBHUGrLvowAmU08/tnLu0EmWofb4ykCSOQpFJZO7/zg4\nyxT/MX5IwwKBgGZmmCBwaZcV6WtlggiA8OR2SmUbxdAqOuKjGyR5hjEJ1BRjTO1o\ndM1R+COCaN/odnQnioTW7lP1Rc4zb2NFthEZxRF81DtCyuBqkV9AIZ52yJ+OJGWp\nlJ0dSidayD2q1O0xLWO3i1xGQ08GWrT9T6bApwJWDOoYPXFYT4BEjJMBAoGBAL/w\ndEMjuN5SzKRjw/gpj3F9eFAbag1kMGrs6iSwVRtEoSRtuHuI4MLTSoblqNDpNrsO\nArnBeUztEY7hlyUutIBRMR/kSMK9dpPBW7z2HaKeulyL2h3uTnYmNsXhpQ+cSlD3\nxttV+KM2Xs80fQJbe1u7/umJmlEHc4sWBq68LFDbAoGAUH9Vhi+SEx1mUteDIb8p\nUJu8UKJ4T2TkizM2tvL+MYR9CxczKfnzC0gVes977/iu9wRybDPetMTfXUHBrR3Y\nlMdbF7gXRjU3YvNzxZafuv4w52uorlHmgQ0upjumsdTPc3zHXWu6HCnFAu9Got1w\nmbyxVu3gZeDP/iZWXMi525E=\n-----END PRIVATE KEY-----\n",
+  "client_email": "document-ai-service@fynaura.iam.gserviceaccount.com",
+  "client_id": "115173640600528971783",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/document-ai-service%40fynaura.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}
