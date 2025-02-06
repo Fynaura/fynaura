@@ -42,7 +42,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               };
 
               // Create the HTTP request
-              var request = http.Request('POST', Uri.parse('http://192.168.56.1:8000/api/transaction'));
+              var request = http.Request('POST', Uri.parse('http://localhost/api/transaction'));
               request.body = json.encode(requestBody);
               request.headers.addAll(headers);
 
