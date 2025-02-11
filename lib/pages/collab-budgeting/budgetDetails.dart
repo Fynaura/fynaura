@@ -335,6 +335,7 @@
 //   }
 // }
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/collab-budgeting/scanQr.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 
@@ -415,6 +416,21 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                     Navigator.pop(context); // Close the popup
                   },
                   child: Text("Confirm"),
+                ),
+                SizedBox(height: 10),
+                OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => const Scanqr()),
+                    );
+                  },
+                  icon: Icon(Icons.qr_code, color: Colors.black),
+                  label: Text("Scan QR Code", style: TextStyle(color: Colors.black)),
+                  style: OutlinedButton.styleFrom(
+                    minimumSize: Size(double.infinity, 50),
+                    side: BorderSide(color: Colors.black),
+                  ),
                 ),
               ],
             ),
