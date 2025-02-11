@@ -1,10 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'package:http_parser/http_parser.dart';
+import 'package:mime/mime.dart';
+import 'dart:convert';
+import 'extracted_text_screen.dart';
 
-class ImagePreviewScreen extends StatelessWidget {
+class Imagepreviewscreen extends StatefulWidget{
   final File image;
+  const Imagepreviewscreen({Key? key, required this.image}) : super(key: key);
 
-  const ImagePreviewScreen({super.key, required this.image});
+  @override
+  _ImagepreviewscreenState createState() => _ImagepreviewscreenState();
+}
+
+class ImagePreviewScreen extends State<ImagePreviewScreen> {
+  final File image;
 
   Future<void> uploadImage(File imageFile) async {
     var uri = Uri.parse("http://10.0.2.2:3000/upload");
@@ -22,9 +33,18 @@ class ImagePreviewScreen extends StatelessWidget {
     if (response.statusCode == 200) {
       print("Image uploaded successfully!");
       final responseData = await response.stream.bytesToString();
-      print("Response from backend: $responseData");
+      final extractedData = json.decode(responseData);
+      String extractedText = extractedData['extractedText'].toString();
+
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ExtractedTextScreen(extractedText: extractedText),
+        ),
+      );
     } else {
       print("Failed to upload image. Status Code: ${response.statusCode}");
+      
     }
   }
 
@@ -50,23 +70,22 @@ class ImagePreviewScreen extends StatelessWidget {
               ),
             ),
           ),
-          const SizedBox(height: 30),
+          const SizedBox(height: 20),
           SizedBox(
-            width: 100,
+            width: 150,
             child: ElevatedButton(
               onPressed: () async {
-                await uploadImage(image);
-                Navigator.pop(context);
+                await uploadImage(widget.image);
               },
-              style:ElevatedButton.styleFrom(
+              style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue[300],
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(15),
                 ),
               ),
               child: const Text(
-                "Select",
-                style: TextStyle(color: Colors.white,fontSize: 16),
+                "Upload",
+                style: TextStyle(color: Colors.white, fontSize: 16),
               ),
             ),
           ),
