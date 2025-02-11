@@ -51,50 +51,60 @@ class _OcrScreenState extends State<OcrScreen> {
       backgroundColor: Colors.grey[200],
       body: Stack(
         children: [
-          // Bottom-aligned button container
-          // Positioned Row
           Positioned(
-            top: 800, // Center vertically
-            left: 75,// Center horizontally
-
-            child: Row(
-              children: [
-                // Camera Button
-                ElevatedButton.icon(
-                  onPressed:_pickImageFromCamera,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+            bottom: 50,
+            left: 20,
+            right: 20,
+            child: Container(
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20), // Rounded container
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.1),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  // Camera Button
+                  ElevatedButton.icon(
+                    onPressed: _pickImageFromCamera,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    icon: const Icon(Icons.camera_alt, color: Colors.white),
+                    label: const Text(
+                      "Camera",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                  icon: const Icon(Icons.camera_alt, color: Colors.white),
-                  label: const Text(
-                    "Camera",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ),
-                const SizedBox(width: 20), // Space between buttons
-                // Gallery Button
-                ElevatedButton.icon(
-                  onPressed: _pickImageFromGallery,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.orangeAccent,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 20, vertical: 15),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  // Gallery Button
+                  ElevatedButton.icon(
+                    onPressed: _pickImageFromGallery,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.orangeAccent,
+                      padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                    icon: const Icon(Icons.image, color: Colors.white),
+                    label: const Text(
+                      "Gallery",
+                      style: TextStyle(color: Colors.white, fontSize: 16),
                     ),
                   ),
-                  icon: const Icon(Icons.image, color: Colors.white),
-                  label: const Text(
-                    "Gallery",
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ],
