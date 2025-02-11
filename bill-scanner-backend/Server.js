@@ -46,9 +46,12 @@ app.post('/upload', upload.single('image'), async (req, res) => {
 
     try {
         const result = await processDocument(req.file.path);
+        const extractedText = result.document?.text || "No text found";
+
+        console.log("Extracted Text:", extractedText);
         res.json({ extractedText: result });
     } catch (error) {
-        console.error(error);
+        console.error("Error processing document:",error);
         res.status(500).json({ error: error.message });
     }
 });
