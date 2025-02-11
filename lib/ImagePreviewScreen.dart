@@ -6,6 +6,28 @@ class ImagePreviewScreen extends StatelessWidget {
 
   const ImagePreviewScreen({super.key, required this.image});
 
+  Future<void> uploadImage(File imageFile) async {
+    var uri = Uri.parse("http://10.0.2.2:3000/upload");
+
+    var request = http.MultipartRequest("POST", uri);
+
+    request.files.add(await http.MultipartFile.fromPath(
+      'image',
+      imageFile.path,
+      contentType:  MediaType.parse(lookupMimeType(imageFile.path) ?? "image/jpeg"),
+    ));
+
+    var response = await request.send();
+
+    if (response.statusCode == 200) {
+      print("Image uploaded successfully!");
+      final responseData = await response.stream.bytesToString();
+      print("Response from backend: $responseData");
+    } else {
+      print("Failed to upload image. Status Code: ${response.statusCode}");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
