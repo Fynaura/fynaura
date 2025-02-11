@@ -23,7 +23,7 @@ async function processDocument(filePath) {
         scopes: ['https://www.googleapis.com/auth/cloud-platform'],
     });
     const client = await auth.getClient();
-    const url = `https://${location}-documentai.googleapis.com/v1/projects/${projectId}/locations/${location}/processors/${processorId}:process`;
+    const url = `https://us-documentai.googleapis.com/v1/projects/664418100697/locations/us/processors/17088b853757009e:process`;
 
     const image = fs.readFileSync(filePath).toString('base64');
 
