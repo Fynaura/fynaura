@@ -54,8 +54,9 @@ class ImagePreviewScreen extends StatelessWidget {
           SizedBox(
             width: 100,
             child: ElevatedButton(
-              onPressed: (){
-
+              onPressed: () async {
+                await uploadImage(image);
+                Navigator.pop(context);
               },
               style:ElevatedButton.styleFrom(
                 backgroundColor: Colors.blue[300],
