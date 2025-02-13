@@ -19,7 +19,7 @@ class ExtractedTextScreen extends StatelessWidget {
           child: Text(
             text,
             textAlign: TextAlign.left,
-            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+            style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
           ),
         ),
       ),
