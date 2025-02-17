@@ -6,26 +6,28 @@ import 'package:mime/mime.dart';
 import 'dart:convert';
 import 'extracted_text_screen.dart';
 
-class Imagepreviewscreen extends StatefulWidget{
+class ImagePreviewScreen extends StatefulWidget {
   final File image;
-  const Imagepreviewscreen({Key? key, required this.image}) : super(key: key);
+
+  const ImagePreviewScreen({super.key, required this.image});
 
   @override
-  _ImagepreviewscreenState createState() => _ImagepreviewscreenState();
+  _ImagePreviewScreenState createState() => _ImagePreviewScreenState();
 }
 
-class ImagePreviewScreen extends State<ImagePreviewScreen> {
-  final File image;
+class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
 
+  // Function to upload image and get extracted text
   Future<void> uploadImage(File imageFile) async {
-    var uri = Uri.parse("http://10.0.2.2:3000/upload");
+    var uri = Uri.parse("http://192.168.8.172:3000/upload"); // Backend URL
+    //final String apiUrl = "http://192.168.8.172:3000/upload"; , "http://10.0.2.2:3000/upload"
 
     var request = http.MultipartRequest("POST", uri);
 
     request.files.add(await http.MultipartFile.fromPath(
       'image',
       imageFile.path,
-      contentType:  MediaType.parse(lookupMimeType(imageFile.path) ?? "image/jpeg"),
+      contentType: MediaType.parse(lookupMimeType(imageFile.path) ?? "image/jpeg"),
     ));
 
     var response = await request.send();
@@ -36,15 +38,18 @@ class ImagePreviewScreen extends State<ImagePreviewScreen> {
       final extractedData = json.decode(responseData);
       String extractedText = extractedData['extractedText'].toString();
 
+      // Navigate to ExtractedTextScreen with the extracted text
       Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ExtractedTextScreen(extractedText: extractedText),
-        ),
+          context,
+          MaterialPageRoute(
+            builder: (context)=>ExtractedTextScreen(text: extractedText),
+          ),
       );
     } else {
       print("Failed to upload image. Status Code: ${response.statusCode}");
-      
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error: Could not extract text.")),
+      );
     }
   }
 
@@ -63,7 +68,7 @@ class ImagePreviewScreen extends State<ImagePreviewScreen> {
             child: ClipRRect(
               borderRadius: BorderRadius.circular(20),
               child: Image.file(
-                image,
+                widget.image,
                 height: 650,
                 width: 370,
                 fit: BoxFit.cover,
@@ -71,6 +76,8 @@ class ImagePreviewScreen extends State<ImagePreviewScreen> {
             ),
           ),
           const SizedBox(height: 20),
+
+          // Upload Button
           SizedBox(
             width: 150,
             child: ElevatedButton(
@@ -94,3 +101,4 @@ class ImagePreviewScreen extends State<ImagePreviewScreen> {
     );
   }
 }
+
