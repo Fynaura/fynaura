@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'transaction_category_page.dart';
+import 'package:fynaura/transaction_category_page.dart';
 
 class TransactionDetailPage extends StatefulWidget {
   @override
@@ -24,7 +24,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           IconButton(
             icon: Icon(Icons.check, color: Colors.blue),
             onPressed: () {
-              // Add transaction logic
+              // Add transaction logic (e.g., save data)
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Transaction Added Successfully")),
               );
@@ -47,32 +47,15 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             buildModernAmountField(),
             buildModernOptionTile("Category", Icons.toc, selectedCategory, context, true),
             buildModernDescriptionField(),
-            buildModernOptionTile("Set Date", Icons.calendar_today, "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}", context, false),
-            buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
+            // Show "Set Reminder" only for expenses
+            if (isExpense) buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
             Spacer(),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                buildCameraGalleryButton("Camera", Icons.camera_alt, Colors.blue),
-                buildCameraGalleryButton("Gallery", Icons.photo, Colors.orange),
+                buildCameraGalleryButton("Camera", Icons.camera_alt, Color(0xFF85C1E5)),
+                buildCameraGalleryButton("Gallery", Icons.photo, Color(0xFF85C1E5)),
               ],
-            ),
-            SizedBox(height: 20),
-            // Save Transaction Button
-            ElevatedButton(
-              onPressed: () {
-                // Save transaction logic here
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal, // Use backgroundColor instead of primary
-                padding: EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text('SAVE TRANSACTION',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
             ),
           ],
         ),
@@ -156,18 +139,19 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             if (result != null) {
               setState(() => selectedCategory = result);
             }
-          } else if (title == "Set Date") {
+          } else if (title == "Set Reminder") {
             final date = await showDatePicker(
               context: context,
               initialDate: selectedDate,
               firstDate: DateTime(2000),
               lastDate: DateTime(2100),
             );
-            if (date != null) setState(() => selectedDate = date);
-          } else if (title == "Set Reminder") {
-            setState(() {
-              reminder = !reminder;
-            });
+            if (date != null) {
+              setState(() {
+                selectedDate = date;
+                reminder = true;
+              });
+            }
           }
         },
       ),
