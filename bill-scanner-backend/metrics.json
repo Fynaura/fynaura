@@ -1,0 +1,226 @@
+{
+  "processorName": "ocrExpense",
+  "versionName": "Google Stable",
+  "isFuzzyMatch": true,
+  "createTime": "2025-02-18T00:59:42.936686Z",
+  "metrics": {
+    "All labels": {
+      "f1Score": 0,
+      "precision": null,
+      "recall": null,
+      "evaluatedDocuments": 0,
+      "testDocuments": 0,
+      "invalidDocuments": 0,
+      "failedDocuments": 0
+    },
+    "supplier_phone": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "start_date": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "line_item/amount": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "end_date": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "line_item/quantity": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "currency": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "supplier_city": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "purchase_time": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "line_item/description": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "line_item": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "total_tax_amount": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "credit_card_last_four_digits": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "net_amount": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "line_item/product_code": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "payment_type": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "total_amount": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "supplier_name": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "supplier_address": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    },
+    "receipt_date": {
+      "f1Score": 0,
+      "precision": 0,
+      "recall": 0,
+      "optimalConfidence": 0,
+      "predictedInstancesCount": 0,
+      "predictedDocumentsCount": 0,
+      "groundtruthInstancesCount": 0,
+      "groundtruthDocumentsCount": 0,
+      "confidenceThreshold": 0
+    }
+  }
+}
