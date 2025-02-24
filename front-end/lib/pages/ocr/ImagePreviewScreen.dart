@@ -19,7 +19,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
 
   // Function to upload image and get extracted text
   Future<void> uploadImage(File imageFile) async {
-    var uri = Uri.parse("http://192.168.8.172:3000/upload");
+    var uri = Uri.parse("http://10.0.2.2:3000/upload");
     //final String apiUrl = "http://192.168.8.172:3000/upload"; , "http://10.0.2.2:3000/upload" ,"http://10.31.9.147:3000/upload"
 
     var request = http.MultipartRequest("POST", uri);
@@ -37,14 +37,15 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       final responseData = await response.stream.bytesToString();
       final extractedData = json.decode(responseData);
 
-      String extractedText = extractedData['extractedText'].toString();// Get extracted text
+      //String extractedText = extractedData['extractedText'].toString();// Get extracted text
       String totalAmount = extractedData['totalAmount'].toString(); // Get total amount
+      String billDate=extractedData['billDate'].toString();//Get bill date
 
       // Navigate to ExtractedTextScreen with the extracted text
       Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context)=>ExtractedTextScreen(text: extractedText,totalAmount:totalAmount),
+            builder: (context)=>ExtractedTextScreen(totalAmount:totalAmount,billDate:billDate), //text: extractedText,
           ),
       );
     } else {

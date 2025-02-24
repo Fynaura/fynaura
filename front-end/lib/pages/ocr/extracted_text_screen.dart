@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class ExtractedTextScreen extends StatelessWidget {
-  final String text;
+  //final String text;
   final String totalAmount;
+  final String billDate;
 
-  const ExtractedTextScreen({super.key, required this.text,required this.totalAmount});
+  const ExtractedTextScreen({super.key, required this.totalAmount,required this.billDate}); //required this.text,
 
   @override
   Widget build(BuildContext context) {
@@ -20,29 +21,31 @@ class ExtractedTextScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Extracted Text:",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-              ),
-              const SizedBox(height: 5),
-              Text(
-                text,
-                textAlign: TextAlign.left,
-                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-              ),
-              const SizedBox(height: 20),
+
               RichText(
                 text: TextSpan(
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
                   children: [
                     TextSpan(text: "Total Amount: "),
                     TextSpan(
                       text: totalAmount,
-                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.black),
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
                     ),
                   ],
                 ),
               ),
+              RichText(
+                  text: TextSpan(
+                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color:Colors.green),
+                    children: [
+                      TextSpan(text: "Date: "),
+                      TextSpan(
+                        text: billDate,
+                        style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold,color: Colors.green),
+                      )
+                    ]
+                  )
+              )
             ],
           ),
         ),
