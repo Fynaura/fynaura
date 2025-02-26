@@ -1,13 +1,22 @@
-// new_profile_page.dart
 import 'package:flutter/material.dart';
 
 class NewProfilePage extends StatefulWidget {
+  final int auraPoints;
+
+  NewProfilePage({required this.auraPoints});
+
   @override
   _NewProfilePageState createState() => _NewProfilePageState();
 }
 
 class _NewProfilePageState extends State<NewProfilePage> {
-  int auraPoints = 1000; // Default Aura points
+  int auraPoints = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    auraPoints = widget.auraPoints;  // Set initial Aura points from ProfilePage
+  }
 
   @override
   Widget build(BuildContext context) {

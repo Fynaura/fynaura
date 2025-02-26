@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'new_profile_page.dart';  // Import the new profile page
+import 'GoalPage.dart';  // Import the Goal page
+import 'edit_profile_page.dart';  // Import the EditProfilePage
 
 void main() {
   runApp(MyApp());
@@ -27,6 +29,7 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String selectedAvatar = "images/fynaura.png"; // Default avatar
+  int auraPoints = 1000; // Aura points initialized
 
   void _selectAvatar() {
     showDialog(
@@ -82,13 +85,17 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text("Aura", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     Text("@Itunuoluwa", style: TextStyle(color: Colors.grey)),
+                    Text("$auraPoints+ Aura", style: TextStyle(fontSize: 16, color: Colors.green)),
                   ],
                 ),
                 Spacer(),
                 IconButton(
                   icon: Icon(Icons.edit, color: Color(0xFF85C1E5)),
                   onPressed: () {
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfilePage()));
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => EditProfilePage()), // Navigate to EditProfilePage
+                    );
                   },
                 )
               ],
@@ -100,69 +107,27 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: Text("Make changes to your account"),
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
-                // Navigate to the new Profile Page when My Account is clicked
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => NewProfilePage()), // Navigate to the new profile page
+                  MaterialPageRoute(builder: (context) => NewProfilePage(auraPoints: auraPoints)), // Navigate to NewProfilePage
                 );
               },
             ),
             ListTile(
-              leading: Icon(Icons.lock, color: Color(0xFF85C1E5)),
-              title: Text("Face ID / Touch ID"),
-              subtitle: Text("Manage your device security"),
-              trailing: Switch(value: false, onChanged: (value) {}),
-            ),
-            ListTile(
-              leading: Icon(Icons.security, color: Color(0xFF85C1E5)),
-              title: Text("Two-Factor Authentication"),
-              subtitle: Text("Further secure your account"),
+              leading: Icon(Icons.flag, color: Color(0xFF85C1E5)),
+              title: Text("Goal"),
+              subtitle: Text("Track and complete your goals"),
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout, color: Colors.red),
-              title: Text("Log out", style: TextStyle(color: Colors.red)),
-              onTap: () {},
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class EditProfilePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text("Edit Profile")),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            TextField(decoration: InputDecoration(labelText: "First Name", filled: true, fillColor: Colors.white, border: OutlineInputBorder())),
-            SizedBox(height: 10),
-            TextField(decoration: InputDecoration(labelText: "Last Name", filled: true, fillColor: Colors.white, border: OutlineInputBorder())),
-            SizedBox(height: 10),
-            TextField(decoration: InputDecoration(labelText: "Phone Number", filled: true, fillColor: Colors.white, border: OutlineInputBorder())),
-            SizedBox(height: 10),
-            DropdownButtonFormField(
-              decoration: InputDecoration(labelText: "Gender", filled: true, fillColor: Colors.white, border: OutlineInputBorder()),
-              items: ["Male", "Female"].map((String gender) {
-                return DropdownMenuItem(value: gender, child: Text(gender));
-              }).toList(),
-              onChanged: (value) {},
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Color(0xFF85C1E5),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-              ),
-              onPressed: () {
-                Navigator.pop(context);
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => GoalPage(auraPoints: auraPoints, onUpdatePoints: (newPoints) {
+                    setState(() {
+                      auraPoints = newPoints;
+                    });
+                  })),
+                );
               },
-              child: Text("Update Profile", style: TextStyle(color: Colors.white)),
             ),
           ],
         ),
