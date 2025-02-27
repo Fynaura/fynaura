@@ -64,13 +64,13 @@ class _GoalEditorPageState extends State<GoalEditorPage> {
                 _saveGoals();  // Save updated goals
                 Navigator.pop(context);
               },
-              child: Text("Rename"),
+              child: Text("Rename", style: TextStyle(color: Colors.blue)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Cancel"),
+              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
           ],
         );
@@ -103,13 +103,13 @@ class _GoalEditorPageState extends State<GoalEditorPage> {
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Set"),
+              child: Text("Set", style: TextStyle(color: Colors.blue)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Cancel"),
+              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
           ],
         );
@@ -139,13 +139,13 @@ class _GoalEditorPageState extends State<GoalEditorPage> {
                 _saveGoals();  // Save updated goals
                 Navigator.pop(context);
               },
-              child: Text("Add Goal"),
+              child: Text("Add Goal", style: TextStyle(color: Colors.blue)),
             ),
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
               },
-              child: Text("Cancel"),
+              child: Text("Cancel", style: TextStyle(color: Colors.grey)),
             ),
           ],
         );
@@ -162,23 +162,42 @@ class _GoalEditorPageState extends State<GoalEditorPage> {
         itemBuilder: (context, index) {
           return Card(
             margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-            child: ListTile(
-              title: Text(goals[index]),
-              subtitle: Text("Progress Levels: ${progressLevels[index]}"),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+            elevation: 4.0,
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                color: Colors.blue.shade200,
+              ),
+              child: Row(
                 children: [
-                  IconButton(
-                    icon: Icon(Icons.edit),
-                    onPressed: () => _renameGoal(index),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(goals[index], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                        SizedBox(height: 8),
+                        Text("Progress Levels: ${progressLevels[index]}", style: TextStyle(color: Colors.white)),
+                      ],
+                    ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.delete, color: Colors.red),
-                    onPressed: () => _deleteGoal(index),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.settings),
-                    onPressed: () => _setProgressLevel(index),
+                  SizedBox(width: 8),
+                  Column(
+                    children: [
+                      IconButton(
+                        icon: Icon(Icons.edit, color: Colors.white),
+                        onPressed: () => _renameGoal(index),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () => _deleteGoal(index),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.settings, color: Colors.white),
+                        onPressed: () => _setProgressLevel(index),
+                      ),
+                    ],
                   ),
                 ],
               ),

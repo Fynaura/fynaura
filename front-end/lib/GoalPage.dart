@@ -46,50 +46,79 @@ class _GoalPageState extends State<GoalPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Your Goals"),
+        backgroundColor: Color(0xFF85C1E5),
+        title: Text("Your Goals", style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
             icon: Icon(Icons.edit),
             onPressed: _goToGoalEditor,  // Go to Goal Editor when clicked
+            tooltip: "Edit Goals",
           ),
         ],
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text("Aura Points: $auraPoints", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
-            Text("Your Goals", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            SizedBox(height: 20),
+            Text("Aura Points: $auraPoints", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
+            SizedBox(height: 16),
+            Text("Your Goals", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black.withOpacity(0.7))),
+            SizedBox(height: 16),
 
-            // Display each goal in the list with progress bar
+            // Display each goal in a more modern way
             Expanded(
               child: ListView.builder(
                 itemCount: goals.length,
                 itemBuilder: (context, index) {
                   return Card(
-                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                    child: ListTile(
-                      title: Text(goals[index]),
-                      subtitle: Text("Progress Levels: ${progressLevels[index]}"),
-                      trailing: Row(
-                        mainAxisSize: MainAxisSize.min,
+                    margin: EdgeInsets.symmetric(vertical: 8.0),
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                    elevation: 4.0,
+                    child: Container(
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(16),
+                        gradient: LinearGradient(
+                          colors: [Colors.blue.shade200, Colors.blue.shade500],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                      ),
+                      child: Row(
                         children: [
-                          // Progress Bar for the goal
-                          Container(
-                            width: 100,
-                            height: 5,
-                            color: Colors.grey[300],
-                            child: LinearProgressIndicator(
-                              value: progressLevels[index] / 5,  // Assuming max progress level is 5
-                              backgroundColor: Colors.grey[300],
-                              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(goals[index], style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+                                SizedBox(height: 8),
+                                Text("Progress Levels: ${progressLevels[index]}", style: TextStyle(color: Colors.white)),
+                              ],
                             ),
                           ),
                           SizedBox(width: 8),
-                          // Points indicator for this goal
-                          Text("${progressLevels[index] * 50} points"),
+                          // Progress Bar
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Container(
+                                width: 100,
+                                height: 5,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey.shade200,
+                                ),
+                                child: LinearProgressIndicator(
+                                  value: progressLevels[index] / 5,  // Assuming max progress level is 5
+                                  backgroundColor: Colors.grey.shade200,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text("${progressLevels[index] * 50} points", style: TextStyle(color: Colors.white)),
+                            ],
+                          ),
                         ],
                       ),
                     ),
