@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'new_profile_page.dart';  // Import the new profile page
 import 'GoalPage.dart';  // Import the Goal page
-import 'edit_profile_page.dart';  // Import the EditProfilePage
+import 'edit_profile_page.dart'; // Correct import for EditProfilePage
 
 void main() {
   runApp(MyApp());
@@ -29,7 +29,6 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String selectedAvatar = "images/fynaura.png"; // Default avatar
-  int auraPoints = 1000; // Aura points initialized
 
   void _selectAvatar() {
     showDialog(
@@ -85,7 +84,6 @@ class _ProfilePageState extends State<ProfilePage> {
                   children: [
                     Text("Aura", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                     Text("@Itunuoluwa", style: TextStyle(color: Colors.grey)),
-                    Text("$auraPoints+ Aura", style: TextStyle(fontSize: 16, color: Colors.green)),
                   ],
                 ),
                 Spacer(),
@@ -94,7 +92,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EditProfilePage()), // Navigate to EditProfilePage
+                      MaterialPageRoute(builder: (context) => EditProfilePage()), // Correctly navigate to the EditProfilePage
                     );
                   },
                 )
@@ -106,12 +104,6 @@ class _ProfilePageState extends State<ProfilePage> {
               title: Text("My Account"),
               subtitle: Text("Make changes to your account"),
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NewProfilePage(auraPoints: auraPoints)), // Navigate to NewProfilePage
-                );
-              },
             ),
             ListTile(
               leading: Icon(Icons.flag, color: Color(0xFF85C1E5)),
@@ -121,13 +113,26 @@ class _ProfilePageState extends State<ProfilePage> {
               onTap: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => GoalPage(auraPoints: auraPoints, onUpdatePoints: (newPoints) {
-                    setState(() {
-                      auraPoints = newPoints;
-                    });
-                  })),
+                  MaterialPageRoute(builder: (context) => GoalPage(auraPoints: 1000, onUpdatePoints: (points) {})), // Pass data to GoalPage
                 );
               },
+            ),
+            ListTile(
+              leading: Icon(Icons.lock, color: Color(0xFF85C1E5)),
+              title: Text("Face ID / Touch ID"),
+              subtitle: Text("Manage your device security"),
+              trailing: Switch(value: false, onChanged: (value) {}),
+            ),
+            ListTile(
+              leading: Icon(Icons.security, color: Color(0xFF85C1E5)),
+              title: Text("Two-Factor Authentication"),
+              subtitle: Text("Further secure your account"),
+              trailing: Icon(Icons.arrow_forward_ios, size: 16),
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.red),
+              title: Text("Log out", style: TextStyle(color: Colors.red)),
+              onTap: () {},
             ),
           ],
         ),

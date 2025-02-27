@@ -5,10 +5,10 @@ class EditProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Edit Profile"),
+        title: Text('Edit Profile'),
       ),
       body: Center(
-        child: Text("Here you can edit your profile."),
+        child: Text('Edit Profile Page Content'),
       ),
     );
   }

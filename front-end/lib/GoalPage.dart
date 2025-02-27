@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'goal_editor_page.dart'; // Correct import for GoalEditorPage
 
 class GoalPage extends StatefulWidget {
   final int auraPoints;
@@ -12,43 +14,46 @@ class GoalPage extends StatefulWidget {
 
 class _GoalPageState extends State<GoalPage> {
   int auraPoints = 0;
-
-  // Progress values for each goal (initially 0, will increase as goals are completed)
-  double loginProgress = 0.0;
-  double inviteProgress = 0.0;
-  double saveProgress = 0.0;
+  List<String> goals = [];
+  List<int> progressLevels = [];
 
   @override
   void initState() {
     super.initState();
     auraPoints = widget.auraPoints;
+    _loadGoals();  // Load saved goals when the page is initialized
   }
 
-  // Function to show the progress bar for each goal
-  void _completeGoal(String goal, double goalProgress) {
+  // Load goals from shared preferences
+  _loadGoals() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
-      // Update the goal's progress to 100%
-      if (goal == "Login to the app") {
-        loginProgress = 1.0;
-      } else if (goal == "Invite friends to the app") {
-        inviteProgress = 1.0;
-      } else if (goal == "Save for a bicycle") {
-        saveProgress = 1.0;
-      }
-      auraPoints += 50; // Add points after goal completion
+      goals = prefs.getStringList('goals') ?? ["Login to the app", "Invite friends to the app", "Save for a bicycle"];
+      progressLevels = List<int>.from(prefs.getStringList('progressLevels')?.map(int.parse) ?? [1, 1, 1]);
     });
+  }
 
-    widget.onUpdatePoints(auraPoints); // Update profile points
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('$goal Completed! You earned 50 Aura points!')),
+  // Navigate to Goal Editor Page
+  _goToGoalEditor() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => GoalEditorPage()),
     );
+    _loadGoals();  // Reload the goals after editing
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Goals")),
+      appBar: AppBar(
+        title: Text("Your Goals"),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.edit),
+            onPressed: _goToGoalEditor,  // Go to Goal Editor when clicked
+          ),
+        ],
+      ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
@@ -58,54 +63,50 @@ class _GoalPageState extends State<GoalPage> {
             Text("Your Goals", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
 
-            // Goal 1: Login
-            ListTile(
-              title: Text("Login to the app"),
-              trailing: ElevatedButton(
-                onPressed: () => _completeGoal("Login to the app", loginProgress),
-                child: Text("Complete"),
+            // Display each goal in the list with progress bar
+            Expanded(
+              child: ListView.builder(
+                itemCount: goals.length,
+                itemBuilder: (context, index) {
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    child: ListTile(
+                      title: Text(goals[index]),
+                      subtitle: Text("Progress Levels: ${progressLevels[index]}"),
+                      trailing: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // Progress Bar for the goal
+                          Container(
+                            width: 100,
+                            height: 5,
+                            color: Colors.grey[300],
+                            child: LinearProgressIndicator(
+                              value: progressLevels[index] / 5,  // Assuming max progress level is 5
+                              backgroundColor: Colors.grey[300],
+                              valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          // Points indicator for this goal
+                          Text("${progressLevels[index] * 50} points"),
+                        ],
+                      ),
+                    ),
+                  );
+                },
               ),
-            ),
-            LinearProgressIndicator(
-              value: loginProgress,  // Show progress for this goal
-              backgroundColor: Colors.grey[200],
-              color: Colors.green,
-            ),
-
-            SizedBox(height: 10),
-
-            // Goal 2: Invite Friends
-            ListTile(
-              title: Text("Invite friends to the app"),
-              trailing: ElevatedButton(
-                onPressed: () => _completeGoal("Invite friends to the app", inviteProgress),
-                child: Text("Complete"),
-              ),
-            ),
-            LinearProgressIndicator(
-              value: inviteProgress,  // Show progress for this goal
-              backgroundColor: Colors.grey[200],
-              color: Colors.green,
-            ),
-
-            SizedBox(height: 10),
-
-            // Goal 3: Save for Bicycle
-            ListTile(
-              title: Text("Save for a bicycle"),
-              trailing: ElevatedButton(
-                onPressed: () => _completeGoal("Save for a bicycle", saveProgress),
-                child: Text("Complete"),
-              ),
-            ),
-            LinearProgressIndicator(
-              value: saveProgress,  // Show progress for this goal
-              backgroundColor: Colors.grey[200],
-              color: Colors.green,
             ),
           ],
         ),
       ),
     );
+  }
+
+  // Save the goals to shared preferences
+  _saveGoals() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('goals', goals);
+    await prefs.setStringList('progressLevels', progressLevels.map((e) => e.toString()).toList());
   }
 }
