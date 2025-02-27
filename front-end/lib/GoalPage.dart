@@ -42,6 +42,16 @@ class _GoalPageState extends State<GoalPage> {
     _loadGoals();  // Reload the goals after editing
   }
 
+  // Function to handle progress update when 'Complete' button is pressed
+  void _completeGoal(int index) {
+    if (progressLevels[index] < 5) {
+      setState(() {
+        progressLevels[index] += 1;
+      });
+      _saveGoals();  // Save updated goals after completing
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,7 +69,6 @@ class _GoalPageState extends State<GoalPage> {
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Aura Points: $auraPoints", style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold)),
             SizedBox(height: 16),
@@ -117,6 +126,19 @@ class _GoalPageState extends State<GoalPage> {
                               ),
                               SizedBox(height: 8),
                               Text("${progressLevels[index] * 50} points", style: TextStyle(color: Colors.white)),
+                              SizedBox(height: 8),
+                              ElevatedButton(
+                                onPressed: progressLevels[index] < 5
+                                    ? () => _completeGoal(index)
+                                    : null,  // Disable if goal is complete
+                                child: Text(progressLevels[index] < 5 ? 'Complete' : 'Goal Completed'),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.green.shade400,  // Use backgroundColor instead of primary
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ],
