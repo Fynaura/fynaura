@@ -5,10 +5,13 @@ import {
     Get,
     Post,
     Body,
+    UseGuards,
   } from '@nestjs/common';
 
 import { TransactionsService } from './transactions.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+//import { Public } from '../decorators/public.decorator';
+import { ClerkAuthGuard } from '../auth/clerk-auth.guard';
   
   @Controller('transaction')
   export class TransactionsController {
@@ -19,7 +22,8 @@ import { CreateTransactionDto } from './dto/create-transaction.dto';
       return this.transactionService.create(createTransactionDto);
     }
   
-    @Get()
+    @UseGuards(ClerkAuthGuard)
+    @Get() 
     findAll() {
       return this.transactionService.findAll();
     }

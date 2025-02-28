@@ -5,15 +5,15 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
 
-import { UsersModule } from './users/users.module';
+
 import { DatabaseModule } from './database/database.module';
 
 import { BudgetsModule } from './budgets/budgets.module';
 import { TransactionsModule } from './transactions/transactions.module';
-import { TransactionsController } from './transactions/transactions.controller';
+
 
 import { MongooseModule } from '@nestjs/mongoose';
-import { TransactionsService } from './transactions/transactions.service';
+
 
 
 import { AuthModule } from './auth/auth.module';
@@ -34,7 +34,7 @@ import { ClerkAuthGuard } from './auth/clerk-auth.guard';
     TransactionsModule,
     BudgetsModule,
     DatabaseModule,
-    UsersModule
+
   ],
   controllers: [AppController],
   providers: [
