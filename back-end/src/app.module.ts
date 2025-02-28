@@ -10,9 +10,7 @@ import { DatabaseModule } from './database/database.module';
 import { BudgetsModule } from './budgets/budgets.module';
 import { TransactionsModule } from './transactions/transactions.module';
 import { TransactionsController } from './transactions/transactions.controller';
-import { MongooseModule } from '@nestjs/mongoose';
-
-
+import { TransactionsService } from './transactions/transactions.service';
 
 
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
@@ -22,21 +20,19 @@ import { MongooseModule } from '@nestjs/mongoose';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/defaultdb'),
-    
 
     TransactionsModule,
     BudgetsModule,
     DatabaseModule,
     UsersModule
   ],
-  controllers: [AppController],
+  controllers: [AppController, TransactionsController],
   providers: [
     AppService,
-
+    
     
 
-
+    TransactionsService,
   ],
 })
 export class AppModule {}
