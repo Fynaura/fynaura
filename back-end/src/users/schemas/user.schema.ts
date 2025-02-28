@@ -1,25 +1,25 @@
-/* eslint-disable prettier/prettier */
+// /* eslint-disable prettier/prettier */
 
-import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+// import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 
 
 
-@Schema()
-export class User extends Document {
-  @Prop()
-  name: string;
+// @Schema()
+// export class User extends Document {
+//   @Prop()
+//   name: string;
 
-  @Prop()
-  email: string;
+//   @Prop()
+//   email: string;
 
-  @Prop()
-  password: string;
+//   @Prop()
+//   password: string;
 
-  @Prop()
-  role: string;
+//   @Prop()
+//   role: string;
 
-  @Prop()
-  isActive: boolean;
-}
+//   @Prop()
+//   isActive: boolean;
+// }
 
-export const UserSchema = SchemaFactory.createForClass(User);
+// export const UserSchema = SchemaFactory.createForClass(User);

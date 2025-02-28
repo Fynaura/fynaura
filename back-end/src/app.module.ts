@@ -12,10 +12,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { TransactionsController } from './transactions/transactions.controller';
 import { TransactionsService } from './transactions/transactions.service';
 
-import { UsersService } from './users/users.service';
-import { UsersController } from './users/users.controller';
-import { AuthModule } from './auth/auth.module';
-import { ClerkAuthGuard } from './auth/clerk-auth.guard';
+
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
 
 @Module({
@@ -23,21 +20,18 @@ import { ClerkAuthGuard } from './auth/clerk-auth.guard';
     ConfigModule.forRoot({
       isGlobal: true,
     }),
-    AuthModule,
+
     TransactionsModule,
     BudgetsModule,
     DatabaseModule,
     UsersModule
   ],
-  controllers: [AppController, UsersController, TransactionsController],
+  controllers: [AppController, TransactionsController],
   providers: [
     AppService,
     
-    UsersService,
-    {
-      provide: 'APP_GUARD',
-      useClass: ClerkAuthGuard,
-    },
+    
+
     TransactionsService,
   ],
 })
