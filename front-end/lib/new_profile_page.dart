@@ -1,22 +1,14 @@
 import 'package:flutter/material.dart';
+import 'MyAccountPage.dart'; // Import MyAccountPage
 
-class NewProfilePage extends StatefulWidget {
-  final int auraPoints;
-
-  NewProfilePage({required this.auraPoints});
-
+class ProfilePage extends StatefulWidget {
   @override
-  _NewProfilePageState createState() => _NewProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class _NewProfilePageState extends State<NewProfilePage> {
-  int auraPoints = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    auraPoints = widget.auraPoints;  // Set initial Aura points from ProfilePage
-  }
+class _ProfilePageState extends State<ProfilePage> {
+  String selectedAvatar = "images/fynaura.png"; // Default avatar
+  int auraPoints = 1000; // Sample aura points
 
   @override
   Widget build(BuildContext context) {
@@ -29,112 +21,64 @@ class _NewProfilePageState extends State<NewProfilePage> {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  radius: 40,
-                  backgroundImage: AssetImage("images/fynaura.png"),
+                GestureDetector(
+                  onTap: () {
+                    // Add Avatar selection logic if needed
+                  },
+                  child: CircleAvatar(
+                    radius: 50,
+                    backgroundImage: AssetImage(selectedAvatar),
+                  ),
                 ),
                 SizedBox(width: 10),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text("Aura", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                    Text("$auraPoints+ Aura", style: TextStyle(color: Colors.grey)),
+                    Text("@Itunuoluwa", style: TextStyle(color: Colors.grey)),
                   ],
                 ),
-                Spacer(),
+              ],
+            ),
+            SizedBox(height: 20),
+            Text(
+              "Aura Points: $auraPoints",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            SizedBox(height: 20),
+            Divider(),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text("Redeem", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                IconButton(
+                  icon: Icon(Icons.arrow_forward_ios, size: 16),
+                  onPressed: () {
+                    // Implement Redeem section logic here
+                  },
+                ),
               ],
             ),
             Divider(),
-            DefaultTabController(
-              length: 3,
-              child: Column(
-                children: [
-                  TabBar(
-                    tabs: [
-                      Tab(text: 'Tips'),
-                      Tab(text: 'Edit'),
-                      Tab(text: 'Bio'),
-                    ],
-                    labelColor: Color(0xFF85C1E5),
-                    indicatorColor: Color(0xFF85C1E5),
-                  ),
-                  Container(
-                    height: 300.0, // Height of the content area
-                    child: TabBarView(
-                      children: [
-                        // Tips Tab
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Aura is the point that you're getting from using our app",
-                                  style: TextStyle(fontSize: 16)),
-                              SizedBox(height: 10),
-                              Text("* Complete your goals", style: TextStyle(fontSize: 14)),
-                              Text("* Invite your friends", style: TextStyle(fontSize: 14)),
-                            ],
-                          ),
-                        ),
-                        // Edit Tab
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              TextField(
-                                  decoration: InputDecoration(
-                                      labelText: "First Name", filled: true, fillColor: Colors.white, border: OutlineInputBorder())),
-                              SizedBox(height: 10),
-                              TextField(
-                                  decoration: InputDecoration(
-                                      labelText: "Last Name", filled: true, fillColor: Colors.white, border: OutlineInputBorder())),
-                              SizedBox(height: 10),
-                              TextField(
-                                  decoration: InputDecoration(
-                                      labelText: "Phone Number", filled: true, fillColor: Colors.white, border: OutlineInputBorder())),
-                              SizedBox(height: 10),
-                              DropdownButtonFormField(
-                                decoration: InputDecoration(
-                                    labelText: "Gender", filled: true, fillColor: Colors.white, border: OutlineInputBorder()),
-                                items: ["Male", "Female"].map((String gender) {
-                                  return DropdownMenuItem(value: gender, child: Text(gender));
-                                }).toList(),
-                                onChanged: (value) {},
-                              ),
-                              SizedBox(height: 20),
-                              ElevatedButton(
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: Color(0xFF85C1E5),
-                                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                                ),
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: Text("Update Profile", style: TextStyle(color: Colors.white)),
-                              ),
-                            ],
-                          ),
-                        ),
-                        // Bio Tab
-                        Padding(
-                          padding: EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text("Aura is the point that you're getting from using our app.",
-                                  style: TextStyle(fontSize: 16)),
-                              SizedBox(height: 10),
-                              Text("* Complete your goals", style: TextStyle(fontSize: 14)),
-                              Text("* Invite your friends", style: TextStyle(fontSize: 14)),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+            Text("Bio", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 8),
+            Text("Name: John Doe"),
+            Text("Age: 25"),
+            Text("Location: California"),
+            Divider(),
+            // Add navigation to the My Account page here
+            ListTile(
+              leading: Icon(Icons.person, color: Color(0xFF85C1E5)),
+              title: Text("My Account"),
+              subtitle: Text("View your account details"),
+              trailing: Icon(Icons.arrow_forward_ios, size: 16),
+              onTap: () {
+                // Navigate to My Account page
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MyAccountPage()), // Navigate to MyAccountPage
+                );
+              },
             ),
           ],
         ),
