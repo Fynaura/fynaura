@@ -30,6 +30,8 @@
     "@nestjs/passport": "^11.0.5",
     "@nestjs/platform-express": "^11.0.1",
     "backend": "file:",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
     "mongodb": "^6.13.1",
     "mongoose": "^8.11.0",
     "passport": "^0.7.0",

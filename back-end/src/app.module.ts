@@ -10,11 +10,9 @@ import { DatabaseModule } from './database/database.module';
 
 import { BudgetsModule } from './budgets/budgets.module';
 import { TransactionsModule } from './transactions/transactions.module';
+import { CollabBudgetsModule } from './collab-budgets/collab-budgets.module';
 
 import { MongooseModule } from '@nestjs/mongoose';
-
-
-
 
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
 
@@ -24,21 +22,17 @@ import { MongooseModule } from '@nestjs/mongoose';
       isGlobal: true,
     }),
 
-    MongooseModule.forRoot(process.env.MONGODB_URI || 'mongodb://localhost:27017/defaultdb'),
-    
-    
-  
+    MongooseModule.forRoot(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017/defaultdb',
+    ),
+
     TransactionsModule,
     BudgetsModule,
     DatabaseModule,
-    UsersModule
+    UsersModule,
+    CollabBudgetsModule,
   ],
   controllers: [AppController],
-  providers: [
-    AppService,
-
-
-    
-  ],
+  providers: [AppService],
 })
 export class AppModule {}
