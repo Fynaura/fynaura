@@ -127,7 +127,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 20),
 
-              // Budget Plan Section (Unchanged)
+              // Budget Plan Section (Updated to be scrollable horizontally)
               Text('Budget Plan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Container(
                 height: 120,
@@ -232,15 +232,18 @@ class BudgetPlanWidget extends StatelessWidget {
       onTap: onPressed,
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 10),
-        child: Column(
-          children: [
-            CircularProgressIndicator(
-              value: remainingPercentage / 100,
-              backgroundColor: Colors.grey[200],
-            ),
-            SizedBox(height: 5),
-            Text(label),
-          ],
+        child: Container(
+          width: 150,  // Set fixed width for consistent size
+          child: Column(
+            children: [
+              CircularProgressIndicator(
+                value: remainingPercentage / 100,
+                backgroundColor: Colors.grey[200],
+              ),
+              SizedBox(height: 5),
+              Text(label),
+            ],
+          ),
         ),
       ),
     );
