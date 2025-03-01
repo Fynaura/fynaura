@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'budget-plan.dart';  // Import for the budget plan page
 
 void main() {
   runApp(MyApp());
@@ -26,13 +25,26 @@ class _HomePageState extends State<HomePage> {
   String income = 'LKR 49,500';
   String expenses = 'LKR 37,020';
 
+  // Index to control the selected bottom navigation bar item
+  int _selectedIndex = 0;
+
+  // Function to handle bottom navigation bar item selection
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue[100],
-        leading: CircleAvatar(
-          backgroundImage: AssetImage('images/profile_icon.png'), // Profile image
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: CircleAvatar(
+            backgroundImage: AssetImage('images/profile_icon.png'), // Profile image
+          ),
         ),
         actions: [
           IconButton(
@@ -40,39 +52,60 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {},
           ),
         ],
+        elevation: 0,  // Remove the shadow from AppBar
       ),
       body: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Period Toggle (This Week, This Month, This Year)
-              ToggleButtons(
-                isSelected: ['This Week', 'This Month', 'This Year']
-                    .map((e) => e == selectedPeriod)
-                    .toList(),
-                onPressed: (index) {
-                  setState(() {
-                    selectedPeriod = ['This Week', 'This Month', 'This Year'][index];
-                    // You can update income and expense values based on the selected period
-                    if (selectedPeriod == 'This Week') {
-                      income = 'LKR 49,500';
-                      expenses = 'LKR 37,020';
-                    } else if (selectedPeriod == 'This Month') {
-                      income = 'LKR 150,000';
-                      expenses = 'LKR 100,000';
-                    } else {
-                      income = 'LKR 600,000';
-                      expenses = 'LKR 400,000';
-                    }
-                  });
-                },
-                children: [
-                  Text('This Week'),
-                  Text('This Month'),
-                  Text('This Year'),
-                ],
+              AnimatedSwitcher(
+                duration: Duration(milliseconds: 300),  // Smooth switching animation
+                child: Container(
+                  key: ValueKey<String>(selectedPeriod),
+                  child: ToggleButtons(
+                    isSelected: ['This Week', 'This Month', 'This Year']
+                        .map((e) => e == selectedPeriod)
+                        .toList(),
+                    onPressed: (index) {
+                      setState(() {
+                        selectedPeriod = ['This Week', 'This Month', 'This Year'][index];
+                        // You can update income and expense values based on the selected period
+                        if (selectedPeriod == 'This Week') {
+                          income = 'LKR 49,500';
+                          expenses = 'LKR 37,020';
+                        } else if (selectedPeriod == 'This Month') {
+                          income = 'LKR 150,000';
+                          expenses = 'LKR 100,000';
+                        } else {
+                          income = 'LKR 600,000';
+                          expenses = 'LKR 400,000';
+                        }
+                      });
+                    },
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text('This Week', style: TextStyle(fontSize: 14)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text('This Month', style: TextStyle(fontSize: 14)),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        child: Text('This Year', style: TextStyle(fontSize: 14)),
+                      ),
+                    ],
+                    color: Colors.black,
+                    selectedColor: Colors.white,
+                    fillColor: Colors.blue[200],
+                    borderRadius: BorderRadius.circular(10),
+                    borderWidth: 2,
+                  ),
+                ),
               ),
               SizedBox(height: 20),
 
@@ -94,7 +127,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 20),
 
-              // Budget Plan Section
+              // Budget Plan Section (Unchanged)
               Text('Budget Plan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Container(
                 height: 120,
@@ -126,7 +159,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 20),
 
-              // Goals Section (Scrollable)
+              // Goals Section (Unchanged)
               Text('Goals', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Container(
                 height: 150,
@@ -144,7 +177,9 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        items: [
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Analyze'),
           BottomNavigationBarItem(icon: Icon(Icons.add), label: 'Plan'),
@@ -231,6 +266,17 @@ class GoalWidget extends StatelessWidget {
           value: remainingPercentage / 100,
         ),
       ),
+    );
+  }
+}
+
+// Budget Plan Page (Unchanged)
+class BudgetPlanPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text('Budget Plan')),
+      body: Center(child: Text('This is where the Budget Plan details will go.')),
     );
   }
 }
