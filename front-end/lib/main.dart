@@ -130,28 +130,32 @@ class _HomePageState extends State<HomePage> {
               // Budget Plan Section (Updated to be scrollable horizontally)
               Text('Budget Plan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Container(
-                height: 120,
+                height: 180,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
                     BudgetPlanWidget(
                       label: 'Monthly Budget',
                       remainingPercentage: 70,
+                      icon: Icons.calendar_today,
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => BudgetPlanPage())),
                     ),
                     BudgetPlanWidget(
                       label: 'Conversation',
                       remainingPercentage: 50,
+                      icon: Icons.chat_bubble,
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => BudgetPlanPage())),
                     ),
                     BudgetPlanWidget(
                       label: 'Party',
                       remainingPercentage: 30,
+                      icon: Icons.party_mode,
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => BudgetPlanPage())),
                     ),
                     BudgetPlanWidget(
                       label: 'Birthday',
                       remainingPercentage: 90,
+                      icon: Icons.cake,
                       onPressed: () => Navigator.push(context, MaterialPageRoute(builder: (_) => BudgetPlanPage())),
                     ),
                   ],
@@ -204,7 +208,14 @@ class IncomeExpenseWidget extends StatelessWidget {
       height: 100,
       decoration: BoxDecoration(
         color: color,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(15),  // More rounded corners for modern look
+        boxShadow: [  // Add shadow for modern, elevated look
+          BoxShadow(
+            color: Colors.black.withOpacity(0.2),
+            blurRadius: 5,
+            spreadRadius: 1,
+          ),
+        ],
       ),
       child: Center(
         child: Column(
@@ -223,8 +234,9 @@ class BudgetPlanWidget extends StatelessWidget {
   final String label;
   final double remainingPercentage;
   final VoidCallback onPressed;
+  final IconData icon;
 
-  const BudgetPlanWidget({Key? key, required this.label, required this.remainingPercentage, required this.onPressed}) : super(key: key);
+  const BudgetPlanWidget({Key? key, required this.label, required this.remainingPercentage, required this.onPressed, required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -232,16 +244,43 @@ class BudgetPlanWidget extends StatelessWidget {
       onTap: onPressed,
       child: Card(
         margin: EdgeInsets.symmetric(horizontal: 10),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),  // Rounded corners
+        elevation: 8,  // Shadow effect for modern design
         child: Container(
-          width: 150,  // Set fixed width for consistent size
+          width: 180,  // Set fixed width for consistent size
+          decoration: BoxDecoration(
+            gradient: LinearGradient(  // Gradient for modern look
+              colors: [Colors.blue[200]!, Colors.blue[300]!],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(15),
+          ),
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              CircularProgressIndicator(
-                value: remainingPercentage / 100,
-                backgroundColor: Colors.grey[200],
+              Icon(icon, size: 50, color: Colors.white),  // Icon representing the budget plan
+              SizedBox(height: 10),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  CircularProgressIndicator(
+                    value: remainingPercentage / 100,
+                    backgroundColor: Colors.grey[200],
+                    strokeWidth: 12,  // Thicker progress ring
+                  ),
+                  Text(
+                    "${remainingPercentage.toInt()}%",  // Display percentage inside the ring
+                    style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
               ),
-              SizedBox(height: 5),
-              Text(label),
+              SizedBox(height: 10),
+              Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
             ],
           ),
         ),
@@ -260,13 +299,18 @@ class GoalWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+      elevation: 3,
       child: ListTile(
         leading: CircleAvatar(
-          child: Icon(Icons.check),
+          backgroundColor: Colors.blue,
+          child: Icon(Icons.check, color: Colors.white),
         ),
-        title: Text(goal),
+        title: Text(goal, style: TextStyle(fontWeight: FontWeight.bold)),
         subtitle: LinearProgressIndicator(
           value: remainingPercentage / 100,
+          backgroundColor: Colors.grey[200],
+          color: Colors.green,
         ),
       ),
     );
