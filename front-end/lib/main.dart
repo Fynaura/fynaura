@@ -8,6 +8,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        fontFamily: 'Roboto',  // Modern font family
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
       home: HomePage(),
     );
   }
@@ -39,24 +44,19 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.blue[100],
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: CircleAvatar(
-            backgroundImage: AssetImage('images/profile_icon.png'), // Profile image
-          ),
-        ),
+        backgroundColor: Color(0xFF4A90E2),  // Soft muted blue
+        title: Text('Expense Tracker', style: TextStyle(fontWeight: FontWeight.bold)),
         actions: [
           IconButton(
-            icon: Icon(Icons.notifications),
+            icon: Icon(Icons.notifications, size: 30),
             onPressed: () {},
           ),
         ],
-        elevation: 0,  // Remove the shadow from AppBar
+        elevation: 4,  // Slight shadow for the AppBar
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(20.0),
+          padding: const EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
@@ -101,8 +101,8 @@ class _HomePageState extends State<HomePage> {
                     ],
                     color: Colors.black,
                     selectedColor: Colors.white,
-                    fillColor: Colors.blue[200],
-                    borderRadius: BorderRadius.circular(10),
+                    fillColor: Color(0xFFF5F5F5),  // Soft light grey for selected background
+                    borderRadius: BorderRadius.circular(30),
                     borderWidth: 2,
                   ),
                 ),
@@ -116,21 +116,21 @@ class _HomePageState extends State<HomePage> {
                   IncomeExpenseWidget(
                     label: 'Income',
                     value: income,
-                    color: Colors.green[100]!,
+                    color: Color(0xFFA9D18E),  // Gentle green for income (growth)
                   ),
                   IncomeExpenseWidget(
                     label: 'Expense',
                     value: expenses,
-                    color: Colors.red[100]!,
+                    color: Color(0xFF4A90E2),  // Soft muted blue for expenses
                   ),
                 ],
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 30),
 
               // Budget Plan Section (Updated to be scrollable horizontally)
               Text('Budget Plan', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Container(
-                height: 180,
+                height: 200,
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   children: [
@@ -163,16 +163,16 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 20),
 
-              // Goals Section (Unchanged)
+              // Goals Section (Updated with Round UI and Soft Color Scheme)
               Text('Goals', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Container(
-                height: 150,
+                height: 250,
                 child: ListView(
-                  scrollDirection: Axis.vertical,
+                  scrollDirection: Axis.horizontal,
                   children: [
-                    GoalWidget(goal: 'Bicycle', remainingPercentage: 70),
-                    GoalWidget(goal: 'Earphone', remainingPercentage: 80),
-                    GoalWidget(goal: 'Laptop', remainingPercentage: 40),
+                    GoalWidget(goal: 'Bicycle', remainingPercentage: 70, icon: Icons.directions_bike),
+                    GoalWidget(goal: 'Earphone', remainingPercentage: 80, icon: Icons.headphones),
+                    GoalWidget(goal: 'Laptop', remainingPercentage: 40, icon: Icons.laptop),
                   ],
                 ),
               ),
@@ -183,6 +183,8 @@ class _HomePageState extends State<HomePage> {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
+        selectedItemColor: Color(0xFFA9D18E),  // Gentle green for selected items
+        unselectedItemColor: Colors.grey,
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Analyze'),
@@ -211,7 +213,7 @@ class IncomeExpenseWidget extends StatelessWidget {
         borderRadius: BorderRadius.circular(15),  // More rounded corners for modern look
         boxShadow: [  // Add shadow for modern, elevated look
           BoxShadow(
-            color: Colors.black.withOpacity(0.2),
+            color: Colors.black.withOpacity(0.1),
             blurRadius: 5,
             spreadRadius: 1,
           ),
@@ -221,8 +223,8 @@ class IncomeExpenseWidget extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-            Text(value, style: TextStyle(fontSize: 20)),
+            Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+            Text(value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.white)),
           ],
         ),
       ),
@@ -249,38 +251,44 @@ class BudgetPlanWidget extends StatelessWidget {
         child: Container(
           width: 180,  // Set fixed width for consistent size
           decoration: BoxDecoration(
-            gradient: LinearGradient(  // Gradient for modern look
-              colors: [Colors.blue[200]!, Colors.blue[300]!],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
+            color: Color(0xFFF5F5F5),  // Light soft background color
             borderRadius: BorderRadius.circular(15),
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(icon, size: 50, color: Colors.white),  // Icon representing the budget plan
-              SizedBox(height: 10),
+              // Creating a big circular progress ring
               Stack(
                 alignment: Alignment.center,
                 children: [
+                  // Progress ring (background circle)
                   CircularProgressIndicator(
                     value: remainingPercentage / 100,
-                    backgroundColor: Colors.grey[200],
-                    strokeWidth: 12,  // Thicker progress ring
+                    backgroundColor: Colors.grey[300],
+                    strokeWidth: 15,  // Thicker progress ring
                   ),
+                  // Icon in the center of the ring
+                  Icon(icon, size: 40, color: Color(0xFF4A90E2)),
+                  // Percentage inside the ring
                   Text(
-                    "${remainingPercentage.toInt()}%",  // Display percentage inside the ring
+                    "${remainingPercentage.toInt()}%",
                     style: TextStyle(
-                      fontSize: 18,
+                      fontSize: 22,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: Color(0xFF4A90E2),
                     ),
                   ),
                 ],
               ),
               SizedBox(height: 10),
-              Text(label, style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white)),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF4A90E2),
+                ),
+              ),
             ],
           ),
         ),
@@ -292,25 +300,34 @@ class BudgetPlanWidget extends StatelessWidget {
 class GoalWidget extends StatelessWidget {
   final String goal;
   final double remainingPercentage;
+  final IconData icon;
 
-  const GoalWidget({Key? key, required this.goal, required this.remainingPercentage}) : super(key: key);
+  const GoalWidget({Key? key, required this.goal, required this.remainingPercentage, required this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-      elevation: 3,
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: Colors.blue,
-          child: Icon(Icons.check, color: Colors.white),
+      margin: EdgeInsets.symmetric(vertical: 10, horizontal: 5),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      elevation: 8,  // Add elevation for floating effect
+      child: Container(
+        width: 200,  // Set width for consistency
+        decoration: BoxDecoration(
+          color: Color(0xFFF5F5F5),  // Soft background color for goals
+          borderRadius: BorderRadius.circular(20),
         ),
-        title: Text(goal, style: TextStyle(fontWeight: FontWeight.bold)),
-        subtitle: LinearProgressIndicator(
-          value: remainingPercentage / 100,
-          backgroundColor: Colors.grey[200],
-          color: Colors.green,
+        child: ListTile(
+          leading: CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(icon, color: Color(0xFF4A90E2), size: 30),
+          ),
+          title: Text(goal, style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF4A90E2))),
+          subtitle: LinearProgressIndicator(
+            value: remainingPercentage / 100,
+            backgroundColor: Colors.grey[300],
+            color: Color(0xFF6DBE45),  // Gentle green for goal progress
+            minHeight: 8,
+          ),
         ),
       ),
     );
