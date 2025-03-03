@@ -15,8 +15,8 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
-  final searchNavKey = GlobalKey<NavigatorState>();
-  final notificationNavKey = GlobalKey<NavigatorState>();
+  final analyticsNavKey = GlobalKey<NavigatorState>();
+  final planNavKey = GlobalKey<NavigatorState>();
   final profileNavKey = GlobalKey<NavigatorState>();
   int selectedTab = 0;
   List<NavModel> items = [];
@@ -30,12 +30,12 @@ NavModel(
   navKey: homeNavKey,
 ),
       NavModel(
-        page: const TabPage(title: 'Search'), // Update to use title
-        navKey: searchNavKey,
+        page: const TabPage(title: 'Analytics'), // Update to use title
+        navKey: analyticsNavKey,
       ),
       NavModel(
-        page: const TabPage(title: 'Notifications'), // Update to use title
-        navKey: notificationNavKey,
+        page: const TabPage(title: 'Plans'), // Update to use title
+        navKey: planNavKey, // Update to use key  
       ),
       NavModel(
         page: const TabPage(title: 'Profile'), // Update to use title

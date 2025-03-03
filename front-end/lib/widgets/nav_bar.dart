@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+
 class NavBar extends StatelessWidget {
   final int pageIndex;
   final Function(int) onTap;
@@ -35,10 +36,10 @@ class NavBar extends StatelessWidget {
                 label: 'Home',
               ),
               navItem(
-                CupertinoIcons.search,
+                Icons.analytics,
                 pageIndex == 1,
                 onTap: () => onTap(1),
-                label: 'Search',
+                label: 'Analytics',
               ),
               navItem(
                 CupertinoIcons.calendar_today,
