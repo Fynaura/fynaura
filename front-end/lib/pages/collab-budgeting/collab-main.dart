@@ -1090,25 +1090,11 @@ class CollabMainState extends State<CollabMain> {
     }
   }
 
-  // Create a new budget via the API
-  // Future<void> _addBudget(String name, String amount, String date) async {
-  //   try {
-  //     // Convert amount to double
-  //     double parsedAmount = double.parse(amount);
-  //     await _budgetService.createBudget(name, parsedAmount, date);
-  //
-  //     // Reload the budgets to get the updated list including the new one
-  //     await _loadBudgets();
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to create budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
+
   Future<void> _addBudget(String name, String amount, String date) async {
     try {
       double parsedAmount = double.parse(amount);
-      String userId = "123456"; // Replace with actual user ID
+      String userId = "123456"; //sample user for now
 
       await _budgetService.createBudget(name, parsedAmount, date, userId);
       await _loadBudgets();
@@ -1120,10 +1106,43 @@ class CollabMainState extends State<CollabMain> {
   }
 
   // Delete a budget via the API
-  Future<void> _deleteBudget(String id) async {
+  // Future<void> _deleteBudget(String id) async {
+  //   try {
+  //     await _budgetService.deleteBudget(id);
+  //     await _loadBudgets(); // Reload to get the updated list
+  //   } catch (e) {
+  //     setState(() {
+  //       errorMessage = "Failed to delete budget: ${e.toString()}";
+  //     });
+  //   }
+  // }
+  // Future<void> _deleteBudget(String id) async {
+  //   try {
+  //     print("Deleting budget with ID: $id");
+  //     await _budgetService.deleteBudget(id);
+  //     await _loadBudgets(); // Reload to get the updated list
+  //   } catch (e) {
+  //     setState(() {
+  //       errorMessage = "Failed to delete budget: ${e.toString()}";
+  //     });
+  //   }
+  // }
+  Future<void> _deleteBudget(String? id) async {
+    if (id == null || id == "null" || id.isEmpty) {
+      setState(() {
+        errorMessage = "Cannot delete: Invalid budget ID";
+      });
+      return;
+    }
+
     try {
+      print("Attempting to delete budget with ID: $id");
+      // If the ID includes the ObjectId wrapper, extract just the hex string
+      if (id.startsWith("ObjectId('") && id.endsWith("')")) {
+        id = id.substring(10, id.length - 2);
+      }
       await _budgetService.deleteBudget(id);
-      await _loadBudgets(); // Reload to get the updated list
+      await _loadBudgets();
     } catch (e) {
       setState(() {
         errorMessage = "Failed to delete budget: ${e.toString()}";
