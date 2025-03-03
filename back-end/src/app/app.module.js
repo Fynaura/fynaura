@@ -9,5 +9,6 @@ import { TransactionModule } from '../transaction/transaction.module';
     MongooseModule.forRoot(process.env.MONGODB_URI),
     TransactionModule,
   ],
+  imports: [UploadModule],
 })
 export class AppModule {}
