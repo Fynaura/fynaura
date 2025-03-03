@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 import 'package:fynaura/pages/home/home.dart';
+import '../profile/profile.dart';
 import 'TabPage.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
@@ -38,7 +39,7 @@ NavModel(
         navKey: planNavKey, // Update to use key  
       ),
       NavModel(
-        page: const TabPage(title: 'Profile'), // Update to use title
+        page: ProfilePage(), // Update to use title
         navKey: profileNavKey,
       ),
     ];
