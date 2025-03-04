@@ -24,7 +24,7 @@ class BudgetDetails extends StatefulWidget {
 class _BudgetDetailsState extends State<BudgetDetails> {
   List<String> avatars = ["images/user.png"]; // Initial avatar list
 
-  // Track the current balance and activities
+  // Track the current balance and activities 
   late double currentAmount;
   late double initialAmount;
   double percentageRemaining = 100; // Starting at 100% instead of 10%
