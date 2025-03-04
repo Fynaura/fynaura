@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 import 'package:fynaura/pages/home/home.dart';
@@ -5,6 +6,7 @@ import '../profile/profile.dart';
 import 'TabPage.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
+
 
 
 class MainScreen extends StatefulWidget {
@@ -16,8 +18,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
+
   final analyticsNavKey = GlobalKey<NavigatorState>();
   final planNavKey = GlobalKey<NavigatorState>();
+
   final profileNavKey = GlobalKey<NavigatorState>();
   int selectedTab = 0;
   List<NavModel> items = [];
@@ -26,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     items = [
+
 NavModel(
   page: DashboardScreen(),  // Use DashboardScreen as the Home tab
   navKey: homeNavKey,
@@ -40,6 +45,7 @@ NavModel(
       ),
       NavModel(
         page: ProfilePage(), // Update to use title
+
         navKey: profileNavKey,
       ),
     ];
@@ -78,13 +84,16 @@ NavModel(
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             elevation: 0,
+
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransactionDetailPage()),
+
             ),
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
               borderRadius: BorderRadius.circular(100),
+
             ),
             child: const Icon(
               Icons.add,
@@ -96,7 +105,9 @@ NavModel(
           pageIndex: selectedTab,
           onTap: (index) {
             if (index == selectedTab) {
+
               items[index].navKey.currentState?.popUntil((route) => route.isFirst);
+
             } else {
               setState(() {
                 selectedTab = index;

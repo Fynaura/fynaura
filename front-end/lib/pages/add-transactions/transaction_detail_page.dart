@@ -1,3 +1,4 @@
+
 import 'dart:convert';
 import 'package:flutter/material.dart';
 
@@ -19,10 +20,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   DateTime selectedDate = DateTime.now();
   bool reminder = false;
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
         backgroundColor: Colors.white,
         actions: [
@@ -31,10 +34,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
             onPressed: _saveTransaction,
           ),
         ],
+
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -192,3 +197,4 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     );
   }
 }
+

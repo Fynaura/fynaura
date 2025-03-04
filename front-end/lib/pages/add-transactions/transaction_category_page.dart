@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+
 class TransactionCategoryPage extends StatefulWidget {
   final bool isExpense;
   TransactionCategoryPage({required this.isExpense});
+
 
   @override
   _TransactionCategoryPageState createState() =>
@@ -10,6 +12,7 @@ class TransactionCategoryPage extends StatefulWidget {
 }
 
 class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
+
   List<Map<String, dynamic>> expenseCategories = [
     {"name": "Food", "icon": Icons.fastfood},
     {"name": "Shopping", "icon": Icons.shopping_cart},
@@ -37,21 +40,27 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
   void _addCustomCategory() {
     TextEditingController controller = TextEditingController();
+
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Add Custom Category"),
         content: TextField(
+
           controller: controller,
+
           decoration: InputDecoration(hintText: "Enter category name"),
         ),
         actions: [
           TextButton(
+
             onPressed: () => Navigator.pop(context),
+
             child: Text("Cancel"),
           ),
           TextButton(
             onPressed: () {
+
               if (controller.text.isNotEmpty) {
                 setState(() {
                   customCategories.add({
@@ -61,6 +70,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
                 });
               }
               Navigator.pop(context);
+
             },
             child: Text("Add"),
           ),
@@ -71,6 +81,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
   @override
   Widget build(BuildContext context) {
+
     List<Map<String, dynamic>> categories = widget.isExpense
         ? [...expenseCategories, ...customCategories]
         : [...incomeCategories, ...customCategories];
@@ -135,6 +146,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
             );
           },
         ),
+
       ),
     );
   }

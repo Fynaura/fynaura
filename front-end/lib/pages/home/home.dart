@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:fynaura/widgets/navigation.dart';  // Import the custom navigation bar
 
@@ -163,3 +164,4 @@ class GoalCard extends StatelessWidget {
     );
   }
 }
+
