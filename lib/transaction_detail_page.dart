@@ -1,34 +1,71 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/transaction_category_page.dart';
+import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
+import 'transaction_category_page.dart';
 
-class TransactionDetailPage extends StatefulWidget {
+class TransactionDetailsPage extends StatefulWidget {
   @override
-  _TransactionDetailPageState createState() => _TransactionDetailPageState();
+  _TransactionDetailsPageState createState() => _TransactionDetailsPageState();
 }
 
-class _TransactionDetailPageState extends State<TransactionDetailPage> {
+class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   bool isExpense = true;
   String selectedCategory = "Select Category";
   TextEditingController amountController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   bool reminder = false;
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  void addTransaction() {
+    if (amountController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Please enter an amount"),
+      ));
+      return;
+    }
+    if (selectedCategory == "Select Category") {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Please select a category"),
+      ));
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text('Transaction Added Successfully'),
+    ));
+    resetFields();
+  }
+
+  void resetFields() {
+    amountController.clear();
+    descriptionController.clear();
+    selectedCategory = "Select Category";
+    reminder = false;
+    selectedDate = DateTime.now();
+  }
+
+  void pickImage(ImageSource source) async {
+    final pickedImage = await _picker.pickImage(source: source);
+    // Process picked image here (e.g., upload or store)
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
-        backgroundColor: Colors.white,
         actions: [
           IconButton(
             icon: Icon(Icons.check, color: Colors.blue),
-            onPressed: () {
-              // Add transaction logic (e.g., save data)
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Transaction Added Successfully")),
-              );
-            },
+            onPressed: addTransaction,
           ),
         ],
       ),
@@ -44,19 +81,28 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               ],
             ),
             SizedBox(height: 10),
-            buildModernAmountField(),
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF85C1E5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                child: buildModernAmountField(),
+              ),
+            ),
+            SizedBox(height: 10),
             buildModernOptionTile("Category", Icons.toc, selectedCategory, context, true),
             buildModernDescriptionField(),
-            // Show "Set Reminder" only for expenses
-            if (isExpense) buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildCameraGalleryButton("Camera", Icons.camera_alt, Color(0xFF85C1E5)),
-                buildCameraGalleryButton("Gallery", Icons.photo, Color(0xFF85C1E5)),
-              ],
+            if (isExpense) buildModernOptionTile(
+              "Set Reminder",
+              Icons.alarm,
+              reminder ? DateFormat('MMMM d, y').format(selectedDate) : "Set Reminder",
+              context,
+              false,
             ),
+            SizedBox(height: 20),
+            buildCameraGalleryButtons(),
           ],
         ),
       ),
@@ -65,7 +111,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
   Widget buildToggleButton(String text, bool selected) {
     return ElevatedButton(
-      onPressed: () => setState(() => isExpense = text == "Expense"),
+      onPressed: () {
+        setState(() {
+          isExpense = text == "Expense";
+          selectedCategory = "Select Category";
+        });
+      },
       child: Text(text),
       style: ElevatedButton.styleFrom(
         backgroundColor: selected ? Color(0xFF85C1E5) : Colors.grey,
@@ -97,7 +148,6 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
 
   Widget buildModernDescriptionField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
@@ -112,16 +162,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           prefixIcon: Icon(Icons.edit, color: Colors.grey.shade700),
         ),
         style: TextStyle(fontSize: 18),
-        onChanged: (value) {
-          setState(() {});
-        },
       ),
     );
   }
 
   Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
@@ -137,7 +183,7 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
             );
             if (result != null) {
-              setState(() => selectedCategory = result);
+              setState(() => selectedCategory = result as String);
             }
           } else if (title == "Set Reminder") {
             final date = await showDatePicker(
@@ -151,6 +197,10 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                 selectedDate = date;
                 reminder = true;
               });
+            } else {
+              setState(() {
+                reminder = false;
+              });
             }
           }
         },
@@ -158,18 +208,33 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     );
   }
 
-  Widget buildCameraGalleryButton(String title, IconData icon, Color color) {
-    return ElevatedButton.icon(
-      onPressed: () {},
-      icon: Icon(icon, color: Colors.white),
-      label: Text(title),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+  Widget buildCameraGalleryButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => pickImage(ImageSource.camera),
+          icon: Icon(Icons.camera_alt, color: Colors.white),
+          label: Text("Camera"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF85C1E5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
         ),
-      ),
+        ElevatedButton.icon(
+          onPressed: () => pickImage(ImageSource.gallery),
+          icon: Icon(Icons.photo, color: Colors.white),
+          label: Text("Gallery"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF85C1E5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

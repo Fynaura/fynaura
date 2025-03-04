@@ -20,7 +20,7 @@ class TemporaryHomePage extends StatelessWidget {
           onPressed: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TransactionDetailPage()),
+              MaterialPageRoute(builder: (context) => TransactionDetailsPage()),
             );
           },
           child: Text('Go to Add Transaction'),
