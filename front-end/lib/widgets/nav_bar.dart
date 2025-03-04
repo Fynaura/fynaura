@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
 import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 
 class NavBar extends StatelessWidget{
+
   final int pageIndex;
   final Function(int) onTap;
 
@@ -20,15 +22,17 @@ class NavBar extends StatelessWidget{
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(
-        left: 10,
-        right: 10,
-        bottom: Platform.isAndroid ? 16:0,
+
+        left: 0,
+        right: 0,
+        bottom: 0,
       ),
       child: BottomAppBar(
         elevation: 0.0,
+        color: Color(0xFF85C1E5), // Set the BottomAppBar to blue
         child: Container(
           height: 60,
-          color: Color(0xFF85C1E5),
+
           child: Row(
             children: [
               navItem(
@@ -39,15 +43,16 @@ class NavBar extends StatelessWidget{
 
               ),
               navItem(
-                CupertinoIcons.search,
+                Icons.analytics,
                 pageIndex == 1,
                 onTap: () => onTap(1),
-                label: 'Search',
+                label: 'Analytics',
 
               ),
               navItem(
                 CupertinoIcons.calendar_today,
                 pageIndex == 2,
+
                 onTap: () {
                   Navigator.push(
                     context,
@@ -60,6 +65,7 @@ class NavBar extends StatelessWidget{
               navItem(
                 CupertinoIcons.person,
                 pageIndex ==3,
+
                 onTap: () => onTap(3),
                 label: 'Profile',
               ),
@@ -72,13 +78,15 @@ class NavBar extends StatelessWidget{
 
   Widget navItem(IconData icon, bool selected, {Function()? onTap, required String label}) {
     return Expanded(
-        child: InkWell(
-          onTap:onTap,
-          child: Icon(
-            icon,
-            color: selected ? Colors.white : Colors.white.withOpacity(0.4),
-          ),
+
+      child: InkWell(
+        onTap: onTap,
+        child: Icon(
+          icon,
+          color: selected ? Colors.white : Colors.white.withOpacity(0.4),
         ),
+      ),
     );
   }
 }
+

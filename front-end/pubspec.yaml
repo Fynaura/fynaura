@@ -40,6 +40,12 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
 
+  http: ^0.13.3
+  shared_preferences: ^2.5.2
+  mime: ^2.0.0
+  image_picker: ^1.1.2
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -76,7 +82,9 @@ flutter:
      - images/fb.png
      - images/apple.png
      - images/cellphone.png
+
      - images/user.png
+
      
 
   #   - images/a_dot_ham.jpeg
