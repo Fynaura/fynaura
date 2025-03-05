@@ -28,7 +28,6 @@ import { TransactionsService } from './transactions/transactions.service';
       isGlobal: true,
     }),
 
-
     MongooseModule.forRoot(
       process.env.MONGODB_URI || 'mongodb://localhost:27017/defaultdb',
     ),

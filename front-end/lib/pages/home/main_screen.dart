@@ -1,6 +1,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
+import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
 import '../profile/profile.dart';
 import 'TabPage.dart';
@@ -40,7 +41,7 @@ NavModel(
         navKey: analyticsNavKey,
       ),
       NavModel(
-        page: const TabPage(title: 'Plans'), // Update to use title
+        page: CollabMain(), // Update to use title
         navKey: planNavKey, // Update to use key  
       ),
       NavModel(
