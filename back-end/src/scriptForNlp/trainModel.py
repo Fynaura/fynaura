@@ -71,6 +71,11 @@ TRAINING_DATA = [
     ("Breakfast combo with eggs, toast, and bacon", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
     ("Lunch at a Chinese restaurant", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
     ("Fried rice and spicy noodles", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
+    ("Pasta and garlic bread", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
+    ("Salad and soup for a light meal", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
+    ("Ice cream and milkshake", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
+    ("Cupcakes and muffins", {"cats": {"Food": 1.0, "Grocery": 0.0}}),
+
 
     # Medical
     ("Aspirin and cough syrup purchase", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
@@ -78,12 +83,20 @@ TRAINING_DATA = [
     ("Prescription antibiotics and pain relief gel", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
     ("Multivitamins and fish oil supplements", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
     ("First aid kit with bandages and antiseptic", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
+    ("Allergy medication and eye drops", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
+    ("Inhaler and asthma medication", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
+    ("Thermometer and blood pressure monitor", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
+    ("Pregnancy test and prenatal vitamins", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
+    ("Dental floss and mouthwash", {"cats": {"Medical": 1.0, "Grocery": 0.0}}),
+
 
     # Sport
     ("Football and a set of jerseys", {"cats": {"Sport": 1.0, "Clothes": 0.0}}),
     ("Tennis racket and tennis balls", {"cats": {"Sport": 1.0, "Clothes": 0.0}}),
     ("Gym membership renewal", {"cats": {"Sport": 1.0, "Clothes": 0.0}}),
     ("Yoga mat and resistance bands", {"cats": {"Sport": 1.0, "Clothes": 0.0}}),
+    ("Running shoes and fitness tracker", {"cats": {"Sport": 1.0, "Clothes": 0.0}}),
+
 
     # Clothes
     ("Nike running shoes", {"cats": {"Clothes": 1.0, "Sport": 0.0}}),
@@ -92,10 +105,13 @@ TRAINING_DATA = [
     ("Formal suit for an event", {"cats": {"Clothes": 1.0, "Sport": 0.0}}),
     ("Running shorts and sportswear", {"cats": {"Clothes": 1.0, "Sport": 0.0}}),
 
+
     # Transport
     ("Bus pass for the month", {"cats": {"Transport": 1.0, "Bills": 0.0}}),
     ("Taxi ride to the airport", {"cats": {"Transport": 1.0, "Bills": 0.0}}),
     ("Train ticket to another city", {"cats": {"Transport": 1.0, "Bills": 0.0}}),
+    ("Flight booking for vacation", {"cats": {"Transport": 1.0, "Bills": 0.0}}),
+    ("Car rental for a road trip", {"cats": {"Transport": 1.0, "Bills": 0.0}}),
 
     # Education
     ("School textbooks and notebooks", {"cats": {"Education": 1.0, "Grocery": 0.0}}),
@@ -108,12 +124,14 @@ TRAINING_DATA = [
     ("Lipstick and foundation", {"cats": {"Beauty": 1.0, "Medical": 0.0}}),
     ("Shampoo and hair conditioner", {"cats": {"Beauty": 1.0, "Medical": 0.0}}),
     ("Spa and facial treatment", {"cats": {"Beauty": 1.0, "Medical": 0.0}}),
+    ("Manicure and pedicure", {"cats": {"Beauty": 1.0, "Medical": 0.0}}),
 
     # Bills
     ("Water bill payment for the month", {"cats": {"Bills": 1.0, "Shopping": 0.0}}),
     ("Mobile phone recharge", {"cats": {"Bills": 1.0, "Phone": 0.0}}),
     ("Electricity bill settlement", {"cats": {"Bills": 1.0, "Shopping": 0.0}}),
     ("Internet service payment", {"cats": {"Bills": 1.0, "Phone": 0.0}}),
+    ("Credit card bill clearance", {"cats": {"Bills": 1.0, "Shopping": 0.0}}),
 
     # Vehicle
     ("Car service and engine oil change", {"cats": {"Vehicle": 1.0, "Transport": 0.0}}),
@@ -122,12 +140,27 @@ TRAINING_DATA = [
     ("Car wash and detailing", {"cats": {"Vehicle": 1.0, "Transport": 0.0}}),
     ("Motor oil and brake fluid purchase", {"cats": {"Vehicle": 1.0, "Transport": 0.0}}),
 
+
     # Electronics
     ("Batteries, light bulbs, and tools", {"cats": {"Electronics": 1.0, "Medical": 0.0}}),
     ("Laptop purchase and accessories", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
     ("Smartphone and wireless earbuds", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
     ("Gaming console and controllers", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
     ("TV and home theater system", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Camera and photography gear", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Headphones and speakers", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Tablet and smartwatch", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Printer and scanner", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Router and modem", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("External hard drive and memory card", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Smart home devices and appliances", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Computer software and antivirus", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Chargers and cables", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Gadgets and tech accessories", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Computer peripherals and components", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Networking devices and security cameras", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Office equipment and supplies", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
+    ("Video games and consoles", {"cats": {"Electronics": 1.0, "Shopping": 0.0}}),
 ]
 
 
