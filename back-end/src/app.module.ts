@@ -32,7 +32,6 @@ import { TransactionsService } from './transactions/transactions.service';
       process.env.MONGODB_URI || 'mongodb://localhost:27017/defaultdb',
     ),
 
-
     TransactionsModule,
     BudgetsModule,
     DatabaseModule,
