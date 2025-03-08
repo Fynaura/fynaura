@@ -1,10 +1,7 @@
-
-import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
-
-import 'package:fynaura/pages/ocr/ImageSelectionOption.dart' as ocrScreen;
-import 'package:http/http.dart' as http;
-import 'transaction_category_page.dart';
+import 'package:fynaura/pages/add-transactions/transaction_category_page.dart';
+import 'package:fynaura/pages/ocr/ImageSelectionOption.dart';
 
 
 class TransactionDetailPage extends StatefulWidget {
@@ -19,27 +16,40 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   TextEditingController descriptionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   bool reminder = false;
+  File? selectedImage; // Store selected image
 
+  void _handleImageSelection(bool isCamera) async {
+    File? image = isCamera
+        ? await ImageSelectionOption.pickImageFromCamera()
+        : await ImageSelectionOption.pickImageFromGallery();
+
+    if (image != null) {
+      setState(() {
+        selectedImage = image;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
-        title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
+        title: const Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
         backgroundColor: Colors.white,
         actions: [
           IconButton(
-            icon: Icon(Icons.check, color: Colors.blue),
-            onPressed: _saveTransaction,
+            icon: const Icon(Icons.check, color: Colors.blue),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Transaction Added Successfully")),
+              );
+            },
           ),
         ],
-
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
@@ -48,45 +58,57 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
                 buildToggleButton("Expense", isExpense),
               ],
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             buildModernAmountField(),
             buildModernOptionTile("Category", Icons.toc, selectedCategory, context, true),
             buildModernDescriptionField(),
-            buildModernOptionTile("Set Date", Icons.calendar_today, "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}", context, false),
-            buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
-            Spacer(),
-            // Camera Button
-            ElevatedButton.icon(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => ocrScreen.OcrScreen()),
-                );
-              },
-              icon: Icon(Icons.camera_alt, color: Colors.white),
-              label: Text("Scan Receipt"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue,
-                padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
-                shape: RoundedRectangleBorder(
+            if (isExpense) buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
+
+            const Spacer(),
+
+            // Show selected image preview
+            if (selectedImage != null)
+              Container(
+                margin: const EdgeInsets.only(bottom: 10),
+                height: 100,
+                decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
+                  image: DecorationImage(
+                    image: FileImage(selectedImage!),
+                    fit: BoxFit.cover,
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _saveTransaction,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                padding: EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
+
+            // Image selection buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton.icon(
+                  onPressed: () => _handleImageSelection(true),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF85C1E5),
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  icon: const Icon(Icons.camera_alt, color: Colors.white),
+                  label: const Text("Camera", style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
-              ),
-              child: Text(
-                'SAVE TRANSACTION',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
+                ElevatedButton.icon(
+                  onPressed: () => _handleImageSelection(false),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.orangeAccent,
+                    padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  icon: const Icon(Icons.image, color: Colors.white),
+                  label: const Text("Gallery", style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+              ],
             ),
           ],
         ),
@@ -94,45 +116,12 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     );
   }
 
-  void _saveTransaction() async {
-    var requestBody = {
-      "type": isExpense ? "expense" : "income",
-      "amount": int.tryParse(amountController.text) ?? 0,
-      "category": selectedCategory,
-      "note": descriptionController.text,
-      "date": "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
-      "reminder": reminder,
-    };
-
-    var headers = {'Content-Type': 'application/json'};
-    var request = http.Request('POST', Uri.parse('http://localhost:8000/api/transaction'));
-    request.body = json.encode(requestBody);
-    request.headers.addAll(headers);
-
-    try {
-      http.StreamedResponse response = await request.send();
-      if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Transaction Added Successfully")),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("Failed to Add Transaction: ${response.reasonPhrase}")),
-        );
-      }
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $e")),
-      );
-    }
-  }
-
   Widget buildToggleButton(String text, bool selected) {
     return ElevatedButton(
       onPressed: () => setState(() => isExpense = text == "Expense"),
       child: Text(text),
       style: ElevatedButton.styleFrom(
-        backgroundColor: selected ? Color(0xFF85C1E5) : Colors.grey,
+        backgroundColor: selected ? const Color(0xFF85C1E5) : Colors.grey,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -145,56 +134,80 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     return TextField(
       controller: amountController,
       keyboardType: TextInputType.number,
-      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         prefixText: "LKR ",
         hintText: "00",
         hintStyle: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.grey),
         border: InputBorder.none,
       ),
+      onChanged: (value) {
+        setState(() {});
+      },
     );
   }
 
   Widget buildModernDescriptionField() {
-    return TextField(
-      controller: descriptionController,
-      decoration: InputDecoration(
-        hintText: "Add Description...",
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
-        prefixIcon: Icon(Icons.edit),
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: TextField(
+        controller: descriptionController,
+        decoration: InputDecoration(
+          hintText: "Add Description...",
+          hintStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.w400, color: Colors.grey.shade600),
+          border: InputBorder.none,
+          prefixIcon: Icon(Icons.edit, color: Colors.grey.shade700),
+        ),
+        style: const TextStyle(fontSize: 18),
+        onChanged: (value) {
+          setState(() {});
+        },
       ),
     );
   }
 
   Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
-    return ListTile(
-      leading: Icon(icon),
-      title: Text(hint),
-      onTap: () async {
-        if (isCategory) {
-          final result = await Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
-          );
-          if (result != null) {
-            setState(() => selectedCategory = result);
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      margin: const EdgeInsets.symmetric(vertical: 5),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade200,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: ListTile(
+        leading: Icon(icon, color: Colors.grey.shade700),
+        title: Text(hint, style: const TextStyle(color: Colors.black54)),
+        onTap: () async {
+          if (isCategory) {
+            final result = await Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
+            );
+            if (result != null) {
+              setState(() => selectedCategory = result);
+            }
+          } else if (title == "Set Reminder") {
+            final date = await showDatePicker(
+              context: context,
+              initialDate: selectedDate,
+              firstDate: DateTime(2000),
+              lastDate: DateTime(2100),
+            );
+            if (date != null) {
+              setState(() {
+                selectedDate = date;
+                reminder = true;
+              });
+            }
           }
-        } else if (title == "Set Date") {
-          final date = await showDatePicker(
-            context: context,
-            initialDate: selectedDate,
-            firstDate: DateTime(2000),
-            lastDate: DateTime(2100),
-          );
-          if (date != null) setState(() => selectedDate = date);
-        } else if (title == "Set Reminder") {
-          setState(() {
-            reminder = !reminder;
-          });
-        }
-      },
+        },
+      ),
     );
   }
 }
-
