@@ -2,7 +2,6 @@
 
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-
 import { ConfigModule } from '@nestjs/config';
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
 
@@ -24,6 +23,7 @@ import { AppService } from './app.service';
 
 
 
+
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
 
 @Module({
@@ -40,6 +40,7 @@ import { AppService } from './app.service';
     BudgetsModule,
     DatabaseModule,
     UsersModule,
+
     CollabBudgetsModule,
     
   ],
