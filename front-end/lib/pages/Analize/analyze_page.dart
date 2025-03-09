@@ -1,6 +1,7 @@
-import 'package:expencetracker/components/money_chart.dart';
-import 'package:expencetracker/components/pie_chart.dart';
-import 'package:expencetracker/components/top_bar.dart';
+import 'package:fynaura/widgets/analyze/money_chart.dart';
+import 'package:fynaura/widgets/analyze/pie_chart.dart';
+import 'package:fynaura/widgets/analyze/top_bar.dart';
+
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
@@ -20,9 +21,9 @@ class _AnalyzePageState extends State<AnalyzePage> {
     return Scaffold(
       appBar: AppBar(
         surfaceTintColor: Colors.white,
-        toolbarHeight: 100,
+        toolbarHeight: 2,
         centerTitle: true,
-        title: TopBar(),
+
       ),
       backgroundColor: Colors.grey[200],
       body: SingleChildScrollView(

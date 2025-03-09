@@ -1,23 +1,46 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
+import 'package:fynaura/pages/log-in/mainLogin.dart';
 
-import 'ImageSelectionOption.dart';
+import 'package:fynaura/pages/home/DashboardScreen.dart';
 
 void main() {
-  runApp(const MyApp());
+  runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
-
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      debugShowCheckedModeBanner:false ,
-      title: 'Image Picker',
-      home:OcrScreen(),
+      home: SplashScreen(),
     );
   }
 }
 
+class SplashScreen extends StatefulWidget {
+  @override
+  _SplashScreenState createState() => _SplashScreenState();
+}
 
+class _SplashScreenState extends State<SplashScreen> {
+  @override
+  void initState() {
+    super.initState();
+    Timer(Duration(seconds: 5), () {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Mainlogin()),
+      );
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Color(0xFF85C1E5), // Set the background color
+      body: Center(
+        child: Image.asset('images/fynaura.png'),
+      ),
+    );
+  }
+}

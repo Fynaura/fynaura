@@ -36,16 +36,17 @@ import { AppService } from './app.service';
       process.env.MONGODB_URI || 'mongodb://localhost:27017/defaultdb',
     ),
 
-    TransactionsModule,
+ 
     BudgetsModule,
     DatabaseModule,
     UsersModule,
-
+    // Remove individual registrations of Transactions
+    TransactionsModule,
     CollabBudgetsModule,
     
   ],
-  controllers: [AppController, TransactionsController],
-  providers: [TransactionsService, AppService],
+  controllers: [AppController],
+  providers: [ AppService],
 
 })
 export class AppModule {}
