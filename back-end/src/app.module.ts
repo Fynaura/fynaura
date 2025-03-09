@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
+
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
 
@@ -17,6 +17,10 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { TransactionsController } from './transactions/transactions.controller';
 import { TransactionsService } from './transactions/transactions.service';
+import { AppService } from './app.service';
+
+
+
 
 
 
@@ -36,11 +40,12 @@ import { TransactionsService } from './transactions/transactions.service';
     BudgetsModule,
     DatabaseModule,
     UsersModule,
-    DatabaseModule,
+
     CollabBudgetsModule,
+    
   ],
   controllers: [AppController, TransactionsController],
-  providers: [AppService,TransactionsService],
+  providers: [TransactionsService, AppService],
 
 })
 export class AppModule {}

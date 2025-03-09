@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
-
 import 'package:fynaura/pages/home/DashboardScreen.dart';
 
 void main() {
@@ -44,5 +43,6 @@ class _SplashScreenState extends State<SplashScreen> {
     );
   }
 }
+
 
 
