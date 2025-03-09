@@ -233,9 +233,20 @@ class CollabMainState extends State<CollabMain> {
                                 budgetName: budget["name"] ?? "",
                                 budgetAmount: budget["amount"].toString(),
                                 budgetDate: budget["date"] ?? "",
+                                budgetId: budget["id"].toString(), // Add this parameter
                               ),
                             ),
-                          ).then((_) => _loadBudgets()); // Reload after returning from details
+                          ).then((_) => _loadBudgets());
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => BudgetDetails(
+                          //       budgetName: budget["name"] ?? "",
+                          //       budgetAmount: budget["amount"].toString(),
+                          //       budgetDate: budget["date"] ?? "",
+                          //     ),
+                          //   ),
+                          // ).then((_) => _loadBudgets()); // Reload after returning from details
                         },
                         child: Dismissible(
                           key: Key(budget["id"]?.toString() ?? UniqueKey().toString()),
