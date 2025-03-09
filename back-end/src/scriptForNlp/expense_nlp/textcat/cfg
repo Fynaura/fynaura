@@ -1,0 +1,18 @@
+{
+  "labels":[
+    "Food",
+    "Electronics",
+    "Transport",
+    "Bills",
+    "Clothes",
+    "Phone",
+    "Sport",
+    "Education",
+    "Medical",
+    "Beauty",
+    "Grocery",
+    "Vehicle"
+  ],
+  "threshold":0.0,
+  "positive_label":null
+}
