@@ -5,34 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1125cb9d-67a4-4aa9-a8c5-755e76aba5f3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/.cmake/api/v1/reply/index-2025-02-26T16-30-30-0952.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/android_gradle_build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/android_gradle_build_mini.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/metadata_generation_command.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/prefab_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/.cmake/api/v1/reply/index-2025-02-26T16-30-57-0966.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/android_gradle_build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/android_gradle_build_mini.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/metadata_generation_command.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/prefab_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/hash_key.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/hash_key.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/.cmake/api/v1/reply/index-2025-02-26T16-31-00-0382.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/android_gradle_build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/android_gradle_build_mini.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/metadata_generation_command.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/prefab_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/.cmake/api/v1/reply/index-2025-02-26T16-31-02-0811.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/android_gradle_build.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/android_gradle_build_mini.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/configure_fingerprint.bin" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/metadata_generation_command.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/prefab_config.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
