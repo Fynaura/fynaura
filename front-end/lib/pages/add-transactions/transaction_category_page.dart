@@ -116,17 +116,17 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Colors.blue.shade100,
+                  color: Color(0xFF85C1E5), // Set the box color
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(category["icon"], color: Colors.blue.shade700, size: 36),
+                    Icon(category["icon"], color: Colors.white, size: 36), // Keep the icon color white
                     SizedBox(height: 8),
                     Text(
                       category["name"],
-                      style: TextStyle(fontWeight: FontWeight.w500),
+                      style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white), // Set text color to white
                       textAlign: TextAlign.center,
                     ),
                   ],

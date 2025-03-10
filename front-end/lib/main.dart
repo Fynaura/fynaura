@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
-import 'new_profile_page.dart';  // Import the new profile page
-import 'GoalPage.dart';  // Import the Goal page
-import 'edit_profile_page.dart'; // Correct import for EditProfilePage
+
+import 'dart:async';
+import 'package:fynaura/pages/log-in/mainLogin.dart';
+import 'package:fynaura/pages/home/DashboardScreen.dart';
+
 
 void main() {
   runApp(MyApp());
@@ -140,3 +142,4 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 }
+

@@ -5,7 +5,223 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="1125cb9d-67a4-4aa9-a8c5-755e76aba5f3" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/fynaura-main.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/collab-budgets/collab-budgets.controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/collab-budgets/collab-budgets.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/collab-budgets/collab-budgets.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/collab-budgets/dto/create-budget.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/collab-budgets/dto/update-budget.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/collab-budgets/schema/budget.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_api.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/config.cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/meta.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/textcat/cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/textcat/model" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/tokenizer" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/vocab/key2row" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/vocab/lookups.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/vocab/strings.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/vocab/vectors" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/expense_nlp/vocab/vectors.cfg" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/testModel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/scriptForNlp/trainModel.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/transactions/dto/create-transaction.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/transactions/dto/update-transaction.dto.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/transactions/entity/transaction.entity.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/transactions/schemas/transaction.schema.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/upload/upload.controller.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/upload/upload.module.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/back-end/src/upload/upload.service.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/query/client-agp/cache-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/query/client-agp/cmakeFiles-v1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/query/client-agp/codemodel-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/reply/cache-v2-893cb4f79bc3967e3801.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/reply/cmakeFiles-v1-b5ad3954682131cca85e.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/reply/codemodel-v2-9aa3d95174ceba956e19.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/reply/index-2025-03-09T14-22-27-0395.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/CMakeFiles/rules.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/additional_project_files.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/android_gradle_build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/android_gradle_build_mini.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/build.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/build_file_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/cmake_install.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/metadata_generation_command.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/prefab_config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/symbol_folder_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/query/client-agp/cache-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/query/client-agp/cmakeFiles-v1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/query/client-agp/codemodel-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/reply/cache-v2-f2a83d9442ba180714c1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/reply/cmakeFiles-v1-9b1428b73c28659216ae.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/reply/codemodel-v2-76306e7a07fe0dfc35e1.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/reply/index-2025-03-09T14-22-28-0651.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/rules.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/additional_project_files.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/android_gradle_build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/android_gradle_build_mini.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/build.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/build_file_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/cmake_install.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/configure_fingerprint.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/metadata_generation_command.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/prefab_config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/symbol_folder_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/hash_key.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/query/client-agp/cache-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/query/client-agp/cmakeFiles-v1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/query/client-agp/codemodel-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/reply/cache-v2-e2f34365d0e3ef056de2.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/reply/cmakeFiles-v1-b13d80ece8f38a9b4ff0.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/reply/codemodel-v2-f80810a518d927993677.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/CMakeFiles/rules.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/additional_project_files.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/android_gradle_build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/android_gradle_build_mini.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/build.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/build_file_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/cmake_install.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/configure_fingerprint.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/metadata_generation_command.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/prefab_config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/symbol_folder_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/query/client-agp/cache-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/query/client-agp/cmakeFiles-v1" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/query/client-agp/codemodel-v2" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/reply/cache-v2-8e298513e9ee6b64c266.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/reply/cmakeFiles-v1-73d0ee5caaf9cd862ca3.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/reply/codemodel-v2-4baf27c8f87ffa3b0b78.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/reply/directory-.-Debug-d0094a50bb2071803777.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/reply/index-2025-03-09T14-22-30-0877.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeCache.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CMakeCXXCompiler.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_C.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CMakeDetermineCompilerABI_CXX.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CMakeSystem.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.c" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdC/CMakeCCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.cpp" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/3.22.1-g37088a8-dirty/CompilerIdCXX/CMakeCXXCompilerId.o" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/TargetDirectories.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/cmake.check_cache" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/CMakeFiles/rules.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/additional_project_files.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/android_gradle_build.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/android_gradle_build_mini.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/build.ninja" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/build_file_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/cmake_install.cmake" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/configure_fingerprint.bin" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/metadata_generation_command.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/prefab_config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/symbol_folder_index.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/images/user.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/Analize/TransactionModel.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/Analize/analyze_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/scanQr.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/home/TabPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/ocr/ImagePreviewScreen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/ocr/ImageSelectionOption.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/ocr/extracted_text_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/ocr/main.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/ocr/ocr_screen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/GoalPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/MyAccountPage.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/edit_profile_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/goal_editor_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/loginScreen.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/new_profile_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/profile.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/services/budget_service.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/temporary_home_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/transaction_category_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/transaction_detail_page.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/widgets/CustomPopup" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/widgets/CustomPopup.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/widgets/analyze/money_chart.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/widgets/analyze/pie_chart.dart" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/widgets/analyze/top_bar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/fynaura.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fynaura.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/.prettierrc" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/.prettierrc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/app.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/app.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/app.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/app.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/app.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/app.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/transactions/transactions.controller.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/transactions/transactions.controller.spec.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/transactions/transactions.controller.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/transactions/transactions.controller.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/transactions/transactions.module.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/transactions/transactions.module.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/transactions/transactions.service.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/transactions/transactions.service.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/tsconfig.json" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/tsconfig.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/settings.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/settings.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_category_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_category_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_detail_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_detail_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/home/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/home/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/home/main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/home/main_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/log-in/mainLogin.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/log-in/mainLogin.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/widgets/nav_bar.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/widgets/nav_bar.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/test/widget_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/test/widget_test.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,17 +247,26 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;,
-    &quot;assignee&quot;: &quot;namindu-07&quot;
+
+  &quot;lastFilter&quot;: {}
+}</component>
+  <component name="GitHubPullRequestState">{
+  &quot;prStates&quot;: [
+    {
+      &quot;id&quot;: {
+        &quot;id&quot;: &quot;PR_kwDONW4Cb86N4xyT&quot;,
+        &quot;number&quot;: 11
+      },
+      &quot;lastSeen&quot;: 1741508839007
+    }
+  ]
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Fynaura/fynaura.git&quot;,
+    &quot;accountId&quot;: &quot;c64ff8f1-c522-4f80-8a7c-a2ccc336b08a&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Fynaura/fynaura.git",
-    "accountId": "4fabbdef-5757-4d96-a8ec-0e8c7c2a5644"
-  }
-}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 7
 }</component>
@@ -52,7 +277,6 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;Flutter.main.dart (1).executor&quot;: &quot;Run&quot;,
     &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
@@ -61,18 +285,23 @@
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;com.google.services.firebase.aqiPopupShown&quot;: &quot;true&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Profile-frontend&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Merging Profile-frontend&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Flutter/bin/cache/dart-sdk/bin&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Project&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/IIT Notes/L5 - Degree/Software Development Group Project/Actice/New folder (2)/fynaura/front-end/lib/widgets/analyze&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;SDK Location&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;flutter.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
-  <component name="RunManager" selected="Flutter.main.dart (1)">
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\IIT Notes\L5 - Degree\Software Development Group Project\Actice\New folder (2)\fynaura\front-end\lib\widgets\analyze" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Flutter.main.dart">
     <configuration name="Unnamed" type="DartTestRunConfigurationType" factoryName="Dart Test" nameIsGenerated="true">
       <method v="2" />
     </configuration>

@@ -1,13 +1,15 @@
 
-
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
+import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
+import 'package:fynaura/pages/home/home.dart';
+import '../Analize/analyze_page.dart';
+import '../profile/profile.dart';
+import 'TabPage.dart';
+import 'package:fynaura/widgets/nav_bar.dart';
+import 'package:fynaura/widgets/nav_model.dart';
 
-import '../../widgets/nav_bar.dart';
-import '../../widgets/nav_model.dart';
-import '../add-transactions/transaction_category_page.dart';
+
 
 class MainScreen extends StatefulWidget {
   const MainScreen({super.key});
@@ -18,8 +20,10 @@ class MainScreen extends StatefulWidget {
 
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
-  final searchNavKey = GlobalKey<NavigatorState>();
-  final notificationNavKey = GlobalKey<NavigatorState>();
+
+  final analyticsNavKey = GlobalKey<NavigatorState>();
+  final planNavKey = GlobalKey<NavigatorState>();
+
   final profileNavKey = GlobalKey<NavigatorState>();
   int selectedTab = 0;
   List<NavModel> items = [];
@@ -28,20 +32,22 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     items = [
+
+NavModel(
+  page: DashboardScreen(),  // Use DashboardScreen as the Home tab
+  navKey: homeNavKey,
+),
       NavModel(
-        page: const TabPage(tab: 1),
-        navKey: homeNavKey,
+        page: AnalyzePage(), // Update to use title
+        navKey: analyticsNavKey,
       ),
       NavModel(
-        page: const TabPage(tab: 2),
-        navKey: searchNavKey,
+        page: CollabMain(), // Update to use title
+        navKey: planNavKey, // Update to use key  
       ),
       NavModel(
-        page: const TabPage(tab: 3),
-        navKey: notificationNavKey,
-      ),
-      NavModel(
-        page: const TabPage(tab: 4),
+        page: ProfilePage(), // Update to use title
+
         navKey: profileNavKey,
       ),
     ];
@@ -80,9 +86,11 @@ class _MainScreenState extends State<MainScreen> {
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             elevation: 0,
-            onPressed: () =>  Navigator.push(
+
+            onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransactionDetailPage()),
+
             ),
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
@@ -99,10 +107,9 @@ class _MainScreenState extends State<MainScreen> {
           pageIndex: selectedTab,
           onTap: (index) {
             if (index == selectedTab) {
-              items[index]
-                  .navKey
-                  .currentState
-                  ?.popUntil((route) => route.isFirst);
+
+              items[index].navKey.currentState?.popUntil((route) => route.isFirst);
+
             } else {
               setState(() {
                 selectedTab = index;
@@ -115,47 +122,3 @@ class _MainScreenState extends State<MainScreen> {
   }
 }
 
-class TabPage extends StatelessWidget {
-  final int tab;
-
-  const TabPage({Key? key, required this.tab}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Tab $tab')),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('Tab $tab'),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => Page(tab: tab),
-                  ),
-                );
-              },
-              child: const Text('Go to page'),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class Page extends StatelessWidget {
-  final int tab;
-
-  const Page({super.key, required this.tab});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: Text('Page Tab $tab')),
-      body: Center(child: Text('Tab $tab')),
-    );
-  }
-}
