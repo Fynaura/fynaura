@@ -2,6 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
+class Goal {
+  String name;
+  double amount;
+  DateTime startDate;
+  DateTime endDate;
+  bool isCompleted;
+
+  Goal({
+    required this.name,
+    required this.amount,
+    required this.startDate,
+    required this.endDate,
+    this.isCompleted = false,
+  });
+}
+
 class AddGoalScreen extends StatefulWidget {
   @override
   _AddGoalScreenState createState() => _AddGoalScreenState();
@@ -48,214 +64,379 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Color(0xFF254e7a),
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: Text('Add Goal', style: TextStyle(color: Colors.white)),
-      ),
-      body: Form(
-        key: _formKey,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Goal Name
-              TextFormField(
-                controller: _goalNameController,
-                decoration: InputDecoration(
-                  labelText: 'Goal Name',
-                  labelStyle: TextStyle(color: Color(0xFF254e7a)),
-                  hintText: 'Car, House, Vacation, etc.',
-                  hintStyle: TextStyle(color: Color(0xFF85c1e5)),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF254e7a)),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF85c1e5)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a goal name';
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: 20),
-
-              // Goal Amount
-              TextFormField(
-                controller: _goalAmountController,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'Goal Amount',
-                  labelStyle: TextStyle(color: Color(0xFF254e7a)),
-                  hintText: '10, 500, 1500, 2000',
-                  hintStyle: TextStyle(color: Color(0xFF85c1e5)),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF254e7a)),
-                  ),
-                  focusedBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF85c1e5)),
-                  ),
-                ),
-                validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return 'Please enter a goal amount';
-                  }
-                  if (double.tryParse(value) == null) {
-                    return 'Please enter a valid number';
-                  }
-                  return null;
-                },
-              ),
-
-              SizedBox(height: 20),
-
-              // Date Selection
-              Column(
+      backgroundColor: Color(0xFF254e7a),
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Container(color: Color(0xFF254e7a)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(24.0),
+            child: SingleChildScrollView(
+              child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    'Select Date',
-                    style: TextStyle(color: Color(0xFF254e7a)),
-                  ),
-                  SizedBox(height: 10),
+                  SizedBox(height: 60),
                   Row(
                     children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _selectDate(context, true),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: Color(0xFF254e7a),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Color(0xFF85c1e5)),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  _startDate != null
-                                      ? '${_startDate!.day}.${_startDate!.month}.${_startDate!.year}'
-                                      : 'Select Start Date',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Spacer(),
-                                Icon(Icons.calendar_today, color: Colors.white),
-                              ],
-                            ),
-                          ),
-                        ),
+                      IconButton(
+                        icon: Icon(Icons.arrow_back, color: Colors.white),
+                        onPressed: () => Navigator.pop(context),
                       ),
-                      SizedBox(width: 10),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => _selectDate(context, false),
-                          child: Container(
-                            padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                            decoration: BoxDecoration(
-                              color: Color(0xFF254e7a),
-                              borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: Color(0xFF85c1e5)),
-                            ),
-                            child: Row(
-                              children: [
-                                Text(
-                                  _endDate != null
-                                      ? '${_endDate!.day}.${_endDate!.month}.${_endDate!.year}'
-                                      : 'Select End Date',
-                                  style: TextStyle(color: Colors.white),
-                                ),
-                                Spacer(),
-                                Icon(Icons.calendar_today, color: Colors.white),
-                              ],
-                            ),
-                          ),
+                      Text(
+                        'Add New Goal',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ],
                   ),
-                ],
-              ),
-
-              SizedBox(height: 30),
-
-              // Image Upload
-              Row(
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.photo_library, color: Color(0xFF254e7a)),
-                    onPressed: () => _pickImage(ImageSource.gallery),
+                  SizedBox(height: 30),
+                  Text(
+                    'Goal Name',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                  Expanded(
-                    child: Container(
-                      height: 100,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Color(0xFF254e7a)),
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      child: _selectedImage != null
-                          ? ClipRRect(
-                        borderRadius: BorderRadius.circular(8),
-                        child: Image.file(_selectedImage!, fit: BoxFit.cover),
-                      )
-                          : Center(
-                        child: Text(
-                          'Add Image',
-                          style: TextStyle(color: Color(0xFF85c1e5)),
+                  SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF254e7a).withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextFormField(
+                      controller: _goalNameController,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(20),
+                        hintText: 'Car, House, Vacation, etc.',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF85c1e5),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Color(0xFF85c1e5),
+                          ),
                         ),
                       ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a goal name';
+                        }
+                        return null;
+                      },
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(Icons.camera_alt, color: Color(0xFF254e7a)),
-                    onPressed: () => _pickImage(ImageSource.camera),
+                  SizedBox(height: 24),
+                  Text(
+                    'Goal Amount',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Color(0xFF254e7a).withOpacity(0.7),
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TextFormField(
+                      controller: _goalAmountController,
+                      keyboardType: TextInputType.number,
+                      style: TextStyle(color: Colors.white),
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.all(20),
+                        hintText: '10, 500, 1500, 2000',
+                        hintStyle: TextStyle(
+                          color: Color(0xFF85c1e5),
+                        ),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide.none,
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                          borderSide: BorderSide(
+                            color: Color(0xFF85c1e5),
+                          ),
+                        ),
+                      ),
+                      validator: (value) {
+                        if (value == null || value.isEmpty) {
+                          return 'Please enter a goal amount';
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'Please enter a valid number';
+                        }
+                        return null;
+                      },
+                    ),
+                  ),
+                  SizedBox(height: 24),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(30),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.1),
+                          spreadRadius: 5,
+                          blurRadius: 15,
+                        )
+                      ],
+                    ),
+                    padding: EdgeInsets.all(24),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Timeline',
+                          style: TextStyle(
+                            color: Color(0xFF254e7a),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _selectDate(context, true),
+                                child: Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFF254e7a).withOpacity(0.1),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                      )
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.all(16),
+                                  margin: EdgeInsets.only(right: 16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.calendar_today,
+                                            color: Color(0xFF254e7a),
+                                            size: 20,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'Start Date',
+                                            style: TextStyle(
+                                              color: Color(0xFF85c1e5),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        _startDate != null
+                                            ? '${_startDate!.day}.${_startDate!.month}.${_startDate!.year}'
+                                            : 'Select Date',
+                                        style: TextStyle(
+                                          color: _startDate != null ? Colors.black : Color(0xFF85c1e5),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _selectDate(context, false),
+                                child: Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0xFF254e7a).withOpacity(0.1),
+                                        spreadRadius: 2,
+                                        blurRadius: 8,
+                                      )
+                                    ],
+                                  ),
+                                  padding: EdgeInsets.all(16),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          Icon(
+                                            Icons.calendar_today,
+                                            color: Color(0xFF254e7a),
+                                            size: 20,
+                                          ),
+                                          SizedBox(width: 8),
+                                          Text(
+                                            'End Date',
+                                            style: TextStyle(
+                                              color: Color(0xFF85c1e5),
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      Spacer(),
+                                      Text(
+                                        _endDate != null
+                                            ? '${_endDate!.day}.${_endDate!.month}.${_endDate!.year}'
+                                            : 'Select Date',
+                                        style: TextStyle(
+                                          color: _endDate != null ? Colors.black : Color(0xFF85c1e5),
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 24),
+                        Text(
+                          'Visual Reference',
+                          style: TextStyle(
+                            color: Color(0xFF254e7a),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(height: 16),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0xFF254e7a).withOpacity(0.1),
+                                spreadRadius: 2,
+                                blurRadius: 8,
+                              )
+                            ],
+                          ),
+                          padding: EdgeInsets.all(16),
+                          child: Row(
+                            children: [
+                              IconButton(
+                                icon: Icon(
+                                  Icons.photo_library,
+                                  color: Color(0xFF254e7a),
+                                  size: 28,
+                                ),
+                                onPressed: () => _pickImage(ImageSource.gallery),
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                              ),
+                              Expanded(
+                                child: Container(
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Color(0xFF254e7a),
+                                      width: 1,
+                                    ),
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                  child: _selectedImage != null
+                                      ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(8),
+                                    child: Image.file(_selectedImage!, fit: BoxFit.cover),
+                                  )
+                                      : Center(
+                                    child: Text(
+                                      'Add Image',
+                                      style: TextStyle(
+                                        color: Color(0xFF85c1e5),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  Icons.camera_alt,
+                                  color: Color(0xFF254e7a),
+                                  size: 28,
+                                ),
+                                onPressed: () => _pickImage(ImageSource.camera),
+                                padding: EdgeInsets.zero,
+                                constraints: BoxConstraints(),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 32),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 56,
+                          child: ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Color(0xFF254e7a),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(30),
+                              ),
+                              elevation: 4,
+                              shadowColor: Color(0xFF254e7a).withOpacity(0.3),
+                            ),
+                            onPressed: () {
+                              if (_formKey.currentState!.validate()) {
+                                // Create the Goal object
+                                Goal newGoal = Goal(
+                                  name: _goalNameController.text,
+                                  amount: double.parse(_goalAmountController.text),
+                                  startDate: _startDate ?? DateTime.now(),
+                                  endDate: _endDate ?? DateTime.now(),
+                                );
+
+                                // Pass the created goal back to the previous screen
+                                Navigator.pop(context, newGoal);
+                              }
+                            },
+                            child: Text(
+                              'Add Goal',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 24),
+                      ],
+                    ),
                   ),
                 ],
               ),
-
-              SizedBox(height: 30),
-
-              // Add Goal Button
-              SizedBox(
-                width: double.infinity,
-                height: 50,
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Color(0xFF254e7a),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  onPressed: () {
-                    if (_formKey.currentState!.validate()) {
-                      // Process the goal creation
-                      print('Goal created:');
-                      print('Name: ${_goalNameController.text}');
-                      print('Amount: ${_goalAmountController.text}');
-                      print('Start Date: $_startDate');
-                      print('End Date: $_endDate');
-                      print('Image: ${_selectedImage?.path}');
-
-                      // Add your goal saving logic here
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Text(
-                    'Add Goal',
-                    style: TextStyle(color: Colors.white, fontSize: 16),
-                  ),
-                ),
-              ),
-            ],
+            ),
           ),
-        ),
+        ],
       ),
     );
   }
