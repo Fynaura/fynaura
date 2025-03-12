@@ -7,6 +7,7 @@ class ExtractedTextScreen extends StatelessWidget {
 
   const ExtractedTextScreen({super.key, required this.totalAmount,required this.billDate}); //required this.text,
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,6 +26,7 @@ class ExtractedTextScreen extends StatelessWidget {
               RichText(
                 text: TextSpan(
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.green),
+
                   children: [
                     TextSpan(text: "Total Amount: "),
                     TextSpan(
@@ -34,6 +36,8 @@ class ExtractedTextScreen extends StatelessWidget {
                   ],
                 ),
               ),
+
+
               RichText(
                   text: TextSpan(
                     style: TextStyle(fontSize: 20,fontWeight: FontWeight.bold, color:Colors.green),
@@ -46,6 +50,7 @@ class ExtractedTextScreen extends StatelessWidget {
                     ]
                   )
               )
+
             ],
           ),
         ),
@@ -53,3 +58,4 @@ class ExtractedTextScreen extends StatelessWidget {
     );
   }
 }
+
