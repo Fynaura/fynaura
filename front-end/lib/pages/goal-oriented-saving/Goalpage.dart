@@ -61,20 +61,17 @@ class _GoalPageState extends State<GoalPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-
             if (inProgressGoals.isNotEmpty) ...[
               Text('In Progress', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
               _buildGoalList(inProgressGoals),
               SizedBox(height: 20),
             ],
-
             if (completedGoals.isNotEmpty) ...[
               Text('Completed', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               SizedBox(height: 5),
               _buildGoalList(completedGoals),
             ],
-
             if (goals.isEmpty)
               Expanded(
                 child: Center(
@@ -84,7 +81,6 @@ class _GoalPageState extends State<GoalPage> {
                   ),
                 ),
               ),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -101,6 +97,7 @@ class _GoalPageState extends State<GoalPage> {
                     MaterialPageRoute(builder: (context) => AddGoalScreen()),
                   ) as Goal?;
 
+                  // Automatically add and display the goal if one was created
                   if (newGoal != null) {
                     _addGoal(newGoal);
                   }
