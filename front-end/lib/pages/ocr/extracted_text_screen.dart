@@ -54,7 +54,24 @@ class ExtractedTextScreen extends StatelessWidget {
                 ),
               ),
 
-
+              const SizedBox(height: 8),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const OcrScreen()),// should change for navigate to home
+                    );
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    padding: const EdgeInsets.symmetric(vertical: 8),
+                  ),
+                  child: const Text("Home", style: TextStyle(color: Colors.white, fontSize: 16)),
+                ),
+              ),
 
             ],
           ),
