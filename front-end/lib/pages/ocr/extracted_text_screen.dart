@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-
+import 'ImageSelectionOption.dart';
 
 class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;
@@ -14,6 +14,37 @@ class ExtractedTextScreen extends StatelessWidget {
     required this.categorizedItems,
   });
 
+  void _saveData(BuildContext context) {
+    //save data logic here
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const CircleAvatar(
+                radius: 40,
+                backgroundColor: Colors.blue,
+                child: Icon(Icons.check, color: Colors.white, size: 40),
+              ),
+              const SizedBox(height: 16),
+              const Text(
+                "Transaction Added Successfully",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+
+
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -21,7 +52,18 @@ class ExtractedTextScreen extends StatelessWidget {
         foregroundColor: Colors.blue[300],
         backgroundColor: Colors.grey[200],
         title: const Text("Extracted Details"),
-
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 20),
+            child: TextButton(
+              onPressed: () => _saveData(context),
+              child: const Text(
+                "Save",
+                style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
