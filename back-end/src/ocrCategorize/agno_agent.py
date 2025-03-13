@@ -1,3 +1,4 @@
+import os
 from flask import Flask, request, jsonify
 import json
 import google.generativeai as genai
@@ -5,15 +6,17 @@ import google.generativeai as genai
 app = Flask(__name__)
 
 class GeminiBillExtractionTool:
-    def __init__(self, gemini_api_key):
-        genai.configure(api_key="gemini api key")
+    def __init__(self):  
+        genai.configure(api_key="Google api key")  
         self.model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
 
     def run(self, bill_text):
         prompt = f"""
-            Extract the item details from this bill text:
+            Extract the item details and categorize them from this bill text:
 
             {bill_text}
+
+            Categories: Food, Electronics, Transport, Bills, Clothes, Phone, Sport, Education, Medical, Beauty, Grocery, Vehicle
 
             Expected JSON Output:
             {{
@@ -21,7 +24,14 @@ class GeminiBillExtractionTool:
                 {{
                   "item": "MENS PANT MOOSE (36) #M100 976001755",
                   "quantity": 1,
-                  "price": 3490.00
+                  "price": 3490.00,
+                  "category": "Clothes"
+                }},
+                {{
+                    "item": "Apple Iphone 15",
+                    "quantity": 1,
+                    "price": 100000.00,
+                    "category": "Phone"
                 }}
               ]
             }}
@@ -47,10 +57,33 @@ def extract():
         return jsonify({"error": "No bill text provided"}), 400
 
     try:
-        gemini_api_key = "gemini api key"  # Replace with your actual API key
-        bill_tool = GeminiBillExtractionTool(gemini_api_key)
-        extracted_items = bill_tool.run(bill_text)
-        return jsonify({"extracted_items": extracted_items})
+        bill_tool = GeminiBillExtractionTool() 
+        extracted_data = bill_tool.run(bill_text)
+
+        if "error" in extracted_data:
+            return jsonify(extracted_data), 500
+
+        items = extracted_data.get("items", [])
+
+        allowed_categories = ["Food", "Electronics", "Transport", "Bills", "Clothes", "Phone", "Sport", "Education", "Medical", "Beauty", "Grocery", "Vehicle"]
+
+        # Validate and format extracted items
+        validated_items = []
+        for item in items:
+            category = item.get("category", "Uncategorized")
+            if category not in allowed_categories:
+                category = "Uncategorized"
+
+            validated_item = {
+                "item": item.get("item", "Item name not found"),
+                "quantity": int(item.get("quantity", 0)),
+                "price": float(item.get("price", 0.0)),
+                "category": category
+            }
+            validated_items.append(validated_item)
+
+        return jsonify({"items": validated_items})
+
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
