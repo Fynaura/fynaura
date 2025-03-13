@@ -13,9 +13,21 @@ interface DocumentAIResponse {
   };
 }
 
+interface CategorizedItem {
+  item: string;
+  quantity: number;
+  price: number;
+  category: string;
+}
+
 @Injectable()
 export class UploadService {
-  async processDocument(filePath: string): Promise<{ totalAmount: string; billDate: string; extractedText: string; extractedItems?: any }> {
+  async processDocument(filePath: string): Promise<{ 
+    totalAmount: string; 
+    billDate: string; 
+    extractedText: string; 
+    categorizedItems: CategorizedItem[] 
+  }> {
     try {
       // Authenticate with Google Document AI
       const auth = new GoogleAuth({
@@ -69,9 +81,10 @@ export class UploadService {
       console.log(`Total Amount: ${totalAmount}, Bill Date: ${billDate}`);
 
       // Send extracted text to Flask-based Gemini API
-      const extractedItems = await this.sendToGeminiAPI(extractedText);
+      const geminiResponse = await this.sendToGeminiAPI(extractedText);
+      const categorizedItems = geminiResponse?.items || [];
 
-      return { totalAmount, billDate, extractedText, extractedItems };
+      return { totalAmount, billDate, extractedText, categorizedItems };
     } catch (error) {
       console.error('Error processing document:', error);
       throw new Error('Document processing failed');
@@ -87,10 +100,10 @@ export class UploadService {
       });
 
       console.log("Gemini API Response:", response.data);
-      return response.data.extracted_items;
+      return response.data;
     } catch (error) {
       console.error('Gemini API error:', error.response ? error.response.data : error.message);
-      return { error: 'Item extraction failed' };
+      return { items: [] };
     }
   }
 }
