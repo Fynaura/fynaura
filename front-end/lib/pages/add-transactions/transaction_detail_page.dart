@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
@@ -5,6 +6,7 @@ import 'transaction_category_page.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
@@ -21,6 +23,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   TextEditingController descriptionController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   bool reminder = false;
+
   final ImagePicker _picker = ImagePicker();
 
   @override
@@ -168,17 +171,20 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   void pickImage(ImageSource source) async {
     final pickedImage = await _picker.pickImage(source: source);
     // Process the picked image here (e.g., upload or store it)
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
         actions: [
           IconButton(
             icon: Icon(Icons.check, color: Colors.blue),
             onPressed: addTransaction,
+
           ),
         ],
       ),
@@ -193,6 +199,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
                 buildToggleButton("Expense", isExpense),
               ],
             ),
+
             SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
@@ -224,6 +231,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   }
 
   // Toggle button for Income/Expense.
+
   Widget buildToggleButton(String text, bool selected) {
     return ElevatedButton(
       onPressed: () {
@@ -234,7 +242,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       },
       child: Text(text),
       style: ElevatedButton.styleFrom(
-        backgroundColor: selected ? Color(0xFF85C1E5) : Colors.grey,
+        backgroundColor: selected ? const Color(0xFF85C1E5) : Colors.grey,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -248,9 +256,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     return TextField(
       controller: amountController,
       keyboardType: TextInputType.number,
-      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         prefixText: "LKR ",
         hintText: "00",
         hintStyle: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.grey),
@@ -265,7 +273,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   // Input field for description.
   Widget buildModernDescriptionField() {
     return Container(
+
       margin: EdgeInsets.symmetric(vertical: 5),
+
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
@@ -278,7 +288,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
           border: InputBorder.none,
           prefixIcon: Icon(Icons.edit, color: Colors.grey.shade700),
         ),
+
         style: TextStyle(fontSize: 18),
+
       ),
     );
   }
@@ -286,14 +298,18 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   // Option tile for Category selection or setting a reminder.
   Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
     return Container(
+
       margin: EdgeInsets.symmetric(vertical: 5),
+
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
         leading: Icon(icon, color: Colors.grey.shade700),
+
         title: Text(hint, style: TextStyle(color: Colors.black54)),
+
         onTap: () async {
           if (isCategory) {
             final result = await Navigator.push(
@@ -301,6 +317,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
             );
             if (result != null) {
+
               setState(() => selectedCategory = result as String);
             }
           } else if (title == "Set Reminder") {
@@ -374,3 +391,4 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
   }
 }
+

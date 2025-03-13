@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class TransactionCategoryPage extends StatefulWidget {
   final bool isExpense;
   TransactionCategoryPage({required this.isExpense});
@@ -35,6 +36,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
   List<String> customCategories = [];
 
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +51,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
   void _addCustomCategory() async {
     TextEditingController controller = TextEditingController();
     await showDialog(
+
       context: context,
       builder: (context) => AlertDialog(
         title: Text("Add Custom Category", style: TextStyle(color: Color(0xFF9DB2CE))),
@@ -62,6 +65,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
             child: Text("Cancel"),
           ),
           TextButton(
+
             onPressed: () async {
               controller.text = controller.text.trim();
               if (controller.text.isEmpty) {
@@ -85,6 +89,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text("Added ${controller.text}")),
               );
+
               Navigator.pop(context);
             },
             child: Text("Add"),
@@ -148,12 +153,15 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
+
                   color: Color(0xFF85C1E5),
+
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+
                     Icon(category["icon"], color: Colors.white, size: 36),
                     SizedBox(height: 8),
                     Text(
@@ -162,6 +170,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
                         fontWeight: FontWeight.w500,
                         color: Colors.white,
                       ),
+
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
