@@ -6,13 +6,53 @@
   <component name="ChangeListManager">
     <list default="true" id="b7eab187-d5ec-4a9a-9d93-5f61bd681ef6" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/.cmake/api/v1/reply/index-2025-03-06T07-57-23-0295.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/android_gradle_build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/android_gradle_build_mini.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/metadata_generation_command.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/arm64-v8a/prefab_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/.cmake/api/v1/reply/index-2025-03-06T07-58-25-0272.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/android_gradle_build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/android_gradle_build_mini.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/metadata_generation_command.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/prefab_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/hash_key.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/hash_key.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/.cmake/api/v1/reply/index-2025-03-06T07-58-28-0434.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/android_gradle_build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/android_gradle_build_mini.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/metadata_generation_command.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86/prefab_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/.cmake/api/v1/reply/index-2025-03-06T07-58-29-0906.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/android_gradle_build.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/android_gradle_build.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/android_gradle_build_mini.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/android_gradle_build_mini.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/metadata_generation_command.txt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/metadata_generation_command.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/prefab_config.json" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/01o4x4a7/x86_64/prefab_config.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_category_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_category_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_detail_page.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/add-transactions/transaction_detail_page.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/home/DashboardScreen.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/home/home.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/home/home.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/home/main_screen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/home/main_screen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/temporary_home_page.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/transaction_category_page.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/transaction_detail_page.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/widgets/CustomPopup" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/widgets/docker.dart" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/widgets/navigation.dart" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" afterDir="false" />
@@ -35,6 +75,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "shone26"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Fynaura/fynaura.git",
+    "accountId": "c64ff8f1-c522-4f80-8a7c-a2ccc336b08a"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3
 }</component>
@@ -43,23 +95,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/user/Desktop/2nd year/github/fynaura/front-end&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;AndroidSdkUpdater&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Flutter.main.dart.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "Aathif's-branch",
+    "io.flutter.reload.alreadyRun": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Program Files/flutter/bin/cache/dart-sdk",
+    "settings.editor.selected.configurable": "dart.settings",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter">
       <option name="filePath" value="$PROJECT_DIR$/lib/main.dart" />
