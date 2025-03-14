@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/forgot-password/forgotPwSecond.dart';
-import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
-import 'package:fynaura/pages/log-in/mainLogin.dart';
-import 'package:fynaura/widgets/customInput.dart';// Import the renamed custom button
+// Import the renamed custom button
 
 class Scanqr extends StatefulWidget {
   const Scanqr({super.key});

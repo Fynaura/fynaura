@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
-import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
 import 'package:fynaura/widgets/customInput.dart';
 
 class Mainsignup extends StatefulWidget {

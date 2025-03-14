@@ -6,7 +6,6 @@ import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
 import '../Analize/analyze_page.dart';
 import '../profile/profile.dart';
-import 'TabPage.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
 

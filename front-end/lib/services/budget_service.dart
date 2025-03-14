@@ -4,7 +4,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class BudgetService {
-  final String baseUrl = "http://localhost:3000/collab-budgets"; // API base URL
+  final String baseUrl = "http://192.168.127.53:3000/collab-budgets"; // API base URL
 
   // Fetch all budgets
   // Future<List<Map<String, dynamic>>> getBudgets() async {

@@ -1,19 +1,20 @@
-
 import 'package:flutter/material.dart';
+import 'dart:io';  // Add this import to access the File class
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'transaction_category_page.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
-
+import 'package:fynaura/services/transaction_service.dart'; // Import the TransactionService
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
+    FlutterLocalNotificationsPlugin();
 
 class TransactionDetailsPage extends StatefulWidget {
   @override
-  _TransactionDetailsPageState createState() => _TransactionDetailsPageState();
+  _TransactionDetailsPageState createState() =>
+      _TransactionDetailsPageState();
 }
 
 class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
@@ -45,10 +46,10 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     tz.setLocalLocation(tz.getLocation('Asia/Colombo')); // Adjust to your locale
 
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -62,7 +63,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   Future<void> _scheduleReminder() async {
     bool? granted = await flutterLocalNotificationsPlugin
         .resolvePlatformSpecificImplementation<
-        AndroidFlutterLocalNotificationsPlugin>()
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
     if (granted == false) {
@@ -74,7 +75,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
 
     tz.TZDateTime scheduledDate = tz.TZDateTime.from(selectedDate, tz.local);
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'reminder_channel',
       'Reminders',
       importance: Importance.high,
@@ -82,7 +83,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
 
     const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
@@ -92,11 +93,10 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       platformChannelSpecifics,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.dateAndTime,
     );
   }
-
 
   // When a user taps the reminder notification, show a confirmation dialog.
   void _onReminderTapped() {
@@ -131,7 +131,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   }
 
   // Add a transaction or schedule a reminder.
-  void addTransaction() {
+  void addTransaction() async {
     if (amountController.text.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text("Please enter an amount"),
@@ -145,17 +145,37 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       return;
     }
 
-    if (reminder) {
-      _scheduleReminder();
+    final transactionService = TransactionService();
+    final type = isExpense ? "expense" : "income"; // Determine the type
+
+    try {
+      // Create the transaction through the service
+      await transactionService.createTransaction(
+        type: type,
+        category: selectedCategory,
+        amount: double.parse(amountController.text),
+        description: descriptionController.text,
+        date: selectedDate,
+      );
+
+      // If reminder is set, schedule it
+      if (reminder) {
+        await _scheduleReminder();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Reminder Set Successfully'),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Transaction Added Successfully'),
+        ));
+      }
+
+      resetFields();
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Reminder Set Successfully'),
-      ));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Transaction Added Successfully'),
+        content: Text('Error: $e'),
       ));
     }
-    resetFields();
   }
 
   // Clear all input fields.
@@ -171,20 +191,17 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   void pickImage(ImageSource source) async {
     final pickedImage = await _picker.pickImage(source: source);
     // Process the picked image here (e.g., upload or store it)
-
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
         actions: [
           IconButton(
             icon: Icon(Icons.check, color: Colors.blue),
             onPressed: addTransaction,
-
           ),
         ],
       ),
@@ -199,7 +216,6 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
                 buildToggleButton("Expense", isExpense),
               ],
             ),
-
             SizedBox(height: 10),
             Container(
               decoration: BoxDecoration(
@@ -231,7 +247,6 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   }
 
   // Toggle button for Income/Expense.
-
   Widget buildToggleButton(String text, bool selected) {
     return ElevatedButton(
       onPressed: () {
@@ -273,9 +288,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   // Input field for description.
   Widget buildModernDescriptionField() {
     return Container(
-
       margin: EdgeInsets.symmetric(vertical: 5),
-
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
@@ -288,9 +301,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
           border: InputBorder.none,
           prefixIcon: Icon(Icons.edit, color: Colors.grey.shade700),
         ),
-
         style: TextStyle(fontSize: 18),
-
       ),
     );
   }
@@ -298,18 +309,14 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   // Option tile for Category selection or setting a reminder.
   Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
     return Container(
-
       margin: EdgeInsets.symmetric(vertical: 5),
-
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
         borderRadius: BorderRadius.circular(10),
       ),
       child: ListTile(
         leading: Icon(icon, color: Colors.grey.shade700),
-
         title: Text(hint, style: TextStyle(color: Colors.black54)),
-
         onTap: () async {
           if (isCategory) {
             final result = await Navigator.push(
@@ -317,7 +324,6 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
             );
             if (result != null) {
-
               setState(() => selectedCategory = result as String);
             }
           } else if (title == "Set Reminder") {
@@ -328,14 +334,12 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               firstDate: DateTime.now(),
               lastDate: DateTime(2100),
             );
-
             if (pickedDate != null) {
               // Select Time
               final TimeOfDay? pickedTime = await showTimePicker(
                 context: context,
                 initialTime: TimeOfDay.fromDateTime(selectedDate),
               );
-
               if (pickedTime != null) {
                 setState(() {
                   selectedDate = DateTime(
@@ -358,7 +362,6 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       ),
     );
   }
-
 
   // Buttons for picking an image from camera or gallery.
   Widget buildCameraGalleryButtons() {
@@ -391,4 +394,3 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
   }
 }
-

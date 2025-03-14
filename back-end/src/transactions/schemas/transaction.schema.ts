@@ -23,14 +23,17 @@ import {
     @Prop({ required: true })
     category: string;
   
-    @Prop()
-    note?: string;
+    @Prop({required: false})
+    description?: string;
   
     @Prop({ required: true })
     date: Date;
   
     @Prop({ default: false })
     reminder: boolean;
+
+    @Prop()
+    reminderDate?: Date;
   }
   
   export const TransactionSchema = SchemaFactory.createForClass(Transaction);

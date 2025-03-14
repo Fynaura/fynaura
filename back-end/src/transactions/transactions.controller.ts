@@ -12,6 +12,7 @@ export class TransactionsController {
 
   @Post()
   create(@Body() createTransactionDto: CreateTransactionDto) {
+    console.log("✅ New transaction received:", createTransactionDto);
     return this.transactionService.create(createTransactionDto);
   }
 

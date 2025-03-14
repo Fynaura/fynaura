@@ -1,8 +1,6 @@
 import 'package:fynaura/widgets/analyze/money_chart.dart';
 import 'package:fynaura/widgets/analyze/pie_chart.dart';
-import 'package:fynaura/widgets/analyze/top_bar.dart';
 
-import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class AnalyzePage extends StatefulWidget {

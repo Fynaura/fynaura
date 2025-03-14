@@ -2,7 +2,6 @@
 
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/collab-budgeting/scanQr.dart';
-import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 
 class BudgetDetails extends StatefulWidget {
