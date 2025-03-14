@@ -1,21 +1,35 @@
 import 'package:flutter/material.dart';
 import 'AddGoalScreen.dart';
+import 'GoalDetailScreen.dart';
 
 class Goal {
   String name;
-  double amount;
+  double targetAmount;
+  double savedAmount;
   DateTime startDate;
   DateTime endDate;
   bool isCompleted;
+  List<Transaction> history; // ✅ Add this
 
   Goal({
     required this.name,
-    required this.amount,
+    required this.targetAmount,
+    this.savedAmount = 0,
     required this.startDate,
     required this.endDate,
     this.isCompleted = false,
-  });
+    List<Transaction>? history,
+  }) : history = history ?? [];
 }
+
+class Transaction {
+  final double amount;
+  final DateTime date;
+  final bool isAdded;
+
+  Transaction({required this.amount, required this.date, required this.isAdded});
+}
+
 
 class GoalPage extends StatefulWidget {
   final List<Goal> goals;
@@ -43,16 +57,13 @@ class _GoalPageState extends State<GoalPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Goal> inProgressGoals = goals.where((goal) => !goal.isCompleted).toList();
-    List<Goal> completedGoals = goals.where((goal) => goal.isCompleted).toList();
-
     return Scaffold(
       appBar: AppBar(
         title: Text('Goals'),
         backgroundColor: Color(0xFF254e7a),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -61,26 +72,40 @@ class _GoalPageState extends State<GoalPage> {
               style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             ),
             SizedBox(height: 10),
-            if (inProgressGoals.isNotEmpty) ...[
-              Text('In Progress', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              _buildGoalList(inProgressGoals),
-              SizedBox(height: 20),
-            ],
-            if (completedGoals.isNotEmpty) ...[
-              Text('Completed', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              SizedBox(height: 5),
-              _buildGoalList(completedGoals),
-            ],
-            if (goals.isEmpty)
-              Expanded(
-                child: Center(
-                  child: Text(
-                    'No goals added yet!',
-                    style: TextStyle(fontSize: 16, color: Colors.grey),
-                  ),
-                ),
+
+            Expanded(
+              child: ListView.builder(
+                itemCount: goals.length,
+                itemBuilder: (context, index) {
+                  final goal = goals[index];
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    child: ListTile(
+                      title: Text(goal.name, style: TextStyle(fontWeight: FontWeight.bold)),
+                      subtitle: Text('Saved: \$${goal.savedAmount.toStringAsFixed(2)} / Target: \$${goal.targetAmount.toStringAsFixed(2)}'),
+                      trailing: goal.isCompleted
+                          ? Icon(Icons.check_circle, color: Colors.green)
+                          : Icon(Icons.arrow_forward, color: Colors.blue),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GoalDetailScreen(goal: goal),
+                          ),
+                        ).then((updatedGoal) {
+                          if (updatedGoal != null) {
+                            setState(() {
+                              goals[index] = updatedGoal;
+                            });
+                          }
+                        });
+                      },
+                    ),
+                  );
+                },
               ),
+            ),
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -97,7 +122,6 @@ class _GoalPageState extends State<GoalPage> {
                     MaterialPageRoute(builder: (context) => AddGoalScreen()),
                   ) as Goal?;
 
-                  // Automatically add and display the goal if one was created
                   if (newGoal != null) {
                     _addGoal(newGoal);
                   }
@@ -111,30 +135,6 @@ class _GoalPageState extends State<GoalPage> {
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildGoalList(List<Goal> goalList) {
-    return Column(
-      children: goalList.map((goal) {
-        return Card(
-          margin: EdgeInsets.symmetric(vertical: 8),
-          child: ListTile(
-            title: Text(goal.name, style: TextStyle(fontWeight: FontWeight.bold)),
-            subtitle: Text('Target: \$${goal.amount.toStringAsFixed(2)}'),
-            trailing: goal.isCompleted
-                ? Icon(Icons.check_circle, color: Colors.green)
-                : IconButton(
-              icon: Icon(Icons.check, color: Colors.blue),
-              onPressed: () {
-                setState(() {
-                  goal.isCompleted = true;
-                });
-              },
-            ),
-          ),
-        );
-      }).toList(),
     );
   }
 }
