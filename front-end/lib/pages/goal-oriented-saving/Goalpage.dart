@@ -9,7 +9,8 @@ class Goal {
   DateTime startDate;
   DateTime endDate;
   bool isCompleted;
-  List<Transaction> history; // ✅ Add this
+  String? image;  // Add this line to store the image URL or path
+  List<Transaction> history;
 
   Goal({
     required this.name,
@@ -18,6 +19,7 @@ class Goal {
     required this.startDate,
     required this.endDate,
     this.isCompleted = false,
+    this.image,
     List<Transaction>? history,
   }) : history = history ?? [];
 }
@@ -46,7 +48,7 @@ class _GoalPageState extends State<GoalPage> {
   @override
   void initState() {
     super.initState();
-    goals = widget.goals;
+    goals = widget.goals;  // Assuming widget.goals is passed correctly
   }
 
   void _addGoal(Goal goal) {
@@ -73,16 +75,38 @@ class _GoalPageState extends State<GoalPage> {
             ),
             SizedBox(height: 10),
 
+            // Goal List
             Expanded(
               child: ListView.builder(
                 itemCount: goals.length,
                 itemBuilder: (context, index) {
                   final goal = goals[index];
+                  double progress = (goal.savedAmount / goal.targetAmount).clamp(0.0, 1.0);
+
                   return Card(
                     margin: EdgeInsets.symmetric(vertical: 8),
                     child: ListTile(
+                      contentPadding: EdgeInsets.all(10),
+                      leading: goal.image != null // Display image if available
+                          ? CircleAvatar(
+                        backgroundImage: NetworkImage(goal.image!), // Use image URL here
+                        radius: 30,
+                      )
+                          : Icon(Icons.image, size: 40), // Placeholder image
                       title: Text(goal.name, style: TextStyle(fontWeight: FontWeight.bold)),
-                      subtitle: Text('Saved: \$${goal.savedAmount.toStringAsFixed(2)} / Target: \$${goal.targetAmount.toStringAsFixed(2)}'),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Target: \$${goal.targetAmount.toStringAsFixed(2)}'),
+                          Text('Saved: \$${goal.savedAmount.toStringAsFixed(2)}'),
+                          LinearProgressIndicator(value: progress, minHeight: 10),
+                          SizedBox(height: 5),
+                          Text(
+                            'Progress: ${(progress * 100).toStringAsFixed(1)}%',
+                            style: TextStyle(fontSize: 12),
+                          ),
+                        ],
+                      ),
                       trailing: goal.isCompleted
                           ? Icon(Icons.check_circle, color: Colors.green)
                           : Icon(Icons.arrow_forward, color: Colors.blue),
@@ -123,7 +147,9 @@ class _GoalPageState extends State<GoalPage> {
                   ) as Goal?;
 
                   if (newGoal != null) {
-                    _addGoal(newGoal);
+                    setState(() {
+                      goals.add(newGoal);
+                    });
                   }
                 },
                 child: Text(
@@ -138,3 +164,4 @@ class _GoalPageState extends State<GoalPage> {
     );
   }
 }
+

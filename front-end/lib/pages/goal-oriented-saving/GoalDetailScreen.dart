@@ -19,15 +19,52 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
     goal = widget.goal;
   }
 
-  void _updateAmount(double amount, bool isAdded) {
-    setState(() {
-      if (isAdded) {
-        goal.savedAmount += amount;
-      } else {
-        goal.savedAmount = (goal.savedAmount - amount).clamp(0, goal.targetAmount);
-      }
-      goal.history.add(Transaction(amount: amount, date: DateTime.now(), isAdded: isAdded));
-    });
+  // Method to prompt user for the amount to add
+  Future<void> _addAmount() async {
+    TextEditingController _amountController = TextEditingController();
+
+    // Show an alert dialog for the user to input the amount
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Add Amount"),
+          content: TextField(
+            controller: _amountController,
+            keyboardType: TextInputType.number,
+            decoration: InputDecoration(
+              labelText: 'Amount',
+              hintText: 'Enter the amount to add',
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context); // Close the dialog without adding anything
+              },
+              child: Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                // Get the value from the input
+                double amountToAdd = double.tryParse(_amountController.text) ?? 0.0;
+
+                if (amountToAdd > 0) {
+                  // Update the savedAmount with the entered value
+                  setState(() {
+                    goal.savedAmount += amountToAdd;
+                    // Add a transaction to history
+                    goal.history.add(Transaction(amount: amountToAdd, date: DateTime.now(), isAdded: true));
+                  });
+                }
+                Navigator.pop(context); // Close the dialog
+              },
+              child: Text('Add'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -82,12 +119,17 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
               children: [
                 IconButton(
                   icon: Icon(Icons.add, color: Colors.green, size: 30),
-                  onPressed: () => _updateAmount(100, true),
+                  onPressed: () {
+                    // Show dialog to input amount when "+" is clicked
+                    _addAmount();
+                  },
                 ),
                 SizedBox(width: 20),
                 IconButton(
                   icon: Icon(Icons.remove, color: Colors.red, size: 30),
-                  onPressed: () => _updateAmount(100, false),
+                  onPressed: () {
+                    // You can implement subtract functionality here (optional)
+                  },
                 ),
               ],
             ),

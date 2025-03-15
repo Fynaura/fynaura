@@ -1,23 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/foundation.dart'; // added for kIsWeb
+import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
+import 'GoalPage.dart';
 
-class Goal {
-  String name;
-  double amount;
-  DateTime startDate;
-  DateTime endDate;
-  bool isCompleted;
-
-  Goal({
-    required this.name,
-    required this.amount,
-    required this.startDate,
-    required this.endDate,
-    this.isCompleted = false,
-  });
-}
 
 class AddGoalScreen extends StatefulWidget {
   @override
@@ -420,10 +406,12 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                                   // Create the Goal object
                                   Goal newGoal = Goal(
                                     name: _goalNameController.text,
-                                    amount: double.parse(_goalAmountController.text),
+                                    targetAmount: double.parse(_goalAmountController.text),
                                     startDate: _startDate!,
                                     endDate: _endDate!,
+                                    image: _selectedImage?.path,
                                   );
+
 
                                   // Pass the created goal back to the previous screen
                                   Navigator.pop(context, newGoal);
