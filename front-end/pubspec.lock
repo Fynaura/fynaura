@@ -90,7 +90,7 @@ packages:
     source: hosted
     version: "3.0.6"
   cupertino_icons:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: cupertino_icons
       sha256: ba631d1c7f7bef6b729a622b7b752645a2d076dba9976925b8f25725a30e1ee6
@@ -162,7 +162,7 @@ packages:
     source: hosted
     version: "0.9.3+4"
   fl_chart:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: fl_chart
       sha256: "5276944c6ffc975ae796569a826c38a62d2abcf264e26b88fa6f482e107f4237"
@@ -170,7 +170,7 @@ packages:
     source: hosted
     version: "0.70.2"
   flutter:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description: flutter
     source: sdk
     version: "0.0.0"
@@ -191,7 +191,7 @@ packages:
     source: hosted
     version: "2.0.27"
   flutter_screenutil:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: flutter_screenutil
       sha256: "8239210dd68bee6b0577aa4a090890342d04a136ce1c81f98ee513fc0ce891de"
@@ -209,7 +209,7 @@ packages:
     source: sdk
     version: "0.0.0"
   http:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: http
       sha256: "5895291c13fa8a3bd82e76d5627f69e0d85ca6a30dcac95c4ea19a5d555879c2"
@@ -217,7 +217,7 @@ packages:
     source: hosted
     version: "0.13.6"
   http_parser:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: http_parser
       sha256: "178d74305e7866013777bab2c3d8726205dc5a4dd935297175b19a23a2e66571"
@@ -233,7 +233,7 @@ packages:
     source: hosted
     version: "4.5.2"
   image_picker:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: image_picker
       sha256: "021834d9c0c3de46bf0fe40341fa07168407f694d9b2bb18d532dc1261867f7a"
@@ -297,7 +297,7 @@ packages:
     source: hosted
     version: "0.2.1+1"
   intl:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: intl
       sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
@@ -361,7 +361,7 @@ packages:
     source: hosted
     version: "1.16.0"
   mime:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: mime
       sha256: "41a20518f0cb1256669420fdba0cd90d21561e560ac240f26ef8322e45bb7ed6"
@@ -433,7 +433,7 @@ packages:
     source: hosted
     version: "6.0.1"
   shared_preferences:
-    dependency: "direct main"
+    dependency: "direct main.dart"
     description:
       name: shared_preferences
       sha256: "846849e3e9b68f3ef4b60c60cf4b3e02e9321bc7f4d8c4692cf87ffa82fc8a3a"

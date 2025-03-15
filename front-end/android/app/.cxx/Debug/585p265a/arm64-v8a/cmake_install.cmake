@@ -1,4 +1,4 @@
-# Install script for directory: C:/src/flutter/packages/flutter_tools/gradle/src/main/groovy
+# Install script for directory: C:/src/flutter/packages/flutter_tools/gradle/src/main.dart/groovy
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
