@@ -5,9 +5,10 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { ConfigModule } from '@nestjs/config';
 // import { ClerkClientProvider } from './providers/clerk-client.provider';
+import { UserModule } from './user/user.module';
 
 
-import { UsersModule } from './users/users.module';
+
 import { DatabaseModule } from './database/database.module';
 
 import { BudgetsModule } from './budgets/budgets.module';
@@ -18,9 +19,9 @@ import { CollabBudgetsModule } from './collab-budgets/collab-budgets.module';
 
 import { MongooseModule } from '@nestjs/mongoose';
 
-import { TransactionsController } from './transactions/transactions.controller';
-import { TransactionsService } from './transactions/transactions.service';
+
 import { AppService } from './app.service';
+import { AuthGuard } from './guard/auth.guard';
 
 
 
@@ -44,14 +45,15 @@ import { AppService } from './app.service';
  
     BudgetsModule,
     DatabaseModule,
-    UsersModule,
+
     // Remove individual registrations of Transactions
     TransactionsModule,
     CollabBudgetsModule,
+    UserModule,
     
   ],
   controllers: [AppController],
-  providers: [ AppService],
+  providers: [AppService, AuthGuard],
 
 
 })

@@ -3,6 +3,8 @@ import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Mainsignup extends StatefulWidget {
   const Mainsignup({super.key});
@@ -12,11 +14,66 @@ class Mainsignup extends StatefulWidget {
 }
 
 class _MainSignupState extends State<Mainsignup> {
+  // Controllers for the input fields
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+
+  final String apiUrl = 'http://192.168.127.53:3000/user/register'; // Replace with your backend URL
+
+  // Register user method
+  Future<void> registerUser() async {
+    // Ensure passwords match before proceeding
+    if (passwordController.text != confirmPasswordController.text) {
+      print("Passwords do not match!");
+      return;
+    }
+
+    // Prepare the data to send to the backend
+    final Map<String, dynamic> data = {
+      'firstName': firstNameController.text,
+      'lastName': lastNameController.text,
+      'email': emailController.text,
+
+      'password': passwordController.text,
+      'confirmPassword': confirmPasswordController.text,
+    };
+
+    // Send a POST request to the backend
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(data),
+    );
+
+    // Handle the response from the backend
+    if (response.statusCode == 200) {
+      // If the registration was successful
+      print("Registration successful!");
+      // Navigate to login page or home page
+      Navigator.push(
+        context,
+        MaterialPageRoute(builder: (context) => const Mainlogin()),
+      );
+    } else {
+      // If there was an error
+      print("Failed to register. Error: ${response.body}");
+      // Show an error message or handle accordingly
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: ${response.body}'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CustomBackButton(), // Custom back button
+        toolbarHeight: 10,
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -24,7 +81,6 @@ class _MainSignupState extends State<Mainsignup> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-
               const Text(
                 "Register!",
                 style: TextStyle(
@@ -33,18 +89,6 @@ class _MainSignupState extends State<Mainsignup> {
                   fontSize: 30,
                 ),
               ),
-
-
-              // Subtext
-              // const Text(
-              //   "Enter your email and password to login",
-              //   style: TextStyle(
-              //     fontFamily: 'Urbanist',
-              //     fontWeight: FontWeight.w600,
-              //     fontSize: 14,
-              //     color: const Color(0xFF6A707C),
-              //   ),
-              // ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
@@ -57,10 +101,12 @@ class _MainSignupState extends State<Mainsignup> {
                     ),
                   ),
                   TextButton(
-                    onPressed: () {   Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Mainlogin()),
-                    );},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const Mainlogin()),
+                      );
+                    },
                     child: const Text(
                       "Login with",
                       style: TextStyle(
@@ -74,46 +120,40 @@ class _MainSignupState extends State<Mainsignup> {
               ),
               const SizedBox(height: 32),
               CustomInputField(
-                hintText: "Username",
-                controller: TextEditingController(),
+                hintText: "First Name",
+                controller: firstNameController,
               ),
               const SizedBox(height: 20),
-              // Email Input
+              CustomInputField(
+                hintText: "Last Name",
+                controller: lastNameController,
+              ),
+              const SizedBox(height: 20),
               CustomInputField(
                 hintText: "Email",
-                controller: TextEditingController(),
+                controller: emailController,
               ),
-              const SizedBox(height: 20),
 
-              // Forgot Password
+              const SizedBox(height: 20),
               CustomInputField(
                 hintText: "Password",
-                controller: TextEditingController(),
-                obscureText: true, // This will obscure the text for password input
+                controller: passwordController,
+                obscureText: true,
               ),
               const SizedBox(height: 20),
               CustomInputField(
-                hintText: "Confirm your Password",
-                controller: TextEditingController(),
-                obscureText: true, // This will obscure the text for password input
+                hintText: "Confirm Password",
+                controller: confirmPasswordController,
+                obscureText: true,
               ),
-              // Forgot Password
-         
               const SizedBox(height: 20),
-
-
               CustomButton(
                 text: "Register",
                 backgroundColor: const Color(0xFF1E232C),
                 textColor: Colors.white,
-                onPressed: () {
-                  print("Login pressed,open home");
-                },
+                onPressed: registerUser, // Register user when the button is pressed
               ),
-              const SizedBox(height: 180),
-
-
-              // OR Divider
+              const SizedBox(height: 10),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -129,79 +169,11 @@ class _MainSignupState extends State<Mainsignup> {
                       ),
                     ),
                   ),
-                  //creates a horizontal line
                   Expanded(child: Divider(color: const Color(0xFFE8ECF4))),
                 ],
               ),
               const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Google Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle, // Makes it round
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2), // Stroke
-                    ),
-                    padding: EdgeInsets.all(10), // Space inside the border
-                    child: Image.asset(
-                      "images/google.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15), // Spacing between icons
-
-                  // Facebook Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/fb.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-
-                  // Apple Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/apple.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-
-                  // Phone Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/cellphone.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                ],
-              ),
-
-
-
-
+              // Social media login buttons (Google, Facebook, etc.)
             ],
           ),
         ),
