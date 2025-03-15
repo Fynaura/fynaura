@@ -19,10 +19,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
 
   // Function to upload image and get extracted text
   Future<void> uploadImage(File imageFile) async {
-
-    var uri = Uri.parse("http://10.0.2.2:3000/upload");
-
-    //final String apiUrl = "http://192.168.8.172:3000/upload"; , "http://10.0.2.2:3000/upload" ,"http://10.31.9.147:3000/upload"
+    var uri = Uri.parse("http://192.168.8.172:3000/upload");
 
     var request = http.MultipartRequest("POST", uri);
 
@@ -37,22 +34,32 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
     if (response.statusCode == 200) {
       print("Image uploaded successfully!");
       final responseData = await response.stream.bytesToString();
+      print("Response Data: $responseData"); // Debugging Line
       final extractedData = json.decode(responseData);
 
+      String totalAmount = extractedData['totalAmount'].toString();
+      String billDate = extractedData['billDate'].toString();
 
-      //String extractedText = extractedData['extractedText'].toString();// Get extracted text
-      String totalAmount = extractedData['totalAmount'].toString(); // Get total amount
-      String billDate=extractedData['billDate'].toString();//Get bill date
+      // Extracting category (First item in categorizedItems list)
+      String category = "Unknown"; // Default value
+      if (extractedData.containsKey('categorizedItems') &&
+          extractedData['categorizedItems'] is List &&
+          extractedData['categorizedItems'].isNotEmpty) {
+        category = extractedData['categorizedItems'][0]['predicted_category'] ?? "Unknown";
+      }
 
+      print("Total Amount: $totalAmount, Bill Date: $billDate, Category: $category"); // Debugging Line
 
-      // Navigate to ExtractedTextScreen with the extracted text
+      // Navigate to ExtractedTextScreen with extracted details
       Navigator.push(
-          context,
-          MaterialPageRoute(
-
-            builder: (context)=>ExtractedTextScreen(totalAmount:totalAmount,billDate:billDate), //text: extractedText,
-
+        context,
+        MaterialPageRoute(
+          builder: (context) => ExtractedTextScreen(
+            totalAmount: totalAmount,
+            billDate: billDate,
+            categorizedItems: List<Map<String, dynamic>>.from(extractedData['categorizedItems']),
           ),
+        ),
       );
     } else {
       print("Failed to upload image. Status Code: ${response.statusCode}");
@@ -61,6 +68,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       );
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +117,5 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       ),
     );
   }
-
 }
 

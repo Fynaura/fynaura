@@ -13,5 +13,3 @@ import { MulterModule } from '@nestjs/platform-express';
   providers: [UploadService],
 })
 export class UploadModule {}
-
-
