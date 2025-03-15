@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
-
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
-
 import '../home/main_screen.dart';
 
 class Mainlogin extends StatefulWidget {
@@ -16,11 +16,60 @@ class Mainlogin extends StatefulWidget {
 }
 
 class _MainloginState extends State<Mainlogin> {
+  // Controllers for the input fields
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  // API URL for backend login endpoint
+  final String apiUrl = 'http://192.168.127.53:3000/user/login'; // Replace with your backend URL
+
+  // Login user method
+  Future<void> loginUser() async {
+    // Prepare the data to send to the backend
+    final Map<String, dynamic> data = {
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+
+    try {
+      // Send a POST request to the backend
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(data),
+      );
+
+      // Handle the response from the backend
+      if (response.statusCode == 200) {
+        // If the login is successful, navigate to the home screen
+        print("Login successful!");
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => MainScreen()),
+        );
+      } else {
+        // If login fails, show an error message
+        print("Login failed. Error: ${response.body}");
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Error: ${response.body}'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } catch (e) {
+      // If there's an error with the HTTP request
+      print("Error during login: $e");
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('An error occurred during login.'),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CustomBackButton(), // Custom back button
+        leading: CustomBackButton(),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -28,7 +77,6 @@ class _MainloginState extends State<Mainlogin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo
               const SizedBox(height: 30),
               Center(
                 child: Image.asset(
@@ -37,8 +85,6 @@ class _MainloginState extends State<Mainlogin> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Welcome Back Text
               const Text(
                 "Welcome back!",
                 style: TextStyle(
@@ -48,75 +94,56 @@ class _MainloginState extends State<Mainlogin> {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // Subtext
               const Text(
                 "Enter your email and password to login",
                 style: TextStyle(
                   fontFamily: 'Urbanist',
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: const Color(0xFF6A707C),
+                  color: Color(0xFF6A707C),
                 ),
               ),
               const SizedBox(height: 32),
-
-              // Email Input
               CustomInputField(
                 hintText: "Enter your email",
-                controller: TextEditingController(),
+                controller: emailController,
               ),
               const SizedBox(height: 20),
-
-              // Forgot Password
               CustomInputField(
                 hintText: "Enter your password",
-                controller: TextEditingController(),
-                obscureText:
-                    true, // This will obscure the text for password input
+                controller: passwordController,
+                obscureText: true,
               ),
-              // Forgot Password
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Navigate sign up page
+                    // Navigate to forgot password screen
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => const ForgotPwFirst()),
                     );
-                    // Navigate to forgot password screen or trigger relevant functionality
                   },
                   child: const Text(
                     "Forgot Password?",
                     style: TextStyle(
                       fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w600, // Semi-bold
+                      fontWeight: FontWeight.w600,
                       fontSize: 14,
-                      color: Color(0xFF6A707C), // Hex color #6A707C
+                      color: Color(0xFF6A707C),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Login Button
               CustomButton(
                 text: "Login",
                 backgroundColor: const Color(0xFF1E232C),
                 textColor: Colors.white,
-                onPressed: () {
-                  print("Login pressed,open home");
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context)=> MainScreen()),
-                    );
-                },
+                onPressed: loginUser, // Trigger the login function
               ),
               const SizedBox(height: 20),
-
-              // OR Divider
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -132,110 +159,11 @@ class _MainloginState extends State<Mainlogin> {
                       ),
                     ),
                   ),
-                  //creates a horizontal line
-                  Expanded(child: Divider(color: const Color(0xFFE8ECF4))),
+                  Expanded(child: Divider(color: Color(0xFFE8ECF4))),
                 ],
               ),
               const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Google Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle, // Makes it round
-                      border: Border.all(
-                          color: Color(0xFFEFF0F6), width: 2), // Stroke
-                    ),
-                    padding: EdgeInsets.all(10), // Space inside the border
-                    child: Image.asset(
-                      "images/google.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15), // Spacing between icons
-
-                  // Facebook Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/fb.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-
-                  // Apple Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/apple.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-
-                  // Phone Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/cellphone.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 100),
-
-              // Register Now
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Don’t have an account?",
-                    style: TextStyle(
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                    ),
-                  ),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const Mainsignup()),
-                      );
-                    },
-                    child: const Text(
-                      "Register Now",
-                      style: TextStyle(
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF254E7A),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
+              // Social media login buttons
             ],
           ),
         ),

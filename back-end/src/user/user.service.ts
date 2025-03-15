@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 
 import { RegisterUserDto } from './dto/register-user.dto';
 import * as firebaseAdmin from 'firebase-admin';
@@ -11,6 +11,14 @@ export class UserService {
 
   async registerUser(registerUser: RegisterUserDto) {
     console.log(registerUser);
+        // Validate that password and confirmPassword match
+        if (registerUser.password !== registerUser.confirmPassword) {
+          throw new HttpException(
+            'Passwords do not match',
+            HttpStatus.BAD_REQUEST,
+          );
+        }
+    
     try {
       const userRecord = await firebaseAdmin.auth().createUser({
         displayName: registerUser.firstName,

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
+import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main() {
@@ -28,7 +29,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Mainlogin()),
+        MaterialPageRoute(builder: (context) => Mainsignup()),
       );
     });
   }
