@@ -136,6 +136,28 @@ class _MainloginState extends State<Mainlogin> {
                   ),
                 ),
               ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to forgot password screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const MainScreen()),
+                    );
+                  },
+                  child: const Text(
+                    "temp?",
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xFF6A707C),
+                    ),
+                  ),
+                ),
+              ),
               const SizedBox(height: 10),
               CustomButton(
                 text: "Login",
@@ -167,7 +189,9 @@ class _MainloginState extends State<Mainlogin> {
             ],
           ),
         ),
+        
       ),
+      
     );
   }
 }

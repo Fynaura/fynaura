@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Transaction } from "../entity/transaction.entity";
+import { TransactionDTO } from "../entity/transaction.entity";
 
 
-export class CreateTransactionDto extends Transaction {}
+export class CreateTransactionDto extends TransactionDTO {}

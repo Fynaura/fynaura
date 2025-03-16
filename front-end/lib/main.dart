@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/Analize/analyze_page.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
@@ -29,6 +30,7 @@ class _SplashScreenState extends State<SplashScreen> {
     Timer(Duration(seconds: 5), () {
       Navigator.pushReplacement(
         context,
+        // MaterialPageRoute(builder: (context) => AnalyzePage()),
         MaterialPageRoute(builder: (context) => Mainsignup()),
       );
     });

@@ -1,9 +1,10 @@
 import 'package:fl_chart/fl_chart.dart';
 
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/Analize/TransactionModel.dart';
 
 class PieChartSample2 extends StatefulWidget {
-  const PieChartSample2({super.key});
+  const PieChartSample2({super.key, required List<Transaction> transactions});
 
   @override
   State<StatefulWidget> createState() => PieChart2State();

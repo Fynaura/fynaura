@@ -2,7 +2,9 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 class MoneyChart extends StatefulWidget {
-  const MoneyChart({super.key});
+  final List<Map<String, dynamic>> hourlyBalanceData;
+
+  const MoneyChart({super.key, required this.hourlyBalanceData});
 
   @override
   State<MoneyChart> createState() => _MoneyChartState();
@@ -10,147 +12,130 @@ class MoneyChart extends StatefulWidget {
 
 class _MoneyChartState extends State<MoneyChart> {
   LineChartData data = LineChartData();
+  List<FlSpot> flSpots = [];
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    setChartData();
+    setChartData(); // Initialize chart data
   }
 
   void setChartData() {
-    print("get");
+    flSpots = widget.hourlyBalanceData.map((item) {
+      final hour = DateTime.parse(item['timestamp']).hour.toDouble();
+      final balance = item['balance'].toDouble();
+      return FlSpot(hour, balance);
+    }).toList();
+
+    // Force minY to always be 0
+    double minY = 0;
+
+    double maxY = flSpots.isEmpty
+        ? 10000
+        : flSpots.reduce((a, b) => a.y > b.y ? a : b).y; // Get max Y value
+
+    // Adjust maxY to have some margin but not too much
+    maxY = maxY + (maxY * 0.1); // Add a 10% margin above the highest point
+
     data = LineChartData(
-        gridData: FlGridData(
-          show: true,
-          drawVerticalLine: true,
-          getDrawingHorizontalLine: (value) {
-            return FlLine(
-              color: const Color.fromARGB(255, 209, 209, 209),
-              strokeWidth: 1,
-            );
-          },
-          getDrawingVerticalLine: (value) {
-            return FlLine(
-              color: const Color.fromARGB(255, 209, 209, 209),
-              strokeWidth: 1,
-            );
-          },
+      gridData: FlGridData(
+        show: true,
+        drawVerticalLine: true,
+        getDrawingHorizontalLine: (value) {
+          return FlLine(
+            color: const Color.fromARGB(255, 209, 209, 209),
+            strokeWidth: 1,
+          );
+        },
+        getDrawingVerticalLine: (value) {
+          return FlLine(
+            color: const Color.fromARGB(255, 209, 209, 209),
+            strokeWidth: 1,
+          );
+        },
+      ),
+      titlesData: FlTitlesData(
+        show: true,
+        bottomTitles: AxisTitles(
+          sideTitles: SideTitles(
+            reservedSize: 40,
+            showTitles: true,
+            getTitlesWidget: bottomTitleWidgets,
+          ),
         ),
-        titlesData: FlTitlesData(
-          show: true,
-          bottomTitles: AxisTitles(
+        topTitles: AxisTitles(
             sideTitles: SideTitles(
-                reservedSize: 40,
-                showTitles: true,
-                getTitlesWidget: bottomTitleWidgets),
+          showTitles: false,
+        )),
+        rightTitles: AxisTitles(
+            sideTitles: SideTitles(
+          showTitles: false, // Hide the right Y-axis labels
+          reservedSize: 30, // Set space for right Y axis labels (30 units)
+        )),
+        leftTitles: AxisTitles(
+          sideTitles: SideTitles(
+            showTitles: true,
+            getTitlesWidget: leftTitleWidgets,
+            reservedSize: 40, // Space for left Y axis labels
           ),
-          topTitles: AxisTitles(
-              sideTitles: SideTitles(
-            showTitles: false,
-          )),
-          rightTitles: AxisTitles(
-              sideTitles: SideTitles(
-            showTitles: false,
-          )),
         ),
-        borderData: FlBorderData(
-          show: true,
-          border: Border.all(color: Colors.black, width: 1),
-        ),
-        minX: 6,
-        maxX: 12,
-        minY: 0,
-        maxY: 10000,
-        lineBarsData: [
-          LineChartBarData(
-            isCurved: true,
-            spots: FlSpots,
-            isStrokeCapRound: true,
-            dotData: FlDotData(
-              show: false,
-            ),
-            belowBarData: BarAreaData(
-              show: true,
-              gradient: LinearGradient(
-                colors: gradientColors,
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                tileMode: TileMode.clamp,
-              ),
+      ),
+      borderData: FlBorderData(
+        show: true,
+        border: Border.all(color: Colors.black, width: 1),
+      ),
+      minX: 0,
+      maxX: 23, // Display data for 24 hours
+      minY: minY, // Fixed minY value set to 0
+      maxY: maxY, // Adjusted dynamic Y range
+      lineBarsData: [
+        LineChartBarData(
+          isCurved: true,
+          spots: flSpots,
+          isStrokeCapRound: true,
+          dotData: FlDotData(show: false),
+          belowBarData: BarAreaData(
+            show: true,
+            gradient: LinearGradient(
+              colors: [Colors.blue, Colors.green],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              tileMode: TileMode.clamp,
             ),
           ),
-        ]);
+        ),
+      ],
+    );
   }
 
   Widget bottomTitleWidgets(double value, TitleMeta meta) {
-    const style = TextStyle(
-      color: Colors.grey,
-      fontWeight: FontWeight.bold,
-      fontSize: 14,
+    final hour = value.toInt();
+    return SideTitleWidget(
+      meta: meta,
+      child: Text(
+        '$hour:00',
+        style: TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.bold,
+          fontSize: 8,
+        ),
+      ),
     );
-    Widget text;
-    switch (value.toDouble()) {
-      case 0:
-        text = Text('00.00', style: style);
-        break;
-      case 1:
-        text = Text('01.00', style: style);
-        break;
-      case 2:
-        text = Text('02.00', style: style);
-        break;
-      case 3:
-        text = Text('03.00', style: style);
-        break;
-      case 4:
-        text = Text('04.00', style: style);
-        break;
-      case 5:
-        text = Text('05.00', style: style);
-        break;
-      case 6:
-        text = Text('06.00', style: style);
-        break;
-      case 7:
-        text = Text('07.00', style: style);
-        break;
-      case 8:
-        text = Text('08.00', style: style);
-        break;
-      case 9:
-        text = Text('09.00', style: style);
-        break;
-      case 10:
-        text = Text('10.00', style: style);
-        break;
-      case 11:
-        text = Text('11.00', style: style);
-        break;
-      case 12:
-        text = Text('12.00', style: style);
-        break;
-
-      default:
-        text = Text("", style: style);
-        break;
-    }
-    return SideTitleWidget(meta: meta, child: text);
   }
 
-  List<FlSpot> FlSpots = [
-    FlSpot(6.00, 10000),
-    FlSpot(07.00, 5000),
-    FlSpot(08.00, 7000),
-    FlSpot(09.00, 9000),
-    FlSpot(10.00, 6000),
-    FlSpot(11.00, 4000),
-    FlSpot(12.00, 2000),
-  ];
-
-  List<Color> gradientColors = [
-    const Color.fromARGB(255, 0, 127, 150),
-    Colors.white
-  ];
+  Widget leftTitleWidgets(double value, TitleMeta meta) {
+    return SideTitleWidget(
+      meta: meta,
+      child: Text(
+        value.toStringAsFixed(0), // Adjust the Y value to string with fixed decimals
+        style: TextStyle(
+          color: Colors.grey,
+          fontWeight: FontWeight.bold,
+          fontSize: 8, // Adjust the font size for the Y-axis labels here
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -160,10 +145,7 @@ class _MoneyChartState extends State<MoneyChart> {
         borderRadius: BorderRadius.circular(10),
       ),
       height: 250,
-      padding: EdgeInsets.only(
-        top: 10,
-        right: 10,
-      ),
+      padding: EdgeInsets.only(top: 10, right: 20),
       child: LineChart(data),
     );
   }

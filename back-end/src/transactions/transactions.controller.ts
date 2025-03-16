@@ -20,5 +20,28 @@ export class TransactionsController {
   findAll() {
     return this.transactionService.findAll();
   }
+
+  @Get()
+  async getTransactions() {
+    return await this.transactionService.getAllTransactions();
+  }
+
+
+  @Get('hourly-balance')
+  async getHourlyBalance() {
+    return await this.transactionService.getHourlyBalanceForLast24Hours();
+  }
+
+    @Post('bulk')
+  async createBulk(@Body() bulkTransactions: CreateTransactionDto[]) {
+    console.log(`✅ Received ${bulkTransactions.length} transactions`);
+    return await this.transactionService.createBulk(bulkTransactions);
+  }
+  
+  
+
+
 }
+
+
 
