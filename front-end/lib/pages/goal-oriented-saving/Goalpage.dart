@@ -9,7 +9,7 @@ class Goal {
   DateTime startDate;
   DateTime endDate;
   bool isCompleted;
-  String? image;  // Add this line to store the image URL or path
+  String? image;
   List<Transaction> history;
 
   Goal({
@@ -32,7 +32,6 @@ class Transaction {
   Transaction({required this.amount, required this.date, required this.isAdded});
 }
 
-
 class GoalPage extends StatefulWidget {
   final List<Goal> goals;
 
@@ -42,13 +41,16 @@ class GoalPage extends StatefulWidget {
   _GoalPageState createState() => _GoalPageState();
 }
 
-class _GoalPageState extends State<GoalPage> {
+class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin {
   late List<Goal> goals;
+  late TabController _tabController;
+  int _selectedTabIndex = 0; // 0 = All, 1 = Completed, 2 = Progressing
 
   @override
   void initState() {
     super.initState();
-    goals = widget.goals;  // Assuming widget.goals is passed correctly
+    goals = widget.goals;
+    _tabController = TabController(length: 3, vsync: this); // 3 tabs: All, Completed, Progressing
   }
 
   void _addGoal(Goal goal) {
@@ -59,40 +61,63 @@ class _GoalPageState extends State<GoalPage> {
 
   @override
   Widget build(BuildContext context) {
+    // Filter the goals based on selected tab
+    List<Goal> filteredGoals = [];
+    if (_selectedTabIndex == 0) {
+      filteredGoals = goals; // All goals
+    } else if (_selectedTabIndex == 1) {
+      filteredGoals = goals.where((goal) => goal.isCompleted).toList(); // Completed goals
+    } else if (_selectedTabIndex == 2) {
+      filteredGoals = goals.where((goal) => !goal.isCompleted).toList(); // Progressing goals
+    }
+
+    // Sort goals by date (recent first)
+    filteredGoals.sort((a, b) => b.startDate.compareTo(a.startDate));
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Goals'),
         backgroundColor: Color(0xFF254e7a),
+        bottom: TabBar(
+          controller: _tabController,
+          onTap: (index) {
+            setState(() {
+              _selectedTabIndex = index;
+            });
+          },
+          tabs: [
+            Tab(text: 'All'),
+            Tab(text: 'Completed'),
+            Tab(text: 'In Progress'),
+          ],
+        ),
       ),
       body: Padding(
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              'Your Goals',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-
-            // Goal List
             Expanded(
               child: ListView.builder(
-                itemCount: goals.length,
+                itemCount: filteredGoals.length,
                 itemBuilder: (context, index) {
-                  final goal = goals[index];
+                  final goal = filteredGoals[index];
                   double progress = (goal.savedAmount / goal.targetAmount).clamp(0.0, 1.0);
 
                   return Card(
+                    elevation: 5,
                     margin: EdgeInsets.symmetric(vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                     child: ListTile(
                       contentPadding: EdgeInsets.all(10),
-                      leading: goal.image != null // Display image if available
+                      leading: goal.image != null
                           ? CircleAvatar(
-                        backgroundImage: NetworkImage(goal.image!), // Use image URL here
+                        backgroundImage: NetworkImage(goal.image!),
                         radius: 30,
                       )
-                          : Icon(Icons.image, size: 40), // Placeholder image
+                          : Icon(Icons.image, size: 40),
                       title: Text(goal.name, style: TextStyle(fontWeight: FontWeight.bold)),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
@@ -119,7 +144,7 @@ class _GoalPageState extends State<GoalPage> {
                         ).then((updatedGoal) {
                           if (updatedGoal != null) {
                             setState(() {
-                              goals[index] = updatedGoal;
+                              goals[goals.indexOf(goal)] = updatedGoal;
                             });
                           }
                         });
@@ -129,7 +154,6 @@ class _GoalPageState extends State<GoalPage> {
                 },
               ),
             ),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -164,4 +188,3 @@ class _GoalPageState extends State<GoalPage> {
     );
   }
 }
-
