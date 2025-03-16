@@ -1,0 +1,2 @@
+C:/IIT Notes/L5 - Degree/Software Development Group Project/Actice/New folder (2)/fynaura/front-end/android/app/.cxx/Debug/6qp316v2/x86/CMakeFiles/edit_cache.dir
+C:/IIT Notes/L5 - Degree/Software Development Group Project/Actice/New folder (2)/fynaura/front-end/android/app/.cxx/Debug/6qp316v2/x86/CMakeFiles/rebuild_cache.dir

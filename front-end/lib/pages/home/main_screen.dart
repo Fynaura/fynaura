@@ -1,9 +1,11 @@
 
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
+
+import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
+import '../Analize/analyze_page.dart';
 import '../profile/profile.dart';
-import 'TabPage.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
 
@@ -36,16 +38,15 @@ NavModel(
   navKey: homeNavKey,
 ),
       NavModel(
-        page: const TabPage(title: 'Analytics'), // Update to use title
+        page: AnalyzePage(), // Update to use title
         navKey: analyticsNavKey,
       ),
       NavModel(
-        page: const TabPage(title: 'Plans'), // Update to use title
+        page: CollabMain(), // Update to use title
         navKey: planNavKey, // Update to use key  
       ),
       NavModel(
         page: ProfilePage(), // Update to use title
-
         navKey: profileNavKey,
       ),
     ];
@@ -87,7 +88,7 @@ NavModel(
 
             onPressed: () => Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => TransactionDetailPage()),
+              MaterialPageRoute(builder: (context) => TransactionDetailsPage()),
 
             ),
             shape: RoundedRectangleBorder(
