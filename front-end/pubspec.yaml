@@ -9,6 +9,9 @@ environment:
   sdk: ">=3.5.4 <4.0.0"
 
 dependencies:
+  flutter_plugin_android_lifecycle: ^2.0.15
+  image_picker: ^1.0.4
+  #  image_picker_android: ^0.8.12+21
   flutter:
     sdk: flutter
 
@@ -26,17 +29,18 @@ dependencies:
 
 
 
+
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
+
 
   fl_chart: ^0.70.2
 
   timezone: ^0.10.0
   flutter_local_notifications: ^18.0.1
   permission_handler: ^11.4.0
-
 
 
 
