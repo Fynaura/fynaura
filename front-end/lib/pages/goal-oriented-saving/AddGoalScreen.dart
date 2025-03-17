@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'GoalPage.dart';
 
-
 class AddGoalScreen extends StatefulWidget {
   @override
   _AddGoalScreenState createState() => _AddGoalScreenState();
@@ -65,13 +64,14 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(height: 60),
+                    SizedBox(height: 20), // Adjust the top margin for better spacing
                     Row(
                       children: [
                         IconButton(
                           icon: Icon(Icons.arrow_back, color: Colors.white),
                           onPressed: () => Navigator.pop(context),
                         ),
+                        SizedBox(width: 8), // Add a little space between icon and text
                         Text(
                           'Add New Goal',
                           style: TextStyle(
@@ -83,6 +83,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                       ],
                     ),
                     SizedBox(height: 30),
+                    // Goal Name Field
                     Text(
                       'Goal Name',
                       style: TextStyle(
@@ -101,11 +102,9 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                         controller: _goalNameController,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
+                          labelText: 'Enter a goal name',
+                          labelStyle: TextStyle(color: Colors.white),
                           contentPadding: EdgeInsets.all(20),
-                          hintText: 'Car, House, Vacation, etc.',
-                          hintStyle: TextStyle(
-                            color: Color(0xFF85c1e5),
-                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
@@ -126,6 +125,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                       ),
                     ),
                     SizedBox(height: 24),
+                    // Goal Amount Field
                     Text(
                       'Goal Amount',
                       style: TextStyle(
@@ -145,11 +145,9 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                         keyboardType: TextInputType.number,
                         style: TextStyle(color: Colors.white),
                         decoration: InputDecoration(
+                          labelText: 'Enter a goal amount',
+                          labelStyle: TextStyle(color: Colors.white),
                           contentPadding: EdgeInsets.all(20),
-                          hintText: '10, 500, 1500, 2000',
-                          hintStyle: TextStyle(
-                            color: Color(0xFF85c1e5),
-                          ),
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(12),
                             borderSide: BorderSide.none,
