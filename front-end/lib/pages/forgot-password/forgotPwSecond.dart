@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/forgot-password/forgotPwSecond.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/pages/log-in/mainLogin.dart';

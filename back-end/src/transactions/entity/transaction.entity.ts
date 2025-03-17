@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-export class Transaction {
+export class TransactionDTO {
     // _id: string;  // MongoDB ObjectId as a string
     type: 'income' | 'expense';
     amount: number;
