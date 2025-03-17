@@ -2,12 +2,21 @@ import os
 from flask import Flask, request, jsonify
 import json
 import google.generativeai as genai
+from dotenv import load_dotenv
+
+
+load_dotenv()
 
 app = Flask(__name__)
 
+
 class GeminiBillExtractionTool:
-    def __init__(self):  
-        genai.configure(api_key="Google api key")  
+    def __init__(self):
+        api_key = os.getenv("GEMINI_API_KEY")  
+        if not api_key:
+            raise ValueError("Missing GEMINI_API_KEY in environment variables")
+
+        genai.configure(api_key=api_key)
         self.model = genai.GenerativeModel("models/gemini-1.5-pro-latest")
 
     def run(self, bill_text):
@@ -48,6 +57,7 @@ class GeminiBillExtractionTool:
         except Exception as e:
             return {"error": str(e)}
 
+
 @app.route('/extract-bill', methods=['POST'])
 def extract():
     data = request.json
@@ -57,7 +67,7 @@ def extract():
         return jsonify({"error": "No bill text provided"}), 400
 
     try:
-        bill_tool = GeminiBillExtractionTool() 
+        bill_tool = GeminiBillExtractionTool()
         extracted_data = bill_tool.run(bill_text)
 
         if "error" in extracted_data:
@@ -65,7 +75,8 @@ def extract():
 
         items = extracted_data.get("items", [])
 
-        allowed_categories = ["Food", "Electronics", "Transport", "Bills", "Clothes", "Phone", "Sport", "Education", "Medical", "Beauty", "Grocery", "Vehicle"]
+        allowed_categories = ["Food", "Electronics", "Transport", "Bills", "Clothes", "Phone", "Sport", "Education",
+                              "Medical", "Beauty", "Grocery", "Vehicle"]
 
         # Validate and format extracted items
         validated_items = []
@@ -86,6 +97,7 @@ def extract():
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug=True)
