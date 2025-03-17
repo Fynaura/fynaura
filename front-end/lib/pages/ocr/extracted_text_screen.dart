@@ -4,13 +4,13 @@ import 'ImageSelectionOption.dart';
 
 class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;
-  final String billDate;
+  //final String billDate;
   final List<Map<String, dynamic>> categorizedItems;
 
   const ExtractedTextScreen({
     super.key,
     required this.totalAmount,
-    required this.billDate,
+    //required this.billDate,
     required this.categorizedItems,
   });
 
@@ -138,7 +138,7 @@ class ExtractedTextScreen extends StatelessWidget {
             _buildRichText("Category    ", item['category']),
             _buildRichText("Item name ", item['item']),
             _buildRichText("Price           ", "\$${item['price']}", color: Colors.black),
-            _buildRichText("Date            ", billDate),
+            _buildRichText("Date            ", item['billdate']),
             _buildRichText("Quantity     ", item['quantity'].toString()),
           ],
         ),
