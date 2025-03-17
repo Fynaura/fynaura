@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'ImageSelectionOption.dart';
+import 'ocr_screen.dart';
 
 class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;

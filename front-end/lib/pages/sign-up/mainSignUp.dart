@@ -22,7 +22,8 @@ class _MainSignupState extends State<Mainsignup> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  final String apiUrl = 'http://192.168.127.53:3000/user/register'; // Replace with your backend URL
+  // final String apiUrl = 'http://192.168.127.53:3000/user/register';
+  final String apiUrl = ' "http://10.0.2.2:3000/user/register';
 
   // Register user method
   Future<void> registerUser() async {
