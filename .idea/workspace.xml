@@ -4,22 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="1125cb9d-67a4-4aa9-a8c5-755e76aba5f3" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/front-end/lib/GoalPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/MyAccountPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/ProfileEditorPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/edit_profile_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/goal_editor_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/loginScreen.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/main.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/new_profile_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" afterDir="false" />
-    </list>
+    <list default="true" id="1125cb9d-67a4-4aa9-a8c5-755e76aba5f3" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -60,7 +45,7 @@
     "git-widget-placeholder": "FynAuraChatBot",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/ASUS/Desktop/sdgp_profile/fynaura/front-end/assets",
+    "last_opened_file_path": "C:/Users/ASUS/Desktop/sdgp_profile/fynaura/front-end/lib",
     "project.structure.last.edited": "Project",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
@@ -70,6 +55,8 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\ASUS\Desktop\sdgp_profile\fynaura\front-end\lib" />
+      <recent name="C:\Users\ASUS\Desktop\sdgp_profile\fynaura\front-end\lib\widgets" />
       <recent name="C:\Users\ASUS\Desktop\sdgp_profile\fynaura\front-end\assets" />
       <recent name="C:\IIT Notes\L5 - Degree\Software Development Group Project\Actice\New folder (2)\fynaura\front-end\lib\widgets\analyze" />
     </key>
