@@ -205,7 +205,7 @@ class _MainSignupState extends State<Mainsignup> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-  // Fixed the API URL string - removed the extra quote
+
   final String apiUrl = 'http://10.0.2.2:3000/user/register';
 
   // Error message state variables
