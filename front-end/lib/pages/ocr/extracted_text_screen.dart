@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/ocr/ocr_screen.dart';
 
 import 'ImageSelectionOption.dart';
 

@@ -17,7 +17,6 @@ dependencies:
 
 
 
-  shared_preferences: ^2.5.2
 
 
 
@@ -34,9 +33,10 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
-
-
+  
+  confetti: ^0.6.0
   fl_chart: ^0.70.2
+  shared_preferences: ^2.4.0 
 
   timezone: ^0.10.0
   flutter_local_notifications: ^18.0.1
