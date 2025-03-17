@@ -16,10 +16,11 @@ class ImagePreviewScreen extends StatefulWidget {
 }
 
 class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
-
   // Function to upload image and get extracted text
   Future<void> uploadImage(File imageFile) async {
-    var uri = Uri.parse("http://192.168.8.172:3000/upload");
+
+    var uri = Uri.parse("http://192.168.127.53:3000/upload");
+
 
     var request = http.MultipartRequest("POST", uri);
 
@@ -38,7 +39,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       final extractedData = json.decode(responseData);
 
       String totalAmount = extractedData['totalAmount'].toString();
-      String billDate = extractedData['billDate'].toString();
+      //String billDate = extractedData['billDate'].toString();
 
       // Extracting category (First item in categorizedItems list)
       String category = "Unknown"; // Default value
@@ -48,7 +49,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         category = extractedData['categorizedItems'][0]['predicted_category'] ?? "Unknown";
       }
 
-      print("Total Amount: $totalAmount, Bill Date: $billDate, Category: $category"); // Debugging Line
+      print("Total Amount: $totalAmount, Category: $category"); // Debugging Line
 
       // Navigate to ExtractedTextScreen with extracted details
       Navigator.push(
@@ -56,7 +57,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         MaterialPageRoute(
           builder: (context) => ExtractedTextScreen(
             totalAmount: totalAmount,
-            billDate: billDate,
+            //billDate: billDate,
             categorizedItems: List<Map<String, dynamic>>.from(extractedData['categorizedItems']),
           ),
         ),
@@ -69,7 +70,6 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
     }
   }
 
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,44 +78,45 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         backgroundColor: Colors.grey[200],
         title: const Text("Image Preview"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.file(
-                widget.image,
-                height: 650,
-                width: 370,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Upload Button
-          SizedBox(
-            width: 150,
-            child: ElevatedButton(
-              onPressed: () async {
-                await uploadImage(widget.image);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+      body: SingleChildScrollView(  // Wrap the entire body inside SingleChildScrollView
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.file(
+                  widget.image,
+                  height: 650,
+                  width: 370,
+                  fit: BoxFit.cover,
                 ),
               ),
-              child: const Text(
-                "Upload",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+
+            // Upload Button
+            SizedBox(
+              width: 150,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await uploadImage(widget.image);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  "Upload",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
 }
-

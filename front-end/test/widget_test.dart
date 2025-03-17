@@ -14,11 +14,13 @@ void main() {
   testWidgets('Counter increments smoke test', (WidgetTester tester) async {
     // Build our app and trigger a frame.
 
+
     await tester.pumpWidget(const MyApp());
 
 
+
     // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
+https://github.com/Fynaura/fynaura/pull/13/conflict?name=front-end%252Ftest%252Fwidget_test.dart&ancestor_oid=0b62addcff7c95b368e69de33da622e351dd3655&base_oid=c601d4daffd9eb0c48aba1182ca93877a4d0a645&head_oid=dbec84f598a268ce0fa03e208d4224872f0a35ed    expect(find.text('0'), findsOneWidget);
     expect(find.text('1'), findsNothing);
 
     // Tap the '+' icon and trigger a frame.

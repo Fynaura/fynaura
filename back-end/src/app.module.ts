@@ -22,6 +22,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 
 import { AppService } from './app.service';
 import { AuthGuard } from './guard/auth.guard';
+import { UploadModule } from './upload/upload.module';
 
 
 
@@ -50,6 +51,7 @@ import { AuthGuard } from './guard/auth.guard';
     TransactionsModule,
     CollabBudgetsModule,
     UserModule,
+    UploadModule,
     
   ],
   controllers: [AppController],

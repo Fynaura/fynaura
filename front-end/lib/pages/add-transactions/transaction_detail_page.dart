@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/ocr/ImagePreviewScreen.dart';
+import 'package:fynaura/pages/ocr/ImageSelectionOption.dart';
 import 'dart:io';  // Add this import to access the File class
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
@@ -187,12 +189,26 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     selectedDate = DateTime.now();
   }
 
-  // Pick an image from camera or gallery.
-  void pickImage(ImageSource source) async {
-    final pickedImage = await _picker.pickImage(source: source);
-    // Process the picked image here (e.g., upload or store it)
-  }
+void pickImageAndNavigate(ImageSource source) async {
+  final pickedImage = source == ImageSource.camera
+      ? await ImageSelectionOption.pickImageFromCamera()
+      : await ImageSelectionOption.pickImageFromGallery();
 
+  if (pickedImage != null) {
+    // Navigate to ImagePreviewScreen with the picked image
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => ImagePreviewScreen(image: pickedImage),
+      ),
+    );
+  } else {
+    // Show an error or message if no image was selected
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text("No image selected")),
+    );
+  }
+}
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -365,32 +381,32 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
 
   // Buttons for picking an image from camera or gallery.
   Widget buildCameraGalleryButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        ElevatedButton.icon(
-          onPressed: () => pickImage(ImageSource.camera),
-          icon: Icon(Icons.camera_alt, color: Colors.white),
-          label: Text("Camera"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF85C1E5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+  return Row(
+    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    children: [
+      ElevatedButton.icon(
+        onPressed: () => pickImageAndNavigate(ImageSource.camera),  // Use pickImageAndNavigate for Camera
+        icon: Icon(Icons.camera_alt, color: Colors.white),
+        label: Text("Camera"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF85C1E5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
-        ElevatedButton.icon(
-          onPressed: () => pickImage(ImageSource.gallery),
-          icon: Icon(Icons.photo, color: Colors.white),
-          label: Text("Gallery"),
-          style: ElevatedButton.styleFrom(
-            backgroundColor: Color(0xFF85C1E5),
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
+      ),
+      ElevatedButton.icon(
+        onPressed: () => pickImageAndNavigate(ImageSource.gallery),  // Use pickImageAndNavigate for Gallery
+        icon: Icon(Icons.photo, color: Colors.white),
+        label: Text("Gallery"),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Color(0xFF85C1E5),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
           ),
         ),
-      ],
-    );
-  }
+      ),
+    ],
+  );
+}
 }
