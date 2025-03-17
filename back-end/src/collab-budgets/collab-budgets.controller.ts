@@ -12,6 +12,7 @@ import {
 import { CollabBudgetsService } from './collab-budgets.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
 import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { AddTransactionDto } from './dto/add-transaction.dto';
 
 @Controller('collab-budgets')
 export class CollabBudgetsController {
@@ -40,5 +41,13 @@ export class CollabBudgetsController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.collabBudgetsService.delete(id);
+  }
+
+  @Post(':id/transactions')
+  addTransaction(
+    @Param('id') id: string,
+    @Body() addTransactionDto: AddTransactionDto,
+  ) {
+    return this.collabBudgetsService.addTransaction(id, addTransactionDto);
   }
 }

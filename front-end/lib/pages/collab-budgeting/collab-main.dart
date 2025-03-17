@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
-import 'package:fynaura/widgets/customInput.dart';
 import 'package:fynaura/services/budget_service.dart';
 import 'package:fynaura/widgets/CustomPopup.dart';
 
@@ -232,9 +231,20 @@ class CollabMainState extends State<CollabMain> {
                                 budgetName: budget["name"] ?? "",
                                 budgetAmount: budget["amount"].toString(),
                                 budgetDate: budget["date"] ?? "",
+                                budgetId: budget["id"].toString(), // Add this parameter
                               ),
                             ),
-                          ).then((_) => _loadBudgets()); // Reload after returning from details
+                          ).then((_) => _loadBudgets());
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     builder: (context) => BudgetDetails(
+                          //       budgetName: budget["name"] ?? "",
+                          //       budgetAmount: budget["amount"].toString(),
+                          //       budgetDate: budget["date"] ?? "",
+                          //     ),
+                          //   ),
+                          // ).then((_) => _loadBudgets()); // Reload after returning from details
                         },
                         child: Dismissible(
                           key: Key(budget["id"]?.toString() ?? UniqueKey().toString()),

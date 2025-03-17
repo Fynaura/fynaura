@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class TransactionCategoryPage extends StatefulWidget {
   final bool isExpense;
   TransactionCategoryPage({required this.isExpense});
 
   @override
-  _TransactionCategoryPageState createState() =>
-      _TransactionCategoryPageState();
+  _TransactionCategoryPageState createState() => _TransactionCategoryPageState();
 }
 
 class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
@@ -33,14 +34,27 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
     {"name": "Crypto", "icon": Icons.currency_bitcoin},
   ];
 
-  List<Map<String, dynamic>> customCategories = [];
+  List<String> customCategories = [];
 
-  void _addCustomCategory() {
+
+  @override
+  void initState() {
+    super.initState();
+    _loadCustomCategories();
+  }
+
+  Future<void> _loadCustomCategories() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    customCategories = prefs.getStringList('customCategories') ?? [];
+  }
+
+  void _addCustomCategory() async {
     TextEditingController controller = TextEditingController();
-    showDialog(
+    await showDialog(
+
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Add Custom Category"),
+        title: Text("Add Custom Category", style: TextStyle(color: Color(0xFF9DB2CE))),
         content: TextField(
           controller: controller,
           decoration: InputDecoration(hintText: "Enter category name"),
@@ -51,15 +65,31 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
             child: Text("Cancel"),
           ),
           TextButton(
-            onPressed: () {
-              if (controller.text.isNotEmpty) {
-                setState(() {
-                  customCategories.add({
-                    "name": controller.text,
-                    "icon": Icons.category, // Default icon for custom categories
-                  });
-                });
+
+            onPressed: () async {
+              controller.text = controller.text.trim();
+              if (controller.text.isEmpty) {
+                Navigator.pop(context);
+                return;
               }
+              if (customCategories.contains(controller.text)) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Category already exists")),
+                );
+                return;
+              }
+
+              setState(() {
+                customCategories.add(controller.text);
+              });
+
+              SharedPreferences prefs = await SharedPreferences.getInstance();
+              prefs.setStringList('customCategories', customCategories);
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text("Added ${controller.text}")),
+              );
+
               Navigator.pop(context);
             },
             child: Text("Add"),
@@ -72,12 +102,19 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
   @override
   Widget build(BuildContext context) {
     List<Map<String, dynamic>> categories = widget.isExpense
-        ? [...expenseCategories, ...customCategories]
-        : [...incomeCategories, ...customCategories];
+        ? [
+      ...expenseCategories,
+      ...customCategories.map((c) => {"name": c, "icon": Icons.category})
+    ]
+        : [
+      ...incomeCategories,
+      ...customCategories.map((c) => {"name": c, "icon": Icons.category})
+    ];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Category"),
+        title: Text("Select Category", style: TextStyle(color: Color(0xFF9DB2CE))),
+        leading: BackButton(),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -87,7 +124,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
             crossAxisSpacing: 10,
             mainAxisSpacing: 10,
           ),
-          itemCount: categories.length + 1, // +1 for the "Add" button
+          itemCount: categories.length + 1,
           itemBuilder: (context, index) {
             if (index == categories.length) {
               return GestureDetector(
@@ -112,22 +149,30 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
             final category = categories[index];
             return GestureDetector(
               onTap: () {
-                Navigator.pop(context, category["name"]);
+                Navigator.pop<String>(context, category["name"]);
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFF85C1E5), // Set the box color
+
+                  color: Color(0xFF85C1E5),
+
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(category["icon"], color: Colors.white, size: 36), // Keep the icon color white
+
+                    Icon(category["icon"], color: Colors.white, size: 36),
                     SizedBox(height: 8),
                     Text(
                       category["name"],
-                      style: TextStyle(fontWeight: FontWeight.w500, color: Colors.white), // Set text color to white
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+
                       textAlign: TextAlign.center,
+                      overflow: TextOverflow.ellipsis,
                     ),
                   ],
                 ),

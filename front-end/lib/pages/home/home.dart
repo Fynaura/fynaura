@@ -1,7 +1,5 @@
 
 import 'package:flutter/material.dart';
-import 'package:fynaura/widgets/navigation.dart';  // Import the custom navigation bar
-
 class DashboardScreen extends StatefulWidget {
   @override
   _DashboardScreenState createState() => _DashboardScreenState();

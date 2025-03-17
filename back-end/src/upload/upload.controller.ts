@@ -1,7 +1,9 @@
+/* eslint-disable prettier/prettier */
 import { Controller, Post, UploadedFile, UseInterceptors, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Express, Response } from 'express';
+
 
 @Controller('upload')
 export class UploadController {
