@@ -197,6 +197,7 @@
 // }
 
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/home/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
@@ -219,7 +220,7 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   // API URL for backend login endpoint
-  final String apiUrl = 'http://10.0.2.2:3000/user/login';
+  final String apiUrl = 'http://192.168.127.53:3000/user/login';
 
   // Error message state variables
   String? emailError;
@@ -477,6 +478,28 @@ class _MainloginState extends State<Mainlogin> {
                   },
                   child: const Text(
                     "Forgot Password?",
+                    style: TextStyle(
+                      fontFamily: 'Urbanist',
+                      fontWeight: FontWeight.w600,
+                      fontSize: 14,
+                      color: Color(0xFF6A707C),
+                    ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () {
+                    // Navigate to forgot password screen
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => MainScreen()),
+                    );
+                  },
+                  child: const Text(
+                    "Temp",
                     style: TextStyle(
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w600,

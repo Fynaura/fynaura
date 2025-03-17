@@ -206,7 +206,7 @@ class _MainSignupState extends State<Mainsignup> {
   TextEditingController confirmPasswordController = TextEditingController();
 
 
-  final String apiUrl = 'http://10.0.2.2:3000/user/register';
+  final String apiUrl = 'http://192.168.127.53:3000/user/register';
 
   // Error message state variables
   String? passwordError;
