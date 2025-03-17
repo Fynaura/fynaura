@@ -1,14 +1,23 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
+import 'dart:io';  // Add this import to access the File class
+import 'package:intl/intl.dart';
+import 'package:image_picker/image_picker.dart';
 import 'transaction_category_page.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+import 'package:fynaura/services/transaction_service.dart'; // Import the TransactionService
 
-class TransactionDetailPage extends StatefulWidget {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+class TransactionDetailsPage extends StatefulWidget {
   @override
-  _TransactionDetailPageState createState() => _TransactionDetailPageState();
+  _TransactionDetailsPageState createState() =>
+      _TransactionDetailsPageState();
 }
 
-class _TransactionDetailPageState extends State<TransactionDetailPage> {
+class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   bool isExpense = true;
   String selectedCategory = "Select Category";
   TextEditingController amountController = TextEditingController();
@@ -16,59 +25,183 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
   DateTime selectedDate = DateTime.now();
   bool reminder = false;
 
+  final ImagePicker _picker = ImagePicker();
+
+  @override
+  void initState() {
+    super.initState();
+    _initNotifications();
+  }
+
+  @override
+  void dispose() {
+    amountController.dispose();
+    descriptionController.dispose();
+    super.dispose();
+  }
+
+  // Initialize notifications with timezone support.
+  void _initNotifications() async {
+    tz.initializeTimeZones();
+    tz.setLocalLocation(tz.getLocation('Asia/Colombo')); // Adjust to your locale
+
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (NotificationResponse response) {
+        _onReminderTapped();
+      },
+    );
+  }
+
+  // Schedule a reminder notification for the selected date/time.
+  Future<void> _scheduleReminder() async {
+    bool? granted = await flutterLocalNotificationsPlugin
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
+        ?.requestNotificationsPermission();
+
+    if (granted == false) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enable notifications in settings.')),
+      );
+      return;
+    }
+
+    tz.TZDateTime scheduledDate = tz.TZDateTime.from(selectedDate, tz.local);
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'reminder_channel',
+      'Reminders',
+      importance: Importance.high,
+      priority: Priority.high,
+    );
+
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
+      0,
+      "Payment Reminder",
+      "Did you pay ${amountController.text} LKR for $selectedCategory?",
+      scheduledDate,
+      platformChannelSpecifics,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      uiLocalNotificationDateInterpretation:
+          UILocalNotificationDateInterpretation.absoluteTime,
+      matchDateTimeComponents: DateTimeComponents.dateAndTime,
+    );
+  }
+
+  // When a user taps the reminder notification, show a confirmation dialog.
+  void _onReminderTapped() {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Confirm Payment"),
+          content: Text("Did you complete this payment?"),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Dismiss dialog
+              },
+              child: Text("No"),
+            ),
+            TextButton(
+              onPressed: () {
+                // If confirmed, reset reminder state and add as a normal transaction.
+                setState(() {
+                  reminder = false;
+                });
+                addTransaction();
+                Navigator.of(context).pop();
+              },
+              child: Text("Yes"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  // Add a transaction or schedule a reminder.
+  void addTransaction() async {
+    if (amountController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Please enter an amount"),
+      ));
+      return;
+    }
+    if (selectedCategory == "Select Category") {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Please select a category"),
+      ));
+      return;
+    }
+
+    final transactionService = TransactionService();
+    final type = isExpense ? "expense" : "income"; // Determine the type
+
+    try {
+      // Create the transaction through the service
+      await transactionService.createTransaction(
+        type: type,
+        category: selectedCategory,
+        amount: double.parse(amountController.text),
+        description: descriptionController.text,
+        date: selectedDate,
+      );
+
+      // If reminder is set, schedule it
+      if (reminder) {
+        await _scheduleReminder();
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Reminder Set Successfully'),
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('Transaction Added Successfully'),
+        ));
+      }
+
+      resetFields();
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error: $e'),
+      ));
+    }
+  }
+
+  // Clear all input fields.
+  void resetFields() {
+    amountController.clear();
+    descriptionController.clear();
+    selectedCategory = "Select Category";
+    reminder = false;
+    selectedDate = DateTime.now();
+  }
+
+  // Pick an image from camera or gallery.
+  void pickImage(ImageSource source) async {
+    final pickedImage = await _picker.pickImage(source: source);
+    // Process the picked image here (e.g., upload or store it)
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
-        backgroundColor: Colors.white,
         actions: [
           IconButton(
             icon: Icon(Icons.check, color: Colors.blue),
-            onPressed: () async {
-              // Build the request body using the entered data
-              var requestBody = {
-                "type": isExpense ? "expense" : "income",
-                "amount": int.tryParse(amountController.text) ?? 0, // Parse the amount
-                "category": selectedCategory,
-                "note": descriptionController.text,
-                "date": "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
-                "reminder": reminder,
-              };
-
-              // Set the headers
-              var headers = {
-                'Content-Type': 'application/json'
-              };
-
-              // Create the HTTP request
-              var request = http.Request('POST', Uri.parse('http://localhost/api/transaction'));
-              request.body = json.encode(requestBody);
-              request.headers.addAll(headers);
-
-              try {
-                // Send the request
-                http.StreamedResponse response = await request.send();
-
-                // Handle the response
-                if (response.statusCode == 200) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Transaction Added Successfully")),
-                  );
-                  print(await response.stream.bytesToString());
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Failed to Add Transaction: ${response.reasonPhrase}")),
-                  );
-                  print(response.reasonPhrase);
-                }
-              } catch (e) {
-                // Handle error if the request fails
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text("Error: $e")),
-                );
-              }
-            },
+            onPressed: addTransaction,
           ),
         ],
       ),
@@ -84,90 +217,47 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               ],
             ),
             SizedBox(height: 10),
-            buildModernAmountField(),
+            Container(
+              decoration: BoxDecoration(
+                color: Color(0xFF85C1E5),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10),
+                child: buildModernAmountField(),
+              ),
+            ),
+            SizedBox(height: 10),
             buildModernOptionTile("Category", Icons.toc, selectedCategory, context, true),
             buildModernDescriptionField(),
-            buildModernOptionTile("Set Date", Icons.calendar_today, "${selectedDate.day}/${selectedDate.month}/${selectedDate.year}", context, false),
-            buildModernOptionTile("Set Reminder", Icons.alarm, reminder ? "Reminder Set" : "Set Reminder", context, false),
-            Spacer(),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                buildCameraGalleryButton("Camera", Icons.camera_alt, Colors.blue),
-                buildCameraGalleryButton("Gallery", Icons.photo, Colors.orange),
-              ],
-            ),
+            if (isExpense)
+              buildModernOptionTile(
+                "Set Reminder",
+                Icons.alarm,
+                reminder ? DateFormat('MMMM d, y').format(selectedDate) : "Set Reminder",
+                context,
+                false,
+              ),
             SizedBox(height: 20),
-            // Save Transaction Button
-            ElevatedButton(
-              onPressed: () async {
-                // Build the request body using the entered data
-                var requestBody = {
-                  "type": isExpense ? "expense" : "income",
-                  "amount": int.tryParse(amountController.text) ?? 0, // Parse the amount
-                  "category": selectedCategory,
-                  "note": descriptionController.text,
-                  "date": "${selectedDate.year}-${selectedDate.month.toString().padLeft(2, '0')}-${selectedDate.day.toString().padLeft(2, '0')}",
-                  "reminder": reminder,
-                };
-
-                // Set the headers
-                var headers = {
-                  'Content-Type': 'application/json'
-                };
-
-                // Create the HTTP request
-                var request = http.Request('POST', Uri.parse('http://localhost:8000/api/transaction'));
-                request.body = json.encode(requestBody);
-                request.headers.addAll(headers);
-
-                try {
-                  // Send the request
-                  http.StreamedResponse response = await request.send();
-
-                  // Handle the response
-                  if (response.statusCode == 200) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Transaction Added Successfully")),
-                    );
-                    print(await response.stream.bytesToString());
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("Failed to Add Transaction: ${response.reasonPhrase}")),
-                    );
-                    print(response.reasonPhrase);
-                  }
-                } catch (e) {
-                  // Handle error if the request fails
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Error: $e")),
-                  );
-                }
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal, // Use backgroundColor instead of primary
-                padding: EdgeInsets.symmetric(vertical: 18),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: Text(
-                'SAVE TRANSACTION',
-                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
-              ),
-            ),
+            buildCameraGalleryButtons(),
           ],
         ),
       ),
     );
   }
 
+  // Toggle button for Income/Expense.
   Widget buildToggleButton(String text, bool selected) {
     return ElevatedButton(
-      onPressed: () => setState(() => isExpense = text == "Expense"),
+      onPressed: () {
+        setState(() {
+          isExpense = text == "Expense";
+          selectedCategory = "Select Category";
+        });
+      },
       child: Text(text),
       style: ElevatedButton.styleFrom(
-        backgroundColor: selected ? Color(0xFF85C1E5) : Colors.grey,
+        backgroundColor: selected ? const Color(0xFF85C1E5) : Colors.grey,
         foregroundColor: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8),
@@ -176,13 +266,14 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     );
   }
 
+  // Input field for amount.
   Widget buildModernAmountField() {
     return TextField(
       controller: amountController,
       keyboardType: TextInputType.number,
-      style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
+      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold),
       textAlign: TextAlign.center,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         prefixText: "LKR ",
         hintText: "00",
         hintStyle: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.grey),
@@ -194,9 +285,9 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
     );
   }
 
+  // Input field for description.
   Widget buildModernDescriptionField() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
@@ -211,16 +302,13 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
           prefixIcon: Icon(Icons.edit, color: Colors.grey.shade700),
         ),
         style: TextStyle(fontSize: 18),
-        onChanged: (value) {
-          setState(() {});
-        },
       ),
     );
   }
 
+  // Option tile for Category selection or setting a reminder.
   Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
       margin: EdgeInsets.symmetric(vertical: 5),
       decoration: BoxDecoration(
         color: Colors.grey.shade200,
@@ -236,38 +324,73 @@ class _TransactionDetailPageState extends State<TransactionDetailPage> {
               MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
             );
             if (result != null) {
-              setState(() => selectedCategory = result);
+              setState(() => selectedCategory = result as String);
             }
-          } else if (title == "Set Date") {
-            final date = await showDatePicker(
+          } else if (title == "Set Reminder") {
+            // Select Date
+            final DateTime? pickedDate = await showDatePicker(
               context: context,
               initialDate: selectedDate,
-              firstDate: DateTime(2000),
+              firstDate: DateTime.now(),
               lastDate: DateTime(2100),
             );
-            if (date != null) setState(() => selectedDate = date);
-          } else if (title == "Set Reminder") {
-            setState(() {
-              reminder = !reminder;
-            });
+            if (pickedDate != null) {
+              // Select Time
+              final TimeOfDay? pickedTime = await showTimePicker(
+                context: context,
+                initialTime: TimeOfDay.fromDateTime(selectedDate),
+              );
+              if (pickedTime != null) {
+                setState(() {
+                  selectedDate = DateTime(
+                    pickedDate.year,
+                    pickedDate.month,
+                    pickedDate.day,
+                    pickedTime.hour,
+                    pickedTime.minute,
+                  );
+                  reminder = true;
+                });
+              } else {
+                setState(() {
+                  reminder = false;
+                });
+              }
+            }
           }
         },
       ),
     );
   }
 
-  Widget buildCameraGalleryButton(String title, IconData icon, Color color) {
-    return ElevatedButton.icon(
-      onPressed: () {},
-      icon: Icon(icon, color: Colors.white),
-      label: Text(title),
-      style: ElevatedButton.styleFrom(
-        backgroundColor: color,
-        foregroundColor: Colors.white,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(10),
+  // Buttons for picking an image from camera or gallery.
+  Widget buildCameraGalleryButtons() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => pickImage(ImageSource.camera),
+          icon: Icon(Icons.camera_alt, color: Colors.white),
+          label: Text("Camera"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF85C1E5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
         ),
-      ),
+        ElevatedButton.icon(
+          onPressed: () => pickImage(ImageSource.gallery),
+          icon: Icon(Icons.photo, color: Colors.white),
+          label: Text("Gallery"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF85C1E5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
