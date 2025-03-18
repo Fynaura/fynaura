@@ -1,34 +1,31 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:fynaura/main.dart';
+import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
+  testWidgets('Splash screen test', (WidgetTester tester) async {
+    // Build our app and trigger a frame
+    await tester.pumpWidget(MyApp());
 
+    // Verify that the splash screen appears with the correct background color
+    final scaffoldFinder = find.byType(Scaffold);
+    expect(scaffoldFinder, findsOneWidget);
 
-    await tester.pumpWidget(const MyApp());
+    final scaffold = tester.widget<Scaffold>(scaffoldFinder);
+    expect(scaffold.backgroundColor, equals(const Color(0xFF85C1E5)));
 
+    // Verify that the splash screen contains a centered image
+    expect(find.byType(Center), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
 
+    // Fast-forward time to trigger the navigation
+    await tester.pump(const Duration(seconds: 5));
 
-    // Verify that our counter starts at 0.
-https://github.com/Fynaura/fynaura/pull/13/conflict?name=front-end%252Ftest%252Fwidget_test.dart&ancestor_oid=0b62addcff7c95b368e69de33da622e351dd3655&base_oid=c601d4daffd9eb0c48aba1182ca93877a4d0a645&head_oid=dbec84f598a268ce0fa03e208d4224872f0a35ed    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // Rebuild the widget tree after navigation
+    await tester.pumpAndSettle();
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Verify that we've navigated to the signup page
+    expect(find.byType(Mainsignup), findsOneWidget);
   });
 }
