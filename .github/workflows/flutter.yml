@@ -14,32 +14,35 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # This checks out the code from the repo
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.5'
-        working-directory: ./front-end
+          flutter-version: '3.24.5'  # Use a specific Flutter version for better stability
 
       - name: Run Flutter config --no-analytics (optional)
-        run: flutter config --no-analytics  # This suppresses analytics-related info during setup
-        working-directory: ./front-end  # Point to the front-end directory
+        run: |
+          cd front-end
+          flutter config --no-analytics  # This suppresses analytics-related info during setup
 
       - name: Install dependencies
-        run: flutter pub get  # Install project dependencies
-        working-directory: ./front-end
+        run: |
+          cd front-end
+          flutter pub get  # Install project dependencies
 
       - name: Run tests
-        run: flutter test  # Run Flutter unit tests
-        working-directory: ./front-end
+        run: |
+          cd front-end
+          flutter test  # Run Flutter unit tests
 
       - name: Build Flutter APK
-        run: flutter build apk --release  # Build the release APK for Android
-        working-directory: ./front-end 
+        run: |
+          cd front-end
+          flutter build apk --release  # Build the release APK for Android
 
 #      - name: Upload APK artifact
 #        uses: actions/upload-artifact@v2  # Downgraded to v2 for stability
 #        with:
 #          name: app-release.apk
-#          path: build/app/outputs/flutter-apk/app-release.apk  # Path to the APK
+#          path: front-end/build/app/outputs/flutter-apk/app-release.apk  # Path to the APK
