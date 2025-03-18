@@ -60,8 +60,8 @@ jobs:
       - name: Run tests
         run: flutter test
 
-      - name: Build Flutter app
-        run: flutter build web  # Change this to ios/android if needed
+      - name: Build Flutter APK
+        run: flutter build apk
 
       - name: Deploy to Firebase Hosting (optional)
         run: |
