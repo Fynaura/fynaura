@@ -1,22 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fynaura/main.dart';  // Import your app entry point
+import 'package:fynaura/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build the app and trigger a frame.
-    await tester.pumpWidget(const MyApp());  // MyApp is the root widget of your app
+  testWidgets('Splash screen test', (WidgetTester tester) async {
+    // Build our app and trigger a frame
+    await tester.pumpWidget(const MyApp());
 
-    // Verify that the counter starts at 0.
-    expect(find.text('0'), findsOneWidget);  // Expect the initial value to be 0
-    expect(find.text('1'), findsNothing);    // Ensure that '1' is not displayed initially
+    // Verify that the splash screen appears with the correct background color
+    final scaffoldFinder = find.byType(Scaffold);
+    expect(scaffoldFinder, findsOneWidget);
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));  // Tap the '+' icon
-    await tester.pump();  // Rebuild the widget after the tap
+    final scaffold = tester.widget<Scaffold>(scaffoldFinder);
+    expect(scaffold.backgroundColor, equals(const Color(0xFF85C1E5)));
 
-    // Verify that the counter has incremented to 1.
-    expect(find.text('0'), findsNothing);  // 0 should no longer be visible
-    expect(find.text('1'), findsOneWidget);  // 1 should now be visible
+    // Verify that the splash screen contains a centered image
+    expect(find.byType(Center), findsOneWidget);
+    expect(find.byType(Image), findsOneWidget);
+
   });
 }
