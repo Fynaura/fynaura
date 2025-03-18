@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart'; // Add the confetti package
-import 'GoalPage.dart'; // Import GoalPage for Goal class
+import 'package:fynaura/pages/goal-oriented-saving/Goalpage.dart'; // Import GoalPage for Goal class
 
 class GoalDetailScreen extends StatefulWidget {
   final Goal goal;

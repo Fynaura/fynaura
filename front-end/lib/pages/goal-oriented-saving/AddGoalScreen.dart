@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import 'GoalPage.dart';
+import 'package:fynaura/pages/goal-oriented-saving/Goalpage.dart';
 
 class AddGoalScreen extends StatefulWidget {
   @override

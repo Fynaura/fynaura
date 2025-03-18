@@ -6,7 +6,8 @@
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/profile.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/profile.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/AddGoalScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/AddGoalScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/GoalDetailScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/GoalDetailScreen.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,7 +37,7 @@
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "Merging CI",
+    "git-widget-placeholder": "CI",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/flutter/flutter_windows_3.27.0-stable/flutter/bin/cache/dart-sdk",
@@ -65,5 +66,23 @@
       <updated>1741075342759</updated>
     </task>
     <servers />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/front-end/lib/pages/profile/MyAccountPage.dart</url>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/GoalDetailScreen.dart</url>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="Dart">
+          <url>file://$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/AddGoalScreen.dart</url>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
