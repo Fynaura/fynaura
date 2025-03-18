@@ -21,6 +21,9 @@ jobs:
         with:
           flutter-version: '3.24.5'  # Use a specific Flutter version for better stability
 
+      - name: Run Flutter config --no-analytics (optional)
+        run: flutter config --no-analytics  # This suppresses analytics-related info during setup
+
       - name: Install dependencies
         run: flutter pub get  # Install project dependencies
 
@@ -35,4 +38,3 @@ jobs:
 #        with:
 #          name: app-release.apk
 #          path: build/app/outputs/flutter-apk/app-release.apk  # Path to the APK
-#
