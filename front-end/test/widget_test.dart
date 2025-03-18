@@ -1,6 +1,9 @@
+
+
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:fynaura/main.dart';
+import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 
 void main() {
   testWidgets('Splash screen test', (WidgetTester tester) async {
@@ -18,5 +21,13 @@ void main() {
     expect(find.byType(Center), findsOneWidget);
     expect(find.byType(Image), findsOneWidget);
 
+    // Fast-forward time to trigger the navigation
+    await tester.pump(const Duration(seconds: 5));
+
+    // Rebuild the widget tree after navigation
+    await tester.pumpAndSettle();
+
+    // Verify that we've navigated to the signup page
+    expect(find.byType(Mainsignup), findsOneWidget);
   });
 }
