@@ -1,0 +1,70 @@
+name: Flutter CI/CD
+#
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v3
+#
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: "3.24.5"
+#
+#      - name: Install dependencies
+#        run: flutter pub get
+#
+#      - name: Run tests
+#        run: flutter test
+#
+#      - name: Build APK
+#        run: flutter build apk --release
+#
+#      - name: Upload APK artifact
+#        uses: actions/upload-artifact@v3
+#        with:
+#          name: app-release.apk
+#          path: build/app/outputs/flutter-apk/app-release.apk
+
+
+on:
+  push:
+    branches:
+      - CI  # Trigger on push to main branch
+  pull_request:
+    branches:
+      - CI  # Trigger on pull request to main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: 'latest'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build Flutter app
+        run: flutter build web  # Change this to ios/android if needed
+
+      - name: Deploy to Firebase Hosting (optional)
+        run: |
+          firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}  # Store Firebase token as a secret
