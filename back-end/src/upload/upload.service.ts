@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { GoogleAuth } from 'google-auth-library';
 import * as fs from 'fs';
