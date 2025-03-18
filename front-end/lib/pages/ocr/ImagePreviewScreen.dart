@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'dart:convert';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'extracted_text_screen.dart';
 
 class ImagePreviewScreen extends StatefulWidget {
@@ -17,16 +18,31 @@ class ImagePreviewScreen extends StatefulWidget {
 
 class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
 
+  // Function to compress image before uploading
+  Future<XFile?> compressImage(File file) async {
+    final result = await FlutterImageCompress.compressAndGetFile(
+      file.absolute.path,
+      '${file.path}_compressed.jpg',
+      quality: 60,  // Lower quality for faster processing
+    );
+    return result; // This is now returning a File, not XFile
+  }
+
   // Function to upload image and get extracted text
   Future<void> uploadImage(File imageFile) async {
+    // Compress image
+    XFile? compressedFile = await compressImage(imageFile);
+    if (compressedFile == null) return; // Prevent sending null file
+
     var uri = Uri.parse("http://10.31.9.147:3000/upload");
 
     var request = http.MultipartRequest("POST", uri);
 
+    // Add the compressed file to the request
     request.files.add(await http.MultipartFile.fromPath(
       'image',
-      imageFile.path,
-      contentType: MediaType.parse(lookupMimeType(imageFile.path) ?? "image/jpeg"),
+      compressedFile.path,  // Send compressed file
+      contentType: MediaType.parse(lookupMimeType(compressedFile.path) ?? "image/jpeg"),
     ));
 
     var response = await request.send();
@@ -38,7 +54,6 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       final extractedData = json.decode(responseData);
 
       String totalAmount = extractedData['totalAmount'].toString();
-      //String billDate = extractedData['billDate'].toString();
 
       // Extracting category (First item in categorizedItems list)
       String category = "Unknown"; // Default value
@@ -56,7 +71,6 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         MaterialPageRoute(
           builder: (context) => ExtractedTextScreen(
             totalAmount: totalAmount,
-            //billDate: billDate,
             categorizedItems: List<Map<String, dynamic>>.from(extractedData['categorizedItems']),
           ),
         ),
@@ -68,7 +82,6 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       );
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -118,4 +131,3 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
     );
   }
 }
-
