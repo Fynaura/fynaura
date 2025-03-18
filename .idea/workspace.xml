@@ -5,7 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.github/workflows/flutter.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/flutter.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/.github/workflows/flutter.yml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/.github/workflows/flutter.yml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
