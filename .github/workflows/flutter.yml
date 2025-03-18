@@ -1,70 +1,38 @@
 name: Flutter CI/CD
-#
-#on:
-#  push:
-#    branches:
-#      - main
-#
-#jobs:
-#  build:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - name: Checkout repository
-#        uses: actions/checkout@v3
-#
-#      - name: Set up Flutter
-#        uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: "3.24.5"
-#
-#      - name: Install dependencies
-#        run: flutter pub get
-#
-#      - name: Run tests
-#        run: flutter test
-#
-#      - name: Build APK
-#        run: flutter build apk --release
-#
-#      - name: Upload APK artifact
-#        uses: actions/upload-artifact@v3
-#        with:
-#          name: app-release.apk
-#          path: build/app/outputs/flutter-apk/app-release.apk
-
 
 on:
   push:
     branches:
-      - CI  # Trigger on push to main branch
+      - CI  # Trigger on push to CI branch
   pull_request:
     branches:
-      - CI  # Trigger on pull request to main branch
+      - CI  # Trigger on pull request to CI branch
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Use the latest Ubuntu runner for building
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v2  # This checks out the code from the repo
 
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: 'latest'
+          flutter-version: '3.24.5'  # Use a specific Flutter version for better stability
 
       - name: Install dependencies
-        run: flutter pub get
+        run: flutter pub get  # Install project dependencies
 
       - name: Run tests
-        run: flutter test
+        run: flutter test  # Run Flutter unit tests
 
       - name: Build Flutter APK
-        run: flutter build apk
+        run: flutter build apk --release  # Build the release APK for Android
 
-      - name: Deploy to Firebase Hosting (optional)
-        run: |
-          firebase deploy --token ${{ secrets.FIREBASE_TOKEN }}
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}  # Store Firebase token as a secret
+      - name: Upload APK artifact (optional)
+        uses: actions/upload-artifact@v3  # This step is for storing the APK as an artifact
+        with:
+          name: app-release.apk
+          path: build/app/outputs/flutter-apk/app-release.apk  # Path to the APK
+
