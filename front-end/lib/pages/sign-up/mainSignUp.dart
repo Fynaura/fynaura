@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
-import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
@@ -23,10 +22,11 @@ class _MainSignupState extends State<Mainsignup> {
 
   final String apiUrl = 'http://10.0.2.2:3000/user/register';
 
-  // Error message state variables
+  // Error and success message state variables
   String? passwordError;
   String? emailError;
   String? generalError;
+  String? successMessage;
   bool isLoading = false;
 
   // Validate form before submission
@@ -90,6 +90,8 @@ class _MainSignupState extends State<Mainsignup> {
     // Show loading indicator
     setState(() {
       isLoading = true;
+      generalError = null;
+      successMessage = null;
     });
 
     // Prepare the data to send to the backend
@@ -116,21 +118,23 @@ class _MainSignupState extends State<Mainsignup> {
 
       // Parse the JSON response
       final Map<String, dynamic> responseData = json.decode(response.body);
-// Check if the response indicates success
-      if (response.statusCode == 200 && responseData['success'] == true) {
+
+      // Check if the response indicates success
+      if (response.statusCode == 200 || response.statusCode == 201) {
         // Registration successful
-        print("Registration successful: ${response.body}");
-        print("Success value: ${responseData['success']}");
-        print("Message: ${responseData['message']}");
+        setState(() {
+          successMessage = responseData['message'] ?? 'Registration successful!';
+          generalError = null; // Clear any existing error
+        });
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(responseData['message'] ?? 'Registration successful!'),
+          content: Text(successMessage!),
           backgroundColor: Colors.green,
         ));
 
         // Add a small delay before navigation
-        Future.delayed(const Duration(milliseconds: 500), () {
+        Future.delayed(const Duration(seconds: 2), () {
           // Navigate to login page
           Navigator.pushReplacement(
             context,
@@ -139,40 +143,17 @@ class _MainSignupState extends State<Mainsignup> {
         });
       } else {
         // Handle error response
-        print("Registration failed: ${response.body}");
-        print("Status code: ${response.statusCode}");
         setState(() {
           generalError = responseData['message'] ?? "Registration failed";
+          successMessage = null; // Clear any existing success message
         });
-      }
-      // Check if the response indicates success
-      if (response.statusCode == 200 && responseData['success'] == true) {
-        // Registration successful
-        print("Registration successful: ${response.body}");
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(responseData['message'] ?? 'Registration successful!'),
-          backgroundColor: Colors.green,
-        ));
-
-        // Navigate to login page
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const Mainlogin()),
-        );
-      } else {
-        // Handle error response
-        setState(() {
-          generalError = responseData['message'] ?? "Registration failed";
-        });
-        // Removed the misleading print statement
       }
     } catch (e) {
       // Hide loading indicator
       setState(() {
         isLoading = false;
         generalError = "Network error. Please check your connection and try again.";
+        successMessage = null; // Clear any existing success message
       });
       print("Exception occurred: $e");
     }
@@ -250,6 +231,29 @@ class _MainSignupState extends State<Mainsignup> {
                         child: Text(
                           generalError!,
                           style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              // Success message
+              if (successMessage != null)
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(top: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.green.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.check_circle, color: Colors.green),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          successMessage!,
+                          style: const TextStyle(color: Colors.green),
                         ),
                       ),
                     ],
