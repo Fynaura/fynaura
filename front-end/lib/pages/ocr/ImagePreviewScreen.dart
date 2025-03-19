@@ -4,8 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'dart:convert';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'extracted_text_screen.dart';
+import 'package:image/image.dart' as img;  // Import the image package
 
 class ImagePreviewScreen extends StatefulWidget {
   final File image;
@@ -17,68 +17,74 @@ class ImagePreviewScreen extends StatefulWidget {
 }
 
 class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
-
-  // Function to compress image before uploading
-  Future<XFile?> compressImage(File file) async {
-    final result = await FlutterImageCompress.compressAndGetFile(
-      file.absolute.path,
-      '${file.path}_compressed.jpg',
-      quality: 60,  // Lower quality for faster processing
-    );
-    return result; // This is now returning a File, not XFile
-  }
-
-  // Function to upload image and get extracted text
+  // Function to compress, convert to monochrome, and upload the image
   Future<void> uploadImage(File imageFile) async {
-    // Compress image
-    XFile? compressedFile = await compressImage(imageFile);
-    if (compressedFile == null) return; // Prevent sending null file
+    // Load the image file
+    img.Image? image = img.decodeImage(imageFile.readAsBytesSync());
 
-    var uri = Uri.parse("http://10.31.9.147:3000/upload");
+    if (image != null) {
+      // Convert the image to grayscale (monochrome)
+      image = img.grayscale(image);
 
-    var request = http.MultipartRequest("POST", uri);
+      // Compress the image (quality between 0-100)
+      List<int> compressedImage = img.encodeJpg(image, quality: 80);  // Adjust the quality as needed
 
-    // Add the compressed file to the request
-    request.files.add(await http.MultipartFile.fromPath(
-      'image',
-      compressedFile.path,  // Send compressed file
-      contentType: MediaType.parse(lookupMimeType(compressedFile.path) ?? "image/jpeg"),
-    ));
+      // Create a temporary file with the compressed image
+      File compressedFile = File('${imageFile.path}_compressed_monochrome.jpg')
+        ..writeAsBytesSync(compressedImage);
 
-    var response = await request.send();
+      var uri = Uri.parse("http://192.168.127.53:3000/upload");
 
-    if (response.statusCode == 200) {
-      print("Image uploaded successfully!");
-      final responseData = await response.stream.bytesToString();
-      print("Response Data: $responseData"); // Debugging Line
-      final extractedData = json.decode(responseData);
+      var request = http.MultipartRequest("POST", uri);
 
-      String totalAmount = extractedData['totalAmount'].toString();
+      request.files.add(await http.MultipartFile.fromPath(
+        'image',
+        compressedFile.path,
+        contentType: MediaType.parse(lookupMimeType(compressedFile.path) ?? "image/jpeg"),
+      ));
 
-      // Extracting category (First item in categorizedItems list)
-      String category = "Unknown"; // Default value
-      if (extractedData.containsKey('categorizedItems') &&
-          extractedData['categorizedItems'] is List &&
-          extractedData['categorizedItems'].isNotEmpty) {
-        category = extractedData['categorizedItems'][0]['predicted_category'] ?? "Unknown";
-      }
+      var response = await request.send();
 
-      print("Total Amount: $totalAmount, Category: $category"); // Debugging Line
+      if (response.statusCode == 200) {
+        print("Image uploaded successfully!");
+        final responseData = await response.stream.bytesToString();
+        print("Response Data: $responseData"); // Debugging Line
+        final extractedData = json.decode(responseData);
 
-      // Navigate to ExtractedTextScreen with extracted details
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ExtractedTextScreen(
-            totalAmount: totalAmount,
-            categorizedItems: List<Map<String, dynamic>>.from(extractedData['categorizedItems']),
+        String totalAmount = extractedData['totalAmount'].toString();
+        //String billDate = extractedData['billDate'].toString();
+
+        // Extracting category (First item in categorizedItems list)
+        String category = "Unknown"; // Default value
+        if (extractedData.containsKey('categorizedItems') &&
+            extractedData['categorizedItems'] is List &&
+            extractedData['categorizedItems'].isNotEmpty) {
+          category = extractedData['categorizedItems'][0]['predicted_category'] ?? "Unknown";
+        }
+
+        print("Total Amount: $totalAmount, Category: $category"); // Debugging Line
+
+        // Navigate to ExtractedTextScreen with extracted details
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ExtractedTextScreen(
+              totalAmount: totalAmount,
+              //billDate: billDate,
+              categorizedItems: List<Map<String, dynamic>>.from(extractedData['categorizedItems']),
+            ),
           ),
-        ),
-      );
+        );
+      } else {
+        print("Failed to upload image. Status Code: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Error: Could not extract text.")),
+        );
+      }
     } else {
-      print("Failed to upload image. Status Code: ${response.statusCode}");
+      print("Failed to decode image.");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Error: Could not extract text.")),
+        const SnackBar(content: Text("Error: Could not process image.")),
       );
     }
   }
@@ -91,42 +97,44 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         backgroundColor: Colors.grey[200],
         title: const Text("Image Preview"),
       ),
-      body: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Center(
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.file(
-                widget.image,
-                height: 650,
-                width: 370,
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
-          const SizedBox(height: 20),
-
-          // Upload Button
-          SizedBox(
-            width: 150,
-            child: ElevatedButton(
-              onPressed: () async {
-                await uploadImage(widget.image);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blue[300],
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
+      body: SingleChildScrollView(  // Wrap the body in a SingleChildScrollView
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Center(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(20),
+                child: Image.file(
+                  widget.image,
+                  height: 650,
+                  width: 370,
+                  fit: BoxFit.cover,
                 ),
               ),
-              child: const Text(
-                "Upload",
-                style: TextStyle(color: Colors.white, fontSize: 16),
+            ),
+            const SizedBox(height: 20),
+
+            // Upload Button
+            SizedBox(
+              width: 150,
+              child: ElevatedButton(
+                onPressed: () async {
+                  await uploadImage(widget.image);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.blue[300],
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(15),
+                  ),
+                ),
+                child: const Text(
+                  "Upload",
+                  style: TextStyle(color: Colors.white, fontSize: 16),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

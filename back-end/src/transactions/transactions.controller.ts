@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 
-import { Body, Get, Post } from '@nestjs/common';
+import { Body, Get, HttpCode, Post } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionsService } from './transactions.service';
@@ -33,6 +33,7 @@ export class TransactionsController {
   }
 
     @Post('bulk')
+    @HttpCode(200)
   async createBulk(@Body() bulkTransactions: CreateTransactionDto[]) {
     console.log(`✅ Received ${bulkTransactions.length} transactions`);
     return await this.transactionService.createBulk(bulkTransactions);

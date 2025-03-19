@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
@@ -76,8 +76,17 @@ export class TransactionsService {
     return balanceHistory;
   }
   
-  async createBulk(bulkTransactions: CreateTransactionDto[]): Promise<Transaction[]> {
-    return this.transactionModel.insertMany(bulkTransactions);
+  async createBulk(bulkTransactions: CreateTransactionDto[]): Promise<{ status: number, message: string }> {
+    try {
+      // Insert bulk transactions into the database
+      await this.transactionModel.insertMany(bulkTransactions);
+
+      // Return 200 status code and a success message
+      return { status: HttpStatus.OK, message: 'Bulk transactions created successfully' };
+    } catch (error) {
+      // Handle error and return a 500 status code for internal server error
+      return { status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Error creating bulk transactions' };
+    }
   }
   
 }

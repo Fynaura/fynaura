@@ -1,22 +1,55 @@
 import 'package:flutter/material.dart';
-
-import 'ImageSelectionOption.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'ocr_screen.dart';
 
 class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;
-  //final String billDate;
   final List<Map<String, dynamic>> categorizedItems;
 
   const ExtractedTextScreen({
     super.key,
     required this.totalAmount,
-    //required this.billDate,
     required this.categorizedItems,
   });
 
-  void _saveData(BuildContext context) {
-    //save data logic here
+  // Function to send the extracted data to the backend for saving
+  Future<void> _saveData(BuildContext context) async {
+    List<Map<String, dynamic>> formattedData = categorizedItems.map((item) {
+      return {
+        'type': 'expense',  // Always set to 'expense'
+        'amount': item['price'],  // Assuming 'price' field is the amount
+        'category': item['category'], 
+        'description': item['item'],  // Assuming 'item' field is the description/note
+        'date': item['billdate'] is DateTime 
+            ? item['billdate'].toIso8601String() 
+            : item['billdate'],  // Ensure date is in ISO format
+        'reminder': false,  // Always false
+      };
+    }).toList();
+
+    var uri = Uri.parse("http://192.168.127.53:3000/transaction/bulk");  // Replace with your API URL
+
+    var response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(formattedData),
+    );
+
+    if (response.statusCode == 200) {
+      print("Data saved successfully!");
+      // Show success dialog
+      _showSuccessDialog(context);
+    } else {
+      print("Failed to save data. Status Code: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error: Could not save data.")),
+      );
+    }
+  }
+
+  // Success dialog after data is saved
+  void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -54,7 +87,6 @@ class ExtractedTextScreen extends StatelessWidget {
                   child: const Text("Add Another Transaction", style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
               ),
-
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
@@ -63,7 +95,7 @@ class ExtractedTextScreen extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const OcrScreen()),// should change for navigate to home
+                      MaterialPageRoute(builder: (context) => const OcrScreen()), // Navigate to home page
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -73,14 +105,12 @@ class ExtractedTextScreen extends StatelessWidget {
                   child: const Text("Home", style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
               ),
-
             ],
           ),
         );
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
