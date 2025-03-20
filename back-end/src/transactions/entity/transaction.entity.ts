@@ -6,6 +6,6 @@ export class TransactionDTO {
     category: string;
     note?: string;
     date: Date;
-    reminder: boolean;
+    reminder: boolean;  
   }
   

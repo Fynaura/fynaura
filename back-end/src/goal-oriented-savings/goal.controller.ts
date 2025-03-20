@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Param, Put, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
 import { GoalService } from './goal.service';  // Adjust import path accordingly
 import { CreateGoalDto, UpdateGoalDto } from './dto/goal.dto';  // Adjust import path accordingly
 import { Goal } from './schema/goal.schema';
@@ -11,15 +11,22 @@ export class GoalController {
 
   // Endpoint to create a new goal
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   async create(@Body() createGoalDto: CreateGoalDto): Promise<Goal> {
+    console.log("✅ New goal created:", CreateGoalDto);
     return this.goalService.create(createGoalDto);
   }
 
-  // Endpoint to get all goals for a specific user
-  @Get(':userId')
-  async findAll(@Param('userId') userId: string): Promise<Goal[]> {
-    return this.goalService.findAll(userId);
+  @Get()
+  findAll() {
+    return this.goalService.findAll();
   }
+
+  // // Endpoint to get all goals for a specific user
+  // @Get(':userId')
+  // async findAll(@Param('userId') userId: string): Promise<Goal[]> {
+  //   return this.goalService.findAll(userId);
+  // }
 
   // Endpoint to get a single goal by its ID
   @Get('goal/:id')
@@ -67,5 +74,20 @@ export class GoalController {
     @Body() transaction: { amount: number; date: string; isAdded: boolean },
   ): Promise<Goal | null> {
     return this.goalService.addTransaction(id, transaction);
+  }
+
+  @Put(':goalId/complete')
+  async markGoalAsCompleted(@Param('goalId') goalId: string) {
+    return this.goalService.markGoalAsCompleted(goalId);
+  }
+
+  @Get(':goalId/progress')
+  async getGoalProgress(@Param('goalId') goalId: string) {
+    try {
+      const progress = await this.goalService.calculateGoalProgress(goalId);
+      return { progress };
+    } catch (error) {
+      return { error: error.message };
+    }
   }
 }

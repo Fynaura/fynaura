@@ -12,7 +12,7 @@ export class Goal {
   @Prop({ required: true })
   targetAmount: number;  // The target amount for the goal
 
-  @Prop({ required: true })
+  @Prop({ required: false })
   savedAmount: number;  // The amount saved towards the goal
 
   @Prop({ required: true })
@@ -36,8 +36,8 @@ export class Goal {
     }
   ];  // History of transactions related to the goal
 
-  @Prop({ required: true })
-  userId: string;  // The user who created the goal
+  // @Prop({ required: true })
+  // userId: string;  // The user who created the goal
 }
 
 export const GoalSchema = SchemaFactory.createForClass(Goal);
