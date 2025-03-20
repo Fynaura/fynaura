@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/fynaura.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fynaura.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab_main_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
