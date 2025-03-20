@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/front-end/android/gradle.properties" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/gradle.properties" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/fynaura.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/fynaura.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -16,6 +20,11 @@
     <option name="formatViaClangd" value="false" />
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="feature/login-validation" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
@@ -51,6 +60,7 @@
     <recent_temporary>
       <list>
         <item itemvalue="Flutter.main.dart" />
+        <item itemvalue="Flutter.main.dart" />
       </list>
     </recent_temporary>
   </component>
@@ -79,10 +89,6 @@
         <line-breakpoint enabled="true" type="Dart">
           <url>file://$PROJECT_DIR$/front-end/lib/pages/goal-oriented-saving/AddGoalScreen.dart</url>
           <option name="timeStamp" value="4" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="Dart">
-          <url>file://$PROJECT_DIR$/front-end/lib/services/transaction_service.dart</url>
-          <option name="timeStamp" value="6" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
