@@ -5,30 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfileBioEditPage.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfilePage.dart" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/SettingsPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/GoalPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/MyAccountPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/ProfileEditorPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/edit_profile_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/goal_editor_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/loginScreen.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/main.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/new_profile_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/MyAccountPage.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/edit_profile_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/loginScreen.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/new_profile_page.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/profile.dart" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfileBioEditPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfileBioEditPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfilePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfilePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/main.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

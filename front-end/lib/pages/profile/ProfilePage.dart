@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'ProfileBioEditPage.dart'; // Import Bio Edit Page
+import 'ProfileBioEditPage.dart';  // Import Bio Edit Page
+import 'SettingsPage.dart'; // Import SettingsPage
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -7,13 +8,17 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  String selectedAvatar = "images/fynaura.png"; // Default avatar image path
-  String userName = "Aura"; // Default user name
-  int userAge = 25; // Default user age
-  String userCurrency = "USD"; // Default currency
-  String userBio = "Hello! I am Aura. Welcome to my profile."; // Default user bio
+  String selectedAvatar = "images/default_avatar.png"; // Default avatar
+  String userName = "John Doe";
+  int userAge = 30;
+  String userCurrency = "USD";
+  String userBio = "Financially aware and goal-driven individual.";
 
-  // Navigate to the Bio Edit Page when the "Edit Bio" button is clicked
+  double currentBalance = 3500.00; // Example financial data
+  double savingsProgress = 80; // Percentage of savings goal achieved
+  int recentTransactions = 50; // Example transactions count
+
+  // Navigate to Edit Profile Page
   void _navigateToEditProfile() {
     Navigator.push(
       context,
@@ -26,7 +31,7 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     ).then((updatedData) {
-      // When coming back from the edit page, update the profile details
+      // When returning from the edit page, update profile data
       if (updatedData != null) {
         setState(() {
           userName = updatedData['name'];
@@ -38,23 +43,29 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  // Navigate to Settings Page
+  void _navigateToSettings() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => SettingsPage()),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Profile"),
-      ),
+      appBar: AppBar(title: Text("Profile")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Profile Picture and Name
+            // Avatar and Name
             Row(
               children: [
                 GestureDetector(
                   onTap: () {
-                    // Avatar selection logic goes here
+                    // Avatar selection logic here
                   },
                   child: CircleAvatar(
                     radius: 50,
@@ -70,24 +81,39 @@ class _ProfilePageState extends State<ProfilePage> {
                     Text("@username", style: TextStyle(color: Colors.grey)),
                   ],
                 ),
+                Spacer(),
+                IconButton(
+                  icon: Icon(Icons.edit, color: Colors.blue),
+                  onPressed: _navigateToEditProfile,
+                )
               ],
             ),
             SizedBox(height: 20),
-            // User Info (Age, Currency, Bio)
-            Text("Age: $userAge", style: TextStyle(fontSize: 18)),
-            Text("Currency: $userCurrency", style: TextStyle(fontSize: 18)),
+            Divider(),
+            // Financial Information
+            Text("Current Balance: \$${currentBalance.toStringAsFixed(2)}", style: TextStyle(fontSize: 18)),
+            Text("Savings Progress: ${savingsProgress.toStringAsFixed(0)}%", style: TextStyle(fontSize: 18)),
+            Text("Recent Transactions: $recentTransactions", style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
-            Text("Bio: $userBio", style: TextStyle(fontSize: 16)),
-            SizedBox(height: 30),
-            // Edit Profile Button
-            ElevatedButton(
-              onPressed: _navigateToEditProfile,
-              child: Text("Edit Profile", style: TextStyle(fontSize: 16)),
-              style: ElevatedButton.styleFrom(
-                padding: EdgeInsets.symmetric(vertical: 15),
-                backgroundColor: Colors.blue,
-                textStyle: TextStyle(color: Colors.white),
-              ),
+            Divider(),
+            // Bio Section
+            Text("Bio", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            SizedBox(height: 5),
+            Text(userBio, style: TextStyle(fontSize: 16)),
+            SizedBox(height: 20),
+            // Edit Profile and Settings buttons
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                ElevatedButton(
+                  onPressed: _navigateToEditProfile,
+                  child: Text("Edit Profile"),
+                ),
+                ElevatedButton(
+                  onPressed: _navigateToSettings,
+                  child: Text("Settings"),
+                ),
+              ],
             ),
           ],
         ),

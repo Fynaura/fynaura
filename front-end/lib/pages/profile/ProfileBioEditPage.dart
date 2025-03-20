@@ -32,7 +32,7 @@ class _ProfileBioEditPageState extends State<ProfileBioEditPage> {
     _bioController = TextEditingController(text: widget.bio);
   }
 
-  // Save the changes and send the updated data back
+  // Save the changes and send the updated data back to ProfilePage
   void _saveProfile() {
     Map<String, dynamic> updatedData = {
       'name': _nameController.text,
@@ -56,13 +56,10 @@ class _ProfileBioEditPageState extends State<ProfileBioEditPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Edit Profile"),
-      ),
+      appBar: AppBar(title: Text("Edit Profile")),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Name Input
             TextField(
