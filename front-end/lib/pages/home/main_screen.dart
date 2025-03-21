@@ -38,7 +38,8 @@ NavModel(
   navKey: homeNavKey,
 ),
       NavModel(
-        page: Text("analyze"), // Update to use title
+        // Text("analyze")
+        page: AnalyzePage(), // Update to use title
         navKey: analyticsNavKey,
       ),
       NavModel(

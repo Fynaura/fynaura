@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/home/home.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
@@ -21,7 +22,7 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   // API URL for backend login endpoint
-  final String apiUrl = 'http://10.0.2.2:3000/user/login';
+  final String apiUrl = 'http://192.168.127.53:3000/user/login';
 
   // Error message state variables
   String? emailError;
@@ -296,11 +297,13 @@ class _MainloginState extends State<Mainlogin> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => const MainScreen()),
+
+                          builder: (context) => MainScreen()),
                     );
                   },
                   child: const Text(
-                    "Temp?",
+                    "Temp",
+
                     style: TextStyle(
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w600,
