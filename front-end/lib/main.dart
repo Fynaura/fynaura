@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'ProfilePage.dart';  // Correct import for ProfilePage
+import 'pages/profile/ProfilePage.dart';  // Correct import for ProfilePage
 
 void main() {
   runApp(MyApp());
@@ -12,8 +12,9 @@ class MyApp extends StatelessWidget {
       title: 'Financial Tracker',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: ProfilePage(),  // Set ProfilePage as the home page
+      home: ProfilePage(), // ProfilePage is the first screen
     );
   }
 }

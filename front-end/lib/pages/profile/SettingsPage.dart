@@ -6,40 +6,36 @@ class SettingsPage extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text("Settings"),
+        backgroundColor: Colors.blueAccent,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
-            Text("Settings", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
-            Divider(),
-            // Add settings options here
-            ListTile(
-              leading: Icon(Icons.notifications),
-              title: Text("Notifications"),
-              onTap: () {
-                // Implement notification settings
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.security),
-              title: Text("Security"),
-              onTap: () {
-                // Implement security settings
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text("Account"),
-              onTap: () {
-                // Implement account settings
-              },
-            ),
-            // More settings options as needed
+            _buildSettingOption(Icons.notifications, "Notifications", () {
+              // Handle notifications settings
+            }),
+            _buildSettingOption(Icons.security, "Security", () {
+              // Handle security settings
+            }),
+            _buildSettingOption(Icons.account_circle, "Account", () {
+              // Handle account settings
+            }),
+            _buildSettingOption(Icons.help, "Help", () {
+              // Handle help settings
+            }),
           ],
         ),
       ),
+    );
+  }
+
+  // Helper method to build setting options
+  Widget _buildSettingOption(IconData icon, String text, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon, color: Colors.blue),
+      title: Text(text, style: TextStyle(fontSize: 18)),
+      onTap: onTap,
     );
   }
 }

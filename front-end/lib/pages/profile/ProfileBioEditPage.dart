@@ -32,7 +32,6 @@ class _ProfileBioEditPageState extends State<ProfileBioEditPage> {
     _bioController = TextEditingController(text: widget.bio);
   }
 
-  // Save the changes and send the updated data back to ProfilePage
   void _saveProfile() {
     Map<String, dynamic> updatedData = {
       'name': _nameController.text,
@@ -41,7 +40,7 @@ class _ProfileBioEditPageState extends State<ProfileBioEditPage> {
       'bio': _bioController.text,
     };
 
-    Navigator.pop(context, updatedData); // Return updated data to ProfilePage
+    Navigator.pop(context, updatedData);
   }
 
   @override
@@ -61,33 +60,19 @@ class _ProfileBioEditPageState extends State<ProfileBioEditPage> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Name Input
-            TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: 'Name'),
-            ),
+            // Name input
+            _buildTextField(_nameController, "Name"),
             SizedBox(height: 20),
-            // Age Input
-            TextField(
-              controller: _ageController,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(labelText: 'Age'),
-            ),
+            // Age input
+            _buildTextField(_ageController, "Age", inputType: TextInputType.number),
             SizedBox(height: 20),
-            // Currency Input
-            TextField(
-              controller: _currencyController,
-              decoration: InputDecoration(labelText: 'Currency'),
-            ),
+            // Currency input
+            _buildTextField(_currencyController, "Currency"),
             SizedBox(height: 20),
-            // Bio Input
-            TextField(
-              controller: _bioController,
-              decoration: InputDecoration(labelText: 'Bio'),
-              maxLines: 4,
-            ),
+            // Bio input
+            _buildTextField(_bioController, "Bio", maxLines: 4),
             SizedBox(height: 30),
-            // Save Button
+            // Save button
             ElevatedButton(
               onPressed: _saveProfile,
               child: Text("Save Changes", style: TextStyle(fontSize: 16)),
@@ -100,6 +85,16 @@ class _ProfileBioEditPageState extends State<ProfileBioEditPage> {
           ],
         ),
       ),
+    );
+  }
+
+  // Custom widget for text fields
+  Widget _buildTextField(TextEditingController controller, String label, {TextInputType inputType = TextInputType.text, int maxLines = 1}) {
+    return TextField(
+      controller: controller,
+      decoration: InputDecoration(labelText: label),
+      keyboardType: inputType,
+      maxLines: maxLines,
     );
   }
 }

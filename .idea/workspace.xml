@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/SettingsPage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfileBioEditPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfileBioEditPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfilePage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/ProfilePage.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/SettingsPage.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/SettingsPage.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/lib/pages/profile/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/profile/main.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -29,18 +30,18 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "namindu-07"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;namindu-07&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Fynaura/fynaura.git",
-    "accountId": "4fabbdef-5757-4d96-a8ec-0e8c7c2a5644"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Fynaura/fynaura.git&quot;,
+    &quot;accountId&quot;: &quot;4fabbdef-5757-4d96-a8ec-0e8c7c2a5644&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -60,6 +61,7 @@
     "cidr.known.project.marker": "true",
     "dart.analysis.tool.window.visible": "false",
     "git-widget-placeholder": "Profile__New",
+    "ignore.virus.scanning.warn.message": "true",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/flutter/flutter_windows_3.27.0-stable/flutter/bin/cache/dart-sdk",
@@ -68,8 +70,8 @@
   }
 }]]></component>
   <component name="RunManager" selected="Flutter.main.dart (1)">
-    <configuration name="main.dart (1)" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">
-      <option name="filePath" value="$PROJECT_DIR$/front-end/lib/pages/profile/main.dart" />
+    <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">
+      <option name="filePath" value="$PROJECT_DIR$/front-end/lib/main.dart" />
       <method v="2" />
     </configuration>
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">

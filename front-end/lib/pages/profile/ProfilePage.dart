@@ -31,7 +31,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ),
       ),
     ).then((updatedData) {
-      // When returning from the edit page, update profile data
       if (updatedData != null) {
         setState(() {
           userName = updatedData['name'];
@@ -54,11 +53,13 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Profile")),
+      appBar: AppBar(
+        title: Text("Profile", style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.blueAccent,
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: ListView(
           children: [
             // Avatar and Name
             Row(
@@ -85,38 +86,70 @@ class _ProfilePageState extends State<ProfilePage> {
                 IconButton(
                   icon: Icon(Icons.edit, color: Colors.blue),
                   onPressed: _navigateToEditProfile,
-                )
+                ),
               ],
             ),
-            SizedBox(height: 20),
             Divider(),
-            // Financial Information
-            Text("Current Balance: \$${currentBalance.toStringAsFixed(2)}", style: TextStyle(fontSize: 18)),
-            Text("Savings Progress: ${savingsProgress.toStringAsFixed(0)}%", style: TextStyle(fontSize: 18)),
-            Text("Recent Transactions: $recentTransactions", style: TextStyle(fontSize: 18)),
             SizedBox(height: 20),
+
+            // Financial Data Section
+            _buildFinancialSection(),
+
+            SizedBox(height: 30),
             Divider(),
+
             // Bio Section
-            Text("Bio", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 5),
-            Text(userBio, style: TextStyle(fontSize: 16)),
+            _buildBioSection(),
+
             SizedBox(height: 20),
-            // Edit Profile and Settings buttons
+
+            // Action buttons for Edit Profile and Settings
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                ElevatedButton(
-                  onPressed: _navigateToEditProfile,
-                  child: Text("Edit Profile"),
-                ),
-                ElevatedButton(
-                  onPressed: _navigateToSettings,
-                  child: Text("Settings"),
-                ),
+                _buildActionButton("Edit Profile", _navigateToEditProfile),
+                _buildActionButton("Settings", _navigateToSettings),
               ],
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  // Widget to build financial data
+  Widget _buildFinancialSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Current Balance: \$${currentBalance.toStringAsFixed(2)}", style: TextStyle(fontSize: 18)),
+        Text("Savings Progress: ${savingsProgress.toStringAsFixed(0)}%", style: TextStyle(fontSize: 18)),
+        Text("Recent Transactions: $recentTransactions", style: TextStyle(fontSize: 18)),
+      ],
+    );
+  }
+
+  // Widget to build bio section
+  Widget _buildBioSection() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("Bio", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        SizedBox(height: 5),
+        Text(userBio, style: TextStyle(fontSize: 16)),
+      ],
+    );
+  }
+
+  // Widget to build action buttons
+  Widget _buildActionButton(String text, Function onPressed) {
+    return ElevatedButton(
+      onPressed: () => onPressed(),
+      child: Text(text, style: TextStyle(fontSize: 16)),
+      style: ElevatedButton.styleFrom(
+        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        backgroundColor: Colors.blue,
+        textStyle: TextStyle(color: Colors.white),
       ),
     );
   }
