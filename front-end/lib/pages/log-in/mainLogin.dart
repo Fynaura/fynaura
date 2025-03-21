@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/home/home.dart';
+import 'package:fynaura/pages/home/main_screen.dart'; // Import MainScreen for navigation
+import 'package:fynaura/pages/profile/profile.dart'; // Import ProfilePage for forgot password
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
-import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
-import '../home/main_screen.dart';
+
+// Global variable to store the user ID
+String? userId;
 
 class Mainlogin extends StatefulWidget {
   const Mainlogin({super.key});
@@ -17,31 +19,29 @@ class Mainlogin extends StatefulWidget {
 }
 
 class _MainloginState extends State<Mainlogin> {
-  // Controllers for the input fields
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  // API URL for backend login endpoint
-  final String apiUrl = 'http://192.168.127.53:3000/user/login';
+  final String apiUrl =
+      'http://192.168.127.53:3000/user/login'; // API endpoint for login
 
-  // Error message state variables
   String? emailError;
   String? passwordError;
   String? generalError;
   bool isLoading = false;
 
+  String? get currentUserId => userId;
+
   // Validate form before submission
   bool validateForm() {
     bool isValid = true;
 
-    // Reset error messages
     setState(() {
       emailError = null;
       passwordError = null;
       generalError = null;
     });
 
-    // Check if email is empty
     if (emailController.text.isEmpty) {
       setState(() {
         emailError = "Email is required";
@@ -49,16 +49,15 @@ class _MainloginState extends State<Mainlogin> {
       isValid = false;
     }
 
-    // Validate email format
     final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
-    if (emailController.text.isNotEmpty && !emailRegex.hasMatch(emailController.text)) {
+    if (emailController.text.isNotEmpty &&
+        !emailRegex.hasMatch(emailController.text)) {
       setState(() {
         emailError = "Please enter a valid email address";
       });
       isValid = false;
     }
 
-    // Check if password is empty
     if (passwordController.text.isEmpty) {
       setState(() {
         passwordError = "Password is required";
@@ -70,96 +69,79 @@ class _MainloginState extends State<Mainlogin> {
   }
 
   // Empty function to use when button should be disabled
-  void _doNothing() {
-    // This function intentionally does nothing
-  }
+  void _doNothing() {}
 
   // Login user method
   Future<void> loginUser() async {
-    // Validate form
     if (!validateForm()) {
       return;
     }
 
-    // Show loading indicator
     setState(() {
       isLoading = true;
     });
 
-    // Prepare the data to send to the backend
     final Map<String, dynamic> data = {
       'email': emailController.text,
       'password': passwordController.text,
     };
 
     try {
-      // Send a POST request to the backend
       final response = await http.post(
         Uri.parse(apiUrl),
         headers: {"Content-Type": "application/json"},
         body: json.encode(data),
       );
 
-      // Hide loading indicator
       setState(() {
         isLoading = false;
       });
 
-      // Parse the response body
       final responseData = json.decode(response.body);
 
-      // If we received an idToken, consider it a successful login
       if (response.statusCode == 200 || responseData.containsKey('idToken')) {
-        // Store the token for later use (you might want to save it securely)
-        // For example: await secureStorage.write(key: 'idToken', value: responseData['idToken']);
+        String idToken = responseData['idToken'];
 
-        print("Login successful!");
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Login successful!'),
-          backgroundColor: Colors.green,
-        ));
-
-        // Navigate to the home screen
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+        // Send the idToken to the backend to get user details
+        final userDetailsResponse = await http.get(
+          Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
+          headers: {"Authorization": "Bearer $idToken"},
         );
-      } else {
-        // Parse the error response
-        Map<String, dynamic> errorResponse = responseData;
 
-        // Handle specific error cases
-        if (response.statusCode == 401) {
-          // Unauthorized - wrong credentials
-          setState(() {
-            generalError = "Invalid email or password. Please try again.";
-          });
-        } else if (response.statusCode == 404) {
-          // User not found
-          setState(() {
-            emailError = "No account found with this email. Please sign up.";
-          });
-        } else if (errorResponse.containsKey('message')) {
-          // Show the specific error message from the backend
-          setState(() {
-            generalError = errorResponse['message'];
-          });
+        final userDetails = json.decode(userDetailsResponse.body);
+        final userSession = UserSession();
+        if (userDetails != null) {
+          userSession.userId = userDetails['uid'];
+          // Set the global user ID
+          userId = userDetails['uid']; // Assuming userId is in the response
+
+          // Navigate to the MainScreen with user details
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScreen(
+                displayName: userDetails['displayName'],
+                email: userDetails['email'],
+              ),
+            ),
+          );
         } else {
-          // Generic error
           setState(() {
-            generalError = "Login failed. Please try again later.";
+            generalError = 'Failed to fetch user details.';
           });
         }
-
-        print("Login failed. Error: ${response.body}");
+      } else {
+        Map<String, dynamic> errorResponse = responseData;
+        setState(() {
+          generalError = errorResponse['message'] ??
+              "Login failed. Please try again later.";
+        });
       }
     } catch (e) {
-      // Handle network or other errors
       setState(() {
         isLoading = false;
-        generalError = "Network error. Please check your connection and try again.";
+        generalError =
+            "Network error. Please check your connection and try again.";
       });
       print("Error during login: $e");
     }
@@ -169,7 +151,10 @@ class _MainloginState extends State<Mainlogin> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CustomBackButton(),
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -271,11 +256,9 @@ class _MainloginState extends State<Mainlogin> {
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Navigate to forgot password screen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ForgotPwFirst()),
+                      MaterialPageRoute(builder: (context) => ProfilePage()),
                     );
                   },
                   child: const Text(
@@ -289,36 +272,15 @@ class _MainloginState extends State<Mainlogin> {
                   ),
                 ),
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: TextButton(
-                  onPressed: () {
-                    // Navigate to forgot password screen
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-
-                          builder: (context) => MainScreen()),
-                    );
-                  },
-                  child: const Text(
-                    "Temp",
-
-                    style: TextStyle(
-                      fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w600,
-                      fontSize: 14,
-                      color: Color(0xFF6A707C),
-                    ),
-                  ),
-                ),
-              ),
               const SizedBox(height: 10),
               CustomButton(
                 text: isLoading ? "Please wait..." : "Login",
-                backgroundColor: isLoading ? Colors.grey : const Color(0xFF1E232C),
+                backgroundColor:
+                    isLoading ? Colors.grey : const Color(0xFF1E232C),
                 textColor: Colors.white,
-                onPressed: isLoading ? _doNothing : loginUser, // Disable button when loading
+                onPressed: isLoading
+                    ? _doNothing
+                    : loginUser, // Disable button when loading
               ),
               const SizedBox(height: 20),
               Row(
@@ -337,7 +299,8 @@ class _MainloginState extends State<Mainlogin> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const Mainsignup()),
+                        MaterialPageRoute(
+                            builder: (context) => const Mainsignup()),
                       );
                     },
                     child: const Text(
@@ -352,26 +315,6 @@ class _MainloginState extends State<Mainlogin> {
                 ],
               ),
               const SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Or Login with",
-                      style: TextStyle(
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  Expanded(child: Divider(color: const Color(0xFFE8ECF4))),
-                ],
-              ),
-              const SizedBox(height: 20),
-              // Social media login buttons
             ],
           ),
         ),

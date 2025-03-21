@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/Analize/TransactionModel.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 import 'package:fynaura/widgets/analyze/money_chart.dart';  // Import MoneyChart
 import 'package:fynaura/widgets/analyze/pie_chart.dart';    // Import PieChart
@@ -48,7 +49,9 @@ class _AnalyzePageState extends State<AnalyzePage> {
 
   // Fetch transactions for the list
   Future<void> fetchTransactions() async {
-    final response = await http.get(Uri.parse('http://192.168.127.53:3000/transaction'));
+    final userSession = UserSession();
+    final uid = userSession.userId; 
+    final response = await http.get(Uri.parse('http://192.168.127.53:3000/transaction/$uid'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response and map it to Transaction model

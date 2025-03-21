@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 
@@ -9,14 +8,21 @@ import '../profile/profile.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
 
-
-
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final String displayName;
+  final String email;
+
+  // Constructor to receive user details
+  const MainScreen({
+    super.key,
+    required this.displayName,
+    required this.email,
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
+
 
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
@@ -32,19 +38,17 @@ class _MainScreenState extends State<MainScreen> {
   void initState() {
     super.initState();
     items = [
-
-NavModel(
-  page: DashboardScreen(),  // Use DashboardScreen as the Home tab
-  navKey: homeNavKey,
-),
       NavModel(
-        // Text("analyze")
+        page: DashboardScreen(displayName: widget.displayName, email: widget.email), // Pass the details to DashboardScreen
+        navKey: homeNavKey,
+      ),
+      NavModel(
         page: AnalyzePage(), // Update to use title
         navKey: analyticsNavKey,
       ),
       NavModel(
         page: CollabMain(), // Update to use title
-        navKey: planNavKey, // Update to use key  
+        navKey: planNavKey, // Update to use key
       ),
       NavModel(
         page: ProfilePage(), // Update to use title
@@ -69,13 +73,13 @@ NavModel(
           index: selectedTab,
           children: items
               .map((page) => Navigator(
-            key: page.navKey,
-            onGenerateInitialRoutes: (navigator, initialRoute) {
-              return [
-                MaterialPageRoute(builder: (context) => page.page)
-              ];
-            },
-          ))
+                    key: page.navKey,
+                    onGenerateInitialRoutes: (navigator, initialRoute) {
+                      return [
+                        MaterialPageRoute(builder: (context) => page.page)
+                      ];
+                    },
+                  ))
               .toList(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -86,16 +90,13 @@ NavModel(
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             elevation: 0,
-
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransactionDetailsPage()),
-
             ),
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
               borderRadius: BorderRadius.circular(100),
-
             ),
             child: const Icon(
               Icons.add,
@@ -107,9 +108,10 @@ NavModel(
           pageIndex: selectedTab,
           onTap: (index) {
             if (index == selectedTab) {
-
-              items[index].navKey.currentState?.popUntil((route) => route.isFirst);
-
+              items[index]
+                  .navKey
+                  .currentState
+                  ?.popUntil((route) => route.isFirst);
             } else {
               setState(() {
                 selectedTab = index;
@@ -121,4 +123,3 @@ NavModel(
     );
   }
 }
-

@@ -11,7 +11,7 @@ export class TransactionsService {
   constructor(
     @InjectModel(Transaction.name)
     private readonly transactionModel: Model<Transaction>,
-  ) {}
+  ) { }
 
   async create(createTransactionDto: CreateTransactionDto): Promise<Transaction> {
     const newTransaction = new this.transactionModel(createTransactionDto);
@@ -34,32 +34,32 @@ export class TransactionsService {
   async getHourlyBalanceForLast24Hours(): Promise<TransactionDTO[]> {
     const now = new Date();
     const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
-  
+
     // Fetch transactions from the last 24 hours
     const transactions = await this.transactionModel
       .find({ date: { $gte: last24Hours } })
       .sort({ date: 1 }) // Sort by date ascending
       .exec();
-  
+
     // Initialize an array to hold the balance data for each hour
     const hourlyBalances = Array(24).fill(0); // There are 24 hours in a day, initialize with 0 balance
-  
+
     // Iterate through the transactions to calculate the running balance for each hour
     transactions.forEach((transaction) => {
       const hour = transaction.date.getHours(); // Get the hour of the transaction
-  
+
       if (transaction.type === 'income') {
         hourlyBalances[hour] += transaction.amount; // Add amount for 'income'
       } else if (transaction.type === 'expense') {
         hourlyBalances[hour] -= transaction.amount; // Subtract amount for 'expense'
       }
     });
-  
+
     // Calculate running balance for each hour
     let cumulativeBalance = 0;
     const balanceHistory: TransactionDTO[] = hourlyBalances.map((balance, index) => {
       cumulativeBalance += balance; // Update cumulative balance
-  
+
       // Create the DTO for the current hour, with the required missing properties
       return {
         timestamp: new Date(now.getFullYear(), now.getMonth(), now.getDate(), index), // Hourly timestamp
@@ -70,12 +70,13 @@ export class TransactionsService {
         description: 'Hourly balance update', // Placeholder description
         date: new Date(now.getFullYear(), now.getMonth(), now.getDate(), index), // Add the missing 'date' field
         reminder: false, // Add the missing 'reminder' field, you can set this to false or adjust as needed
+        userId: 'N/A', // Placeholder, you can modify as necessary
       };
     });
-  
+
     return balanceHistory;
   }
-  
+
   async createBulk(bulkTransactions: CreateTransactionDto[]): Promise<{ status: number, message: string }> {
     try {
       // Insert bulk transactions into the database
@@ -88,5 +89,30 @@ export class TransactionsService {
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Error creating bulk transactions' };
     }
   }
-  
+  // Method to retrieve transactions based on userId
+  async findByUserId(userId: string): Promise<Transaction[]> {
+    return this.transactionModel.find({ userId }).exec();
+  }
+
+  async getTotalIncomeForUser(userId: string): Promise<number> {
+    const transactions = await this.transactionModel.find({
+      userId: userId,
+      type: 'income'
+    }).exec();
+
+    const totalIncome = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+    return totalIncome;
+  }
+
+  async getTotalExpenseForUser(userId: string): Promise<number> {
+    const transactions = await this.transactionModel.find({ 
+      userId: userId, 
+      type: 'expense' 
+    }).exec();
+    
+    const totalExpense = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+    return totalExpense;
+  }
+
+
 }

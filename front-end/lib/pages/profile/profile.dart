@@ -80,7 +80,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EditProfilePage()),
+                      MaterialPageRoute(builder: (context) => ProfileEditorPage()),
                     );
                   },
                 )

@@ -9,7 +9,7 @@ import { AuthGuard } from '../guard/auth.guard';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
 
   @Post('register')
@@ -35,6 +35,15 @@ export class UserController {
   refreshAuth(@Query('refreshToken') refreshToken: string) {
     return this.userService.refreshAuthToken(refreshToken);
   }
+
+
+
+  @Get('me')
+  async getUserDetails(@Query('idToken') idToken: string) {
+    return await this.userService.getUserDetails(idToken);
+  }
+
+
 
 //   @Post()
 //   create(@Body() createUserDto: CreateUserDto) {

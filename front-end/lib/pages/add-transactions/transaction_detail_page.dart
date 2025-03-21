@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/ocr/ImagePreviewScreen.dart';
 import 'package:fynaura/pages/ocr/ImageSelectionOption.dart';
-import 'dart:io';  // Add this import to access the File class
+import 'package:fynaura/pages/user-session/UserSession.dart'; // Import UserSession
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'transaction_category_page.dart';
@@ -15,8 +15,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 class TransactionDetailsPage extends StatefulWidget {
   @override
-  _TransactionDetailsPageState createState() =>
-      _TransactionDetailsPageState();
+  _TransactionDetailsPageState createState() => _TransactionDetailsPageState();
 }
 
 class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
@@ -45,7 +44,8 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   // Initialize notifications with timezone support.
   void _initNotifications() async {
     tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('Asia/Colombo')); // Adjust to your locale
+    tz.setLocalLocation(
+        tz.getLocation('Asia/Colombo')); // Adjust to your locale
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -150,6 +150,10 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     final transactionService = TransactionService();
     final type = isExpense ? "expense" : "income"; // Determine the type
 
+    // Access the userId from the singleton
+    final userSession = UserSession();
+    final uid = userSession.userId;
+
     try {
       // Create the transaction through the service
       await transactionService.createTransaction(
@@ -158,6 +162,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
         amount: double.parse(amountController.text),
         description: descriptionController.text,
         date: selectedDate,
+        uid: uid, // Pass the global userId here
       );
 
       // If reminder is set, schedule it
@@ -189,28 +194,32 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     selectedDate = DateTime.now();
   }
 
-void pickImageAndNavigate(ImageSource source) async {
-  final pickedImage = source == ImageSource.camera
-      ? await ImageSelectionOption.pickImageFromCamera()
-      : await ImageSelectionOption.pickImageFromGallery();
+  void pickImageAndNavigate(ImageSource source) async {
+    final pickedImage = source == ImageSource.camera
+        ? await ImageSelectionOption.pickImageFromCamera()
+        : await ImageSelectionOption.pickImageFromGallery();
 
-  if (pickedImage != null) {
-    // Navigate to ImagePreviewScreen with the picked image
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => ImagePreviewScreen(image: pickedImage),
-      ),
-    );
-  } else {
-    // Show an error or message if no image was selected
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("No image selected")),
-    );
+    if (pickedImage != null) {
+      // Navigate to ImagePreviewScreen with the picked image
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ImagePreviewScreen(image: pickedImage),
+        ),
+      );
+    } else {
+      // Show an error or message if no image was selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("No image selected")),
+      );
+    }
   }
-}
+
   @override
   Widget build(BuildContext context) {
+    final userSession = UserSession();
+    final uid = userSession.userId;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
@@ -256,6 +265,13 @@ void pickImageAndNavigate(ImageSource source) async {
               ),
             SizedBox(height: 20),
             buildCameraGalleryButtons(),
+
+            // Display the uid in the UI for testing purposes
+            SizedBox(height: 20),
+            Text(
+              "User ID: ${uid ?? 'No User ID available'}",
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+            ),
           ],
         ),
       ),
@@ -381,32 +397,32 @@ void pickImageAndNavigate(ImageSource source) async {
 
   // Buttons for picking an image from camera or gallery.
   Widget buildCameraGalleryButtons() {
-  return Row(
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    children: [
-      ElevatedButton.icon(
-        onPressed: () => pickImageAndNavigate(ImageSource.camera),  // Use pickImageAndNavigate for Camera
-        icon: Icon(Icons.camera_alt, color: Colors.white),
-        label: Text("Camera"),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF85C1E5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      children: [
+        ElevatedButton.icon(
+          onPressed: () => pickImageAndNavigate(ImageSource.camera),  // Use pickImageAndNavigate for Camera
+          icon: Icon(Icons.camera_alt, color: Colors.white),
+          label: Text("Camera"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF85C1E5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
-      ),
-      ElevatedButton.icon(
-        onPressed: () => pickImageAndNavigate(ImageSource.gallery),  // Use pickImageAndNavigate for Gallery
-        icon: Icon(Icons.photo, color: Colors.white),
-        label: Text("Gallery"),
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Color(0xFF85C1E5),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
+        ElevatedButton.icon(
+          onPressed: () => pickImageAndNavigate(ImageSource.gallery),  // Use pickImageAndNavigate for Gallery
+          icon: Icon(Icons.photo, color: Colors.white),
+          label: Text("Gallery"),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Color(0xFF85C1E5),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
-      ),
-    ],
-  );
-}
+      ],
+    );
+  }
 }

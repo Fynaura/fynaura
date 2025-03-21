@@ -7,5 +7,6 @@ export class TransactionDTO {
     note?: string;
     date: Date;
     reminder: boolean;
+    userId: string;
   }
   

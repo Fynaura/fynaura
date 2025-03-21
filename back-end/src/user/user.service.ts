@@ -202,7 +202,10 @@ export class UserService {
     try {
       const { idToken, refreshToken, expiresIn } =
         await this.signInWithEmailAndPassword(email, password);
-      return { idToken, refreshToken, expiresIn };
+        const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
+        const userId = decodedToken.uid; 
+        console.log('Logged in user UID:', userId);
+      return { idToken, refreshToken, expiresIn, uid:userId};
     } catch (error: any) {
       if (error.message.includes('EMAIL_NOT_FOUND')) {
         throw new Error('User not found.');
@@ -219,6 +222,7 @@ export class UserService {
       email,
       password,
       returnSecureToken: true,
+      
     });
   }
   private async sendPostRequest(url: string, data: any) {
@@ -291,4 +295,26 @@ export class UserService {
   findAll() {
     return `This action returns all user`;
   }
+
+  async getUserDetails(idToken: string) {
+    try {
+      // Verify the idToken with Firebase Admin SDK
+      const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
+      const uid = decodedToken.uid; // Extract UID from the decoded token
+  
+      // Now, fetch the user's details from Firebase using the UID
+      const userRecord = await firebaseAdmin.auth().getUser(uid);
+  
+      // You can return user details here
+      return {
+        uid: userRecord.uid,
+        email: userRecord.email,
+        displayName: userRecord.displayName,
+      };
+    } catch (error) {
+      console.error('Error fetching user details:', error);
+      throw new HttpException('Unable to fetch user details', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
 }
