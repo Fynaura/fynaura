@@ -5,15 +5,30 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/front-end/lib/widgets/welcome_notification.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_SDK.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/back-end/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/.cmake/api/v1/reply/index-2025-03-09T15-18-37-0238.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/arm64-v8a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/.cmake/api/v1/reply/index-2025-03-09T15-18-41-0231.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/armeabi-v7a/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/.cmake/api/v1/reply/index-2025-03-09T15-18-44-0237.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/.cmake/api/v1/reply/index-2025-03-09T15-18-46-0513.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/configure_fingerprint.bin" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/.cxx/Debug/495q2l1a/x86_64/configure_fingerprint.bin" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/src/main/AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/android/app/src/main/kotlin/com/example/fynaura/MainActivity.kt" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/android/app/src/main/kotlin/com/example/fynaura/MainActivity.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/loginScreen.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/loginScreen.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/main.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/services/budget_service.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/services/budget_service.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/linux/flutter/generated_plugins.cmake" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/macos/Flutter/GeneratedPluginRegistrant.swift" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.cc" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.h" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugin_registrant.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/windows/flutter/generated_plugins.cmake" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -24,9 +39,28 @@
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
   </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Dart File" />
+      </list>
+    </option>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "namindu-07"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/Fynaura/fynaura.git",
+    "accountId": "4fabbdef-5757-4d96-a8ec-0e8c7c2a5644"
+  }
+}]]></component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -35,23 +69,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/flutter/flutter_windows_3.27.0-stable/flutter/bin/cache/dart-sdk&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;dart.settings&quot;,
-    &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Flutter.main.dart.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "dart.analysis.tool.window.visible": "false",
+    "git-widget-placeholder": "Notification",
+    "io.flutter.reload.alreadyRun": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/flutter/flutter_windows_3.27.0-stable/flutter/bin/cache/dart-sdk",
+    "project.structure.last.edited": "SDKs",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.0",
+    "settings.editor.selected.configurable": "dart.settings",
+    "show.migrate.to.gradle.popup": "false"
   }
-}</component>
+}]]></component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">
       <option name="filePath" value="$PROJECT_DIR$/front-end/lib/main.dart" />
