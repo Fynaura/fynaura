@@ -1,31 +1,39 @@
-name: fynaura
-description: "A new Flutter project."
+name: flutter_dialogflow
+description: A new Flutter project.
 
-publish_to: 'none'
+# The following line prevents the package from being accidentally published to
+# pub.dev using `flutter pub publish`. This is preferred for private packages.
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
+# The following defines the version and build number for your application.
+# A version number is three numbers separated by dots, like 1.2.43
+# followed by an optional build number separated by a +.
+# Both the version and the builder number may be overridden in flutter
+# build by specifying --build-name and --build-number, respectively.
+# In Android, build-name is used as versionName while build-number used as versionCode.
+# Read more about Android versioning at https://developer.android.com/studio/publish/versioning
+# In iOS, build-name is used as CFBundleShortVersionString while build-number used as CFBundleVersion.
+# Read more about iOS versioning at
+# https://developer.apple.com/library/archive/documentation/General/Reference/InfoPlistKeyReference/Articles/CoreFoundationKeys.html
 version: 1.0.0+1
 
 environment:
-  sdk: ">=3.5.4 <4.0.0"
+  sdk: ">=2.16.1 <3.0.0"
 
 dependencies:
-  flutter_plugin_android_lifecycle: ^2.0.15
-  image_picker: ^1.0.4
-  #  image_picker_android: ^0.8.12+21
   flutter:
     sdk: flutter
 
 
 
+  shared_preferences: ^2.5.2
 
 
-
+  dialog_flowtter: ^0.3.3
   http: 1.3.0
   intl: ^0.18.0
-
   
-  http_parser: ^4.0.2
-
+  http_parser: ^4.1.2
   mime: ^2.0.0
 
 
@@ -35,12 +43,9 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
-  
-  confetti: ^0.6.0
+
+
   fl_chart: ^0.70.2
-
-  shared_preferences: ^2.4.0 
-
 
   timezone: ^0.10.0
   flutter_local_notifications: ^18.0.1
@@ -51,38 +56,46 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_launcher_icons: "^0.14.2"
-flutter_launcher_icons:
-  android: true
-  ios: true
-  image_path: "images/fynaura.png"  # Main image for app icon
 
-flutter_lints: ^4.0.0
+  # The "flutter_lints" package below contains a set of recommended lints to
+  # encourage good coding practices. The lint set provided by the package is
+  # activated in the `analysis_options.yaml` file located at the root of your
+  # package. See that file for information about deactivating specific lint
+  # rules and activating additional ones.
+  flutter_lints: ^1.0.0
 
+# For information on the generic Dart part of this file, see the
+# following page: https://dart.dev/tools/pub/pubspec
+
+# The following section is specific to Flutter.
 flutter:
+  # The following line ensures that the Material Icons font is
+  # included with your application, so that you can use the icons in
+  # the material Icons class.
   uses-material-design: true
 
+  # To add assets to your application, add an assets section, like this:
   assets:
 
-    - images/fynaura.png
-    - images/fynaura-icon.png
-    - images/google.png
-    - images/fb.png
-    - images/apple.png
-    - images/cellphone.png
+     - images/fynaura.png
+     - images/fynaura-icon.png
+     - images/google.png
+     - images/fb.png
+     - images/apple.png
+     - images/cellphone.png
 
-    - images/user.png
+     - images/user.png
 
 
-
+     
 
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/to/resolution-aware-images
+  # https://flutter.dev/assets-and-images/#resolution-aware.
 
   # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/to/asset-from-package
+  # https://flutter.dev/assets-and-images/#from-packages
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
@@ -102,5 +115,4 @@ flutter:
   #         weight: 700
   #
   # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
-
+  # see https://flutter.dev/custom-fonts/#from-packages
