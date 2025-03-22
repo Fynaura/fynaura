@@ -238,6 +238,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 buildToggleButton("Income", !isExpense),
+                SizedBox(width: 15),
                 buildToggleButton("Expense", isExpense),
               ],
             ),
@@ -265,13 +266,6 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               ),
             SizedBox(height: 20),
             buildCameraGalleryButtons(),
-
-            // Display the uid in the UI for testing purposes
-            SizedBox(height: 20),
-            Text(
-              "User ID: ${uid ?? 'No User ID available'}",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
-            ),
           ],
         ),
       ),

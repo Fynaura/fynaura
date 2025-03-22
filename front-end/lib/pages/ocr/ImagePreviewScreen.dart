@@ -5,7 +5,7 @@ import 'package:http_parser/http_parser.dart';
 import 'package:mime/mime.dart';
 import 'dart:convert';
 import 'extracted_text_screen.dart';
-import 'package:image/image.dart' as img;  // Import the image package
+import 'package:image/image.dart' as img; // Import the image package
 
 class ImagePreviewScreen extends StatefulWidget {
   final File image;
@@ -27,7 +27,8 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       image = img.grayscale(image);
 
       // Compress the image (quality between 0-100)
-      List<int> compressedImage = img.encodeJpg(image, quality: 80);  // Adjust the quality as needed
+      List<int> compressedImage =
+          img.encodeJpg(image, quality: 80); // Adjust the quality as needed
 
       // Create a temporary file with the compressed image
       File compressedFile = File('${imageFile.path}_compressed_monochrome.jpg')
@@ -40,7 +41,8 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
       request.files.add(await http.MultipartFile.fromPath(
         'image',
         compressedFile.path,
-        contentType: MediaType.parse(lookupMimeType(compressedFile.path) ?? "image/jpeg"),
+        contentType: MediaType.parse(
+            lookupMimeType(compressedFile.path) ?? "image/jpeg"),
       ));
 
       var response = await request.send();
@@ -59,10 +61,13 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         if (extractedData.containsKey('categorizedItems') &&
             extractedData['categorizedItems'] is List &&
             extractedData['categorizedItems'].isNotEmpty) {
-          category = extractedData['categorizedItems'][0]['predicted_category'] ?? "Unknown";
+          category = extractedData['categorizedItems'][0]
+                  ['predicted_category'] ??
+              "Unknown";
         }
 
-        print("Total Amount: $totalAmount, Category: $category"); // Debugging Line
+        print(
+            "Total Amount: $totalAmount, Category: $category"); // Debugging Line
 
         // Navigate to ExtractedTextScreen with extracted details
         Navigator.push(
@@ -71,7 +76,8 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
             builder: (context) => ExtractedTextScreen(
               totalAmount: totalAmount,
               //billDate: billDate,
-              categorizedItems: List<Map<String, dynamic>>.from(extractedData['categorizedItems']),
+              categorizedItems: List<Map<String, dynamic>>.from(
+                  extractedData['categorizedItems']),
             ),
           ),
         );
@@ -97,7 +103,8 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         backgroundColor: Colors.grey[200],
         title: const Text("Image Preview"),
       ),
-      body: SingleChildScrollView(  // Wrap the body in a SingleChildScrollView
+      body: SingleChildScrollView(
+        // Wrap the body in a SingleChildScrollView
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [

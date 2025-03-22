@@ -42,6 +42,7 @@ export class TransactionsController {
   @HttpCode(200)
   async createBulk(@Body() bulkTransactions: CreateTransactionDto[]) {
     console.log(`✅ Received ${bulkTransactions.length} transactions`);
+    console.log(bulkTransactions)
     return await this.transactionService.createBulk(bulkTransactions);
   }
 

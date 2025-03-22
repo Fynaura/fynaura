@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
 import 'package:fynaura/pages/home/main_screen.dart'; // Import MainScreen for navigation
 import 'package:fynaura/pages/profile/profile.dart'; // Import ProfilePage for forgot password
 import 'package:fynaura/pages/user-session/UserSession.dart';
@@ -25,7 +26,7 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   final String apiUrl =
-      'http://192.168.8.172:3000/user/login'; // API endpoint for login
+      'http://192.168.127.53:3000/user/login'; // API endpoint for login
 
   String? emailError;
   String? passwordError;
@@ -106,7 +107,7 @@ class _MainloginState extends State<Mainlogin> {
 
         // Send the idToken to the backend to get user details
         final userDetailsResponse = await http.get(
-          Uri.parse('http://192.168.8.172:3000/user/me?idToken=$idToken'),
+          Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
           headers: {"Authorization": "Bearer $idToken"},
         );
 
@@ -261,7 +262,7 @@ class _MainloginState extends State<Mainlogin> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => ProfilePage()),
+                      MaterialPageRoute(builder: (context) => ForgotPwFirst()),
                     );
                   },
                   child: const Text(

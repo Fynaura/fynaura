@@ -155,9 +155,14 @@ import { RegisterUserDto } from './dto/register-user.dto';
 import * as firebaseAdmin from 'firebase-admin';
 import { LoginDto } from './dto/login.dto';
 import axios from 'axios';
+import { UserEntity } from './entities/user.entity';
+import { User } from './schema/user.schema';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 
 @Injectable()
 export class UserService {
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
   async registerUser(registerUser: RegisterUserDto) {
     console.log(registerUser);
     // Validate that password and confirmPassword match
@@ -173,7 +178,16 @@ export class UserService {
       });
       console.log('User Record:', userRecord);
 
+            // Save the user to MongoDB (after Firebase user creation)
+            const user = new UserEntity;
+            user.firstName = registerUser.firstName;
+            user.lastName = registerUser.lastName;
+            user.email = registerUser.email;
+            user.userId = userRecord.uid;
+
       // Return a formatted response instead of the raw user object
+
+      await this.create(user);
       return {
         success: true,
         message: 'User registered successfully please Login ',
@@ -195,6 +209,11 @@ export class UserService {
         );
       }
     }
+  }
+
+  async create(user: User): Promise<User> {
+    const createdUser = new this.userModel(user);
+    return createdUser.save();
   }
 
   async loginUser(payload: LoginDto) {
@@ -314,6 +333,36 @@ export class UserService {
     } catch (error) {
       console.error('Error fetching user details:', error);
       throw new HttpException('Unable to fetch user details', HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  async sendPasswordResetLink(email: string): Promise<{ message: string }> {
+    try {
+      // Try to send the password reset link via Firebase
+      await firebaseAdmin.auth().generatePasswordResetLink(email);
+
+      // Return a success message on success
+      return { message: 'Password reset link sent successfully.' };
+    } catch (error) {
+      console.error('Error sending password reset link:', error);
+
+      // Handle specific Firebase errors and include the Firebase error message
+      if (error.code === 'auth/user-not-found') {
+        throw new HttpException(
+          `Error from Firebase: ${error.message}`,  // Include Firebase error message
+          HttpStatus.NOT_FOUND,
+        );
+      } else if (error.code === 'auth/invalid-email') {
+        throw new HttpException(
+          `Error from Firebase: ${error.message}`,  // Include Firebase error message
+          HttpStatus.BAD_REQUEST,
+        );
+      } else {
+        throw new HttpException(
+          `Error from Firebase: ${error.message || 'Failed to send password reset link'}`, // Include Firebase error message
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
     }
   }
   
