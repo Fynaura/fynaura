@@ -2,7 +2,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:fynaura/widgets/backBtn.dart';
-import 'package:fynaura/services/budget_service.dart'; // Add this import
+import 'package:fynaura/services/budget_service.dart';
+
+import '../user-sessions/UserSession.dart'; // Add this import
 
 class BudgetDetails extends StatefulWidget {
   final String budgetName;
@@ -264,7 +266,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                               descriptionController.text,
                               amount,
                               isExpense,
-                              "John Doe" // Replace with actual user info
+                              UserSession().displayName ?? "Unknown User" // Replace with actual user info
                           );
 
                           // Update the UI state
@@ -274,7 +276,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
                               activities.add({
                                 "avatar": "images/user.png",
-                                "name": "John Doe",
+                                "name": UserSession().displayName ?? "Unknown User",
                                 "description": descriptionController.text,
                                 "amount": "LKR ${amount.toStringAsFixed(0)}",
                                 "isExpense": true,
@@ -287,7 +289,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
                               activities.add({
                                 "avatar": "images/user.png",
-                                "name": "John Doe",
+                                "name": UserSession().displayName ?? "Unknown User",
                                 "description": descriptionController.text,
                                 "amount": "LKR ${amount.toStringAsFixed(0)}",
                                 "isExpense": false,

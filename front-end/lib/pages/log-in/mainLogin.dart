@@ -9,6 +9,11 @@ import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
 import '../home/main_screen.dart';
 
+// Import UserSession - adjust the path as needed
+import 'package:fynaura/pages/user-sessions/UserSession.dart'; // Adjust this import path
+
+
+
 class Mainlogin extends StatefulWidget {
   const Mainlogin({super.key});
 
@@ -24,7 +29,6 @@ class _MainloginState extends State<Mainlogin> {
   // API URL for backend login endpoint
   // final String apiUrl = 'http://192.168.127.53:3000/user/login';
   final String apiUrl = 'http://10.0.2.2:3000/user/login';
-
 
   // Error message state variables
   String? emailError;
@@ -112,10 +116,18 @@ class _MainloginState extends State<Mainlogin> {
 
       // If we received an idToken, consider it a successful login
       if (response.statusCode == 200 || responseData.containsKey('idToken')) {
+        // Get the UserSession singleton
+        final userSession = UserSession();
+
+        // Update the user information in the singleton
+        userSession.userId = responseData['userId'] ?? ''; // Use empty string if null
+        userSession.displayName = responseData['displayName'] ?? '';
+        userSession.email = emailController.text;
+
         // Store the token for later use (you might want to save it securely)
         // For example: await secureStorage.write(key: 'idToken', value: responseData['idToken']);
 
-        print("Login successful!");
+        print("Login successful! User session updated: ${userSession.email}");
 
         // Show success message
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -299,13 +311,11 @@ class _MainloginState extends State<Mainlogin> {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-
                           builder: (context) => MainScreen()),
                     );
                   },
                   child: const Text(
                     "Temp",
-
                     style: TextStyle(
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w600,
