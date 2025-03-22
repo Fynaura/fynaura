@@ -37,7 +37,7 @@ dependencies:
   flutter_screenutil: ^5.9.3
   
   confetti: ^0.6.0
-  fl_chart: ^0.70.2
+#  fl_chart: ^0.70.2
 
   shared_preferences: ^2.4.0 
 

@@ -4,7 +4,7 @@ import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 
 import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
-import '../Analize/analyze_page.dart';
+// import '../Analize/analyze_page.dart';
 import '../profile/profile.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
@@ -37,11 +37,11 @@ NavModel(
   page: DashboardScreen(),  // Use DashboardScreen as the Home tab
   navKey: homeNavKey,
 ),
-      NavModel(
-        // Text("analyze")
-        page: AnalyzePage(), // Update to use title
-        navKey: analyticsNavKey,
-      ),
+      // NavModel(
+      //   // Text("analyze")
+      //   page: AnalyzePage(), // Update to use title
+      //   navKey: analyticsNavKey,
+      // ),
       NavModel(
         page: CollabMain(), // Update to use title
         navKey: planNavKey, // Update to use key  

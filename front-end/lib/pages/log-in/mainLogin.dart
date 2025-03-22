@@ -22,7 +22,9 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   // API URL for backend login endpoint
-  final String apiUrl = 'http://192.168.127.53:3000/user/login';
+  // final String apiUrl = 'http://192.168.127.53:3000/user/login';
+  final String apiUrl = 'http://10.0.2.2:3000/user/login';
+
 
   // Error message state variables
   String? emailError;

@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/log-in/mainLogin.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/log-in/mainLogin.dart" afterDir="false" />
-    </list>
+    <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -38,7 +36,7 @@
     "git-widget-placeholder": "feature/login-validation",
     "io.flutter.reload.alreadyRun": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/flutter/flutter_windows_3.27.0-stable/flutter/bin/cache/dart-sdk",
+    "last_opened_file_path": "C:/Users/dimal/OneDrive/Desktop/Fynaura/front-end",
     "settings.editor.selected.configurable": "dart.settings",
     "show.migrate.to.gradle.popup": "false"
   }
