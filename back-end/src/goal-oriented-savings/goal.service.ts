@@ -21,6 +21,10 @@ export class GoalService {
     return this.goalModel.find().exec();
   }
 
+  // Find all goals for a specific user
+  async findByUserId(userId: string): Promise<Goal[]> {
+    return this.goalModel.find({ userId }).exec(); // Filter goals by userId
+  }
   // // Find all goals for a specific user
   // async findAll(userId: string): Promise<Goal[]> {
   //   return this.goalModel.find({ userId }).exec();
@@ -44,16 +48,29 @@ export class GoalService {
   // Add amount to a goal
   async addAmount(id: string, amount: number): Promise<Goal | null> {
     const goal = await this.goalModel.findById(id).exec();
+  
+    // Ensure amount is a valid number
+    const numericAmount = Number(amount);
+    if (isNaN(numericAmount)) {
+      throw new Error('Invalid amount: not a number');
+    }
+  
     if (goal) {
-      goal.savedAmount += amount;
+      // Also make sure savedAmount is a number
+      goal.savedAmount = Number(goal.savedAmount) || 0;
+      goal.savedAmount += numericAmount;
+  
       if (goal.savedAmount >= goal.targetAmount) {
         goal.isCompleted = true;
       }
+  
       await goal.save();
       return goal;
     }
+  
     return null;
   }
+  
 
   // Subtract amount from a goal
   async subtractAmount(id: string, amount: number): Promise<Goal | null> {

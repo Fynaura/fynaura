@@ -90,4 +90,19 @@ export class GoalController {
       return { error: error.message };
     }
   }
+
+  // 👇 Add this method
+  @Delete(':id')
+  async deleteGoal(@Param('id') id: string) {
+    const deletedGoal = await this.goalService.remove(id);
+    if (!deletedGoal) {
+      return { message: 'Goal not found', statusCode: 404 };
+    }
+    return { message: 'Goal deleted successfully' };
+  }
+
+  @Get('user/:userId')
+  async findGoalsByUser(@Param('userId') userId: string): Promise<Goal[]> {
+    return this.goalService.findByUserId(userId);
+  }
 }

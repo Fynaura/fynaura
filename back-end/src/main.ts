@@ -21,7 +21,7 @@ async function bootstrap() {
 
   //firebase ;
   const firebaseKeyFilePath =
-    'C:/Users/dimal/StudioProjects/fynaura/back-end/src/firebase_auth.json';
+    'C:/Users/ASUS/Documents/GitHub/fynaura/back-end/src/firebase_auth.json';
   const firebaseServiceAccount /*: ServiceAccount*/ = JSON.parse(
     fs.readFileSync(firebaseKeyFilePath).toString(),
   );

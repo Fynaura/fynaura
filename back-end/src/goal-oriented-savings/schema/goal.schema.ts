@@ -36,8 +36,8 @@ export class Goal {
     }
   ];  // History of transactions related to the goal
 
-  // @Prop({ required: true })
-  // userId: string;  // The user who created the goal
+  @Prop({ required: false })
+  userId: string;  // The user who created the goal
 }
 
 export const GoalSchema = SchemaFactory.createForClass(Goal);

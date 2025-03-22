@@ -3,7 +3,7 @@ import 'package:http/http.dart' as http;
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 
 class GoalService {
-  final String baseUrl = 'http://192.168.127.53:3000/goals'; // Replace with your backend URL
+  final String baseUrl = 'http://192.168.8.172:3000/goals'; // Replace with your backend URL
 
   // Create Goal
   Future<Goal> createGoal(Goal goal) async {
@@ -16,6 +16,7 @@ class GoalService {
         'startDate': goal.startDate.toIso8601String(),
         'endDate': goal.endDate.toIso8601String(),
         'isCompleted': goal.isCompleted,
+        'userId':goal.userId,
       }),
     );
 
@@ -28,7 +29,7 @@ class GoalService {
 
   // Get Goals by User ID
   Future<List<Goal>> getGoalsByUser(String userId) async {
-    final response = await http.get(Uri.parse('$baseUrl/$userId'));
+    final response = await http.get(Uri.parse('$baseUrl/user/$userId'));
 
     if (response.statusCode == 200) {
       Iterable list = jsonDecode(response.body);
@@ -151,4 +152,17 @@ class GoalService {
       throw Exception('Failed to fetch goal progress: ${response.body}');
     }
   }
+
+  // Delete Goal
+  Future<void> deleteGoal(String goalId) async {
+    final response = await http.delete(
+      Uri.parse('$baseUrl/$goalId'),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Failed to delete goal: ${response.body}');
+    }
+  }
+
 }

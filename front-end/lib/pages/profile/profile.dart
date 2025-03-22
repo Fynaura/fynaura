@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/goal-oriented-saving/Goalpage.dart';
+
 import 'package:fynaura/pages/profile/edit_profile_page.dart';
 
 import '../goal-oriented-saving/model/Goal.dart';
+
+
 
 class ProfilePage extends StatefulWidget {
   @override

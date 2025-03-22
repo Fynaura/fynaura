@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'
-as service; // Add the confetti package
+    as service; // Add the confetti package
 
 // Import GoalPage for Goal class
 
@@ -64,32 +64,32 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
                     double.tryParse(_amountController.text) ?? 0.0;
 
                 if (amountToAdd > 0) {
-                  setState(() {
-                    goal.savedAmount += amountToAdd;
+                    setState(() {
+                      goal.savedAmount += amountToAdd;
                     goal.history.add(Transaction(
                         amount: amountToAdd,
                         date: DateTime.now(),
                         isAdded: true));
                     service.GoalService().addAmount(goal.id, amountToAdd);
                     service.GoalService().addTransaction(goal.id, amountToAdd, DateTime.now().toString(), true);
+                      
+                    });
+                    
 
-                  });
-
-
-                  // Check if goal is completed
-                  if (goal.savedAmount >= goal.targetAmount) {
-                    goal.isCompleted = true;
-                    _confettiController
-                        .play(); // Trigger confetti animation on completion
-                    // Mark the goal as completed on the backend
-                    try {
-                      await service.GoalService()
-                          .markGoalAsCompleted(goal.id);
-                    } catch (e) {
-                      print('Failed to mark goal as completed: $e');
-                    }
-
-                    setState(() {});
+                    // Check if goal is completed
+                    if (goal.savedAmount >= goal.targetAmount) {
+                      goal.isCompleted = true;
+                      _confettiController
+                          .play(); // Trigger confetti animation on completion
+                      // Mark the goal as completed on the backend
+                      try {
+                        await service.GoalService()
+                            .markGoalAsCompleted(goal.id);
+                      } catch (e) {
+                        print('Failed to mark goal as completed: $e');
+                      }
+                    
+                     setState(() {});
                   };
                 }
                 Navigator.pop(context); // Close the dialog
@@ -141,32 +141,33 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
 
                 if (amountToSubtract > 0 &&
                     goal.savedAmount - amountToSubtract >= 0) {
+           
+                    goal.savedAmount -= amountToSubtract;
+                    goal.history.add(Transaction(
+                        amount: amountToSubtract,
+                        date: DateTime.now(),
+                        isAdded: false));
+                    service.GoalService().subtractAmount(goal.id, amountToSubtract);    
 
-                  goal.savedAmount -= amountToSubtract;
-                  goal.history.add(Transaction(
-                      amount: amountToSubtract,
-                      date: DateTime.now(),
-                      isAdded: false));
-
-                  // Check if goal is completed
-                  if (goal.savedAmount >= goal.targetAmount) {
-                    goal.isCompleted = true;
-                    _confettiController
-                        .play(); // Trigger confetti animation on completion
-                  }
-
+                    // Check if goal is completed
+                    if (goal.savedAmount >= goal.targetAmount) {
+                      goal.isCompleted = true;
+                      _confettiController
+                          .play(); // Trigger confetti animation on completion
+                    }
+                  
                 } else if (amountToSubtract <= 0) {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content: Text("Please enter a positive amount")));
                 } else {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                       content:
-                      Text("Cannot subtract more than current progress")));
+                          Text("Cannot subtract more than current progress")));
                 }
                 Navigator.pop(context); // Close the dialog
               },
               child:
-              Text('Subtract', style: TextStyle(color: Color(0xFF254e7a))),
+                  Text('Subtract', style: TextStyle(color: Color(0xFF254e7a))),
             ),
           ],
         );
@@ -187,7 +188,7 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
         backgroundColor: Color(0xFF254e7a),
         leading: IconButton(
           icon:
-          Icon(Icons.arrow_back, color: Colors.white), // White back button
+              Icon(Icons.arrow_back, color: Colors.white), // White back button
           onPressed: () {
             Navigator.pop(context, goal);
           },

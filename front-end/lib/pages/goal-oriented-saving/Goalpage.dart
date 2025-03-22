@@ -1,52 +1,45 @@
+// imports stay the same
 import 'package:flutter/material.dart';
-import 'package:confetti/confetti.dart';
 import 'package:fynaura/pages/goal-oriented-saving/AddGoalScreen.dart';
 import 'package:fynaura/pages/goal-oriented-saving/GoalDetailScreen.dart';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
-import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'; // Import confetti package
+import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 
 class GoalPage extends StatefulWidget {
   final List<Goal> goals;
-
 
   GoalPage({Key? key, required this.goals}) : super(key: key);
 
   @override
   _GoalPageState createState() => _GoalPageState();
-
 }
 
-class _GoalPageState extends State<GoalPage>
-    with SingleTickerProviderStateMixin {
+class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin {
   late List<Goal> goals;
   late TabController _tabController;
-  int _selectedTabIndex = 0; // 0 = All, 1 = Completed, 2 = Progressing
-  // late final ConfettiController _confettiController;
-  final GoalService _goalService = GoalService(); // For confetti effect
+  int _selectedTabIndex = 0;
+  final GoalService _goalService = GoalService();
 
   @override
   void initState() {
     super.initState();
     goals = widget.goals;
-    _tabController = TabController(
-        length: 3, vsync: this); // 3 tabs: All, Completed, Progressing
-    // _confettiController = ConfettiController(
-    //     duration: const Duration(seconds: 1)); // Initialize confetti controller
+    _tabController = TabController(length: 3, vsync: this);
     _loadGoals();
   }
 
   Future<void> _loadGoals() async {
+
+        final userSession = UserSession();
+    final uid = userSession.userId;
     try {
-      // Assuming you have a userId, replace with actual logic to get userId
-      // String userId = "user123"; // For example
-      // List<Goal> fetchedGoals = await _goalService.getGoalsByUser(userId);
-      List<Goal> fetchedGoals = await _goalService.getAllGoals();
+      List<Goal> fetchedGoals = await _goalService.getGoalsByUser(uid!);
       setState(() {
         goals = fetchedGoals;
       });
     } catch (e) {
-      // Handle error (you can show an error message or a fallback state)
-      print("Error loading goals: $e");
+      print("Error loading goals: $e");
     }
   }
 
@@ -56,44 +49,37 @@ class _GoalPageState extends State<GoalPage>
     });
   }
 
+  Future<void> _deleteGoal(String id) async {
+    try {
+      await _goalService.deleteGoal(id);
+      await _loadGoals(); // refresh the list
+    } catch (e) {
+      print("Failed to delete goal: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Error deleting goal")),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    // Filter the goals based on selected tab
-    List<Goal> filteredGoals = [];
-    if (_selectedTabIndex == 0) {
-      filteredGoals = goals; // All goals
-    } else if (_selectedTabIndex == 1) {
-      filteredGoals =
-          goals.where((goal) => goal.isCompleted).toList(); // Completed goals
-    } else if (_selectedTabIndex == 2) {
-      filteredGoals = goals
-          .where((goal) => !goal.isCompleted)
-          .toList(); // Progressing goals
-    }
+    List<Goal> filteredGoals = _selectedTabIndex == 0
+        ? goals
+        : goals.where((g) => _selectedTabIndex == 1 ? g.isCompleted : !g.isCompleted).toList();
 
-    // Sort goals by date (recent first)
     filteredGoals.sort((a, b) => b.startDate.compareTo(a.startDate));
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Goals',
-          style: TextStyle(color: Colors.white),
-        ),
+        title: Text('Goals', style: TextStyle(color: Colors.white)),
         backgroundColor: Color(0xFF254e7a),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () {
-            Navigator.pop(context, goals);
-          },
+          onPressed: () => Navigator.pop(context, goals),
         ),
         bottom: TabBar(
           controller: _tabController,
-          onTap: (index) {
-            setState(() {
-              _selectedTabIndex = index;
-            });
-          },
+          onTap: (index) => setState(() => _selectedTabIndex = index),
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white60,
           indicatorColor: Colors.white,
@@ -110,115 +96,127 @@ class _GoalPageState extends State<GoalPage>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Expanded(
-              child: ListView.builder(
-                itemCount: filteredGoals.length,
-                itemBuilder: (context, index) {
-                  final goal = filteredGoals[index];
-                  double progress =
-                  (goal.savedAmount / goal.targetAmount).clamp(0.0, 1.0);
+              child: RefreshIndicator(
+                onRefresh: _loadGoals,
+                child: ListView.builder(
+                  itemCount: filteredGoals.length,
+                  itemBuilder: (context, index) {
+                    final goal = filteredGoals[index];
+                    double progress = (goal.savedAmount / goal.targetAmount).clamp(0.0, 1.0);
 
-                  // Trigger confetti animation on completion
-                  // if (goal.isCompleted && !goal.history.any((t) => t.isAdded)) {
-                  //   _confettiController
-                  //       .play(); // Trigger confetti animation on completion
-                  // }
-
-                  return Card(
-                    elevation: 5,
-                    margin: EdgeInsets.symmetric(vertical: 8),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(10),
-                      leading: goal.image != null
-                          ? CircleAvatar(
-                        backgroundImage: NetworkImage(goal.image!),
-                        radius: 30,
-                      )
-                          : Icon(Icons.image, size: 40, color: Colors.blue),
-                      title: Text(goal.name,
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Color(0xFF254e7a))),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                              'Target: \$${goal.targetAmount.toStringAsFixed(2)}',
-                              style: TextStyle(color: Color(0xFF254e7a))),
-                          Text(
-                              'Saved: \$${goal.savedAmount.toStringAsFixed(2)}',
-                              style: TextStyle(color: Color(0xFF254e7a))),
-                          // Progress Bar with Gradient
-                          Container(
-                            height:
-                            15, // Adjust the height to give it more visibility
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.grey[300],
-                            ),
-                            child: Stack(
-                              children: [
-                                AnimatedContainer(
-                                  duration: Duration(milliseconds: 500),
-                                  width: MediaQuery.of(context).size.width *
-                                      progress,
-                                  decoration: BoxDecoration(
-                                    gradient: goal.isCompleted
-                                        ? LinearGradient(
-                                      colors: [
-                                        Colors.green,
-                                        Colors.greenAccent
-                                      ], // Gold-to-green gradient for completed goals
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    )
-                                        : LinearGradient(
-                                      colors: [
-                                        Color(0xFF254e7a),
-                                        Colors.green
-                                      ], // Blue-to-green gradient for in-progress goals
-                                      begin: Alignment.centerLeft,
-                                      end: Alignment.centerRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10),
-                                  ),
-                                ),
-                                Center(
-                                  child: Text(
-                                    '${(progress * 100).toStringAsFixed(1)}%', // Show percentage inside the bar
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 5),
-                        ],
+                    return Dismissible(
+                      key: Key(goal.id), // use a unique id from goal
+                      direction: DismissDirection.endToStart,
+                      background: Container(
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(right: 20),
+                        color: Colors.red,
+                        child: Icon(Icons.delete, color: Colors.white),
                       ),
-                      trailing: goal.isCompleted
-                          ? Icon(Icons.check_circle, color: Colors.green)
-                          : Icon(Icons.arrow_forward, color: Colors.blue),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GoalDetailScreen(goal: goal),
+                      confirmDismiss: (direction) async {
+                        return await showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: Text("Delete Goal"),
+                            content: Text("Are you sure you want to delete this goal?"),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(false),
+                                child: Text("Cancel"),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(true),
+                                child: Text("Delete", style: TextStyle(color: Colors.red)),
+                              ),
+                            ],
                           ),
-                        ).then((updatedGoal) {
-                          if (updatedGoal != null) {
-                            setState(() {
-                              goals[goals.indexOf(goal)] = updatedGoal;
-                            });
-                          }
-                        });
+                        );
                       },
-                    ),
-                  );
-                },
+                      onDismissed: (direction) async {
+                        await _deleteGoal(goal.id);
+                        setState(() => goals.removeWhere((g) => g.id == goal.id));
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${goal.name} deleted")),
+                        );
+                      },
+                      child: Card(
+                        elevation: 5,
+                        margin: EdgeInsets.symmetric(vertical: 8),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                        child: ListTile(
+                          contentPadding: EdgeInsets.all(10),
+                          leading: goal.image != null
+                              ? CircleAvatar(backgroundImage: NetworkImage(goal.image!), radius: 30)
+                              : Icon(Icons.image, size: 40, color: Colors.blue),
+                          title: Text(goal.name, style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF254e7a))),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Target: \$${goal.targetAmount.toStringAsFixed(2)}',
+                                  style: TextStyle(color: Color(0xFF254e7a))),
+                              Text('Saved: \$${goal.savedAmount.toStringAsFixed(2)}',
+                                  style: TextStyle(color: Color(0xFF254e7a))),
+                              Container(
+                                height: 15,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.grey[300],
+                                ),
+                                child: Stack(
+                                  children: [
+                                    AnimatedContainer(
+                                      duration: Duration(milliseconds: 500),
+                                      width: MediaQuery.of(context).size.width * progress,
+                                      decoration: BoxDecoration(
+                                        gradient: goal.isCompleted
+                                            ? LinearGradient(
+                                                colors: [Colors.green, Colors.greenAccent],
+                                                begin: Alignment.centerLeft,
+                                                end: Alignment.centerRight,
+                                              )
+                                            : LinearGradient(
+                                                colors: [Color(0xFF254e7a), Colors.green],
+                                                begin: Alignment.centerLeft,
+                                                end: Alignment.centerRight,
+                                              ),
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        '${(progress * 100).toStringAsFixed(1)}%',
+                                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              SizedBox(height: 5),
+                            ],
+                          ),
+                          trailing: goal.isCompleted
+                              ? Icon(Icons.check_circle, color: Colors.green)
+                              : Icon(Icons.arrow_forward, color: Colors.blue),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => GoalDetailScreen(goal: goal),
+                              ),
+                            ).then((updatedGoal) {
+                              if (updatedGoal != null) {
+                                setState(() {
+                                  goals[goals.indexOf(goal)] = updatedGoal;
+                                });
+                              }
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  },
+                ),
               ),
             ),
             SizedBox(
@@ -227,9 +225,7 @@ class _GoalPageState extends State<GoalPage>
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Color(0xFF254e7a),
                   padding: EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 onPressed: () async {
                   final newGoal = await Navigator.push(
@@ -243,21 +239,12 @@ class _GoalPageState extends State<GoalPage>
                     });
                   }
                 },
-                child: Text(
-                  'Add Goal',
-                  style: TextStyle(color: Colors.white, fontSize: 16),
-                ),
+                child: Text('Add Goal', style: TextStyle(color: Colors.white, fontSize: 16)),
               ),
             ),
           ],
         ),
       ),
-      // floatingActionButton: ConfettiWidget(
-      //   confettiController: _confettiController,
-      //   blastDirectionality: BlastDirectionality.explosive,
-      //   emissionFrequency: 0.05,
-      //   numberOfParticles: 20,
-      // ),
     );
   }
 }

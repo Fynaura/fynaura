@@ -50,8 +50,8 @@ export class UpdateGoalDto {
 
   @IsNumber()
   @IsOptional()
-  savedAmount?: number;  // The amount saved towards the goal
-
+  savedAmount: number;  // The amount saved towards the goal
+  
   @IsDateString()
   @IsOptional()
   startDate?: string;  // The start date of the goal
