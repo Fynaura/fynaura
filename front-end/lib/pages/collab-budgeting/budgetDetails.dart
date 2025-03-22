@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fynaura/pages/collab-budgeting/scanQr.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/services/budget_service.dart';
-
-import '../user-session/UserSession.dart';
-
+import 'package:fynaura/pages/user-session/UserSession.dart';
 
 class BudgetDetails extends StatefulWidget {
   final String budgetName;
@@ -26,8 +24,8 @@ class BudgetDetails extends StatefulWidget {
 
 class _BudgetDetailsState extends State<BudgetDetails> {
   List<String> avatars = ["images/user.png"]; // Initial avatar list
-  final BudgetService _budgetService = BudgetService();
-  final UserSession _userSession = UserSession(); // Add UserSession instance
+  final BudgetService _budgetService = BudgetService(); // Add budget service
+  final UserSession _userSession = UserSession(); // Get UserSession instance
 
   // Track the current balance and activities
   late double currentAmount;
@@ -36,11 +34,6 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
   // List to store activities
   List<Map<String, dynamic>> activities = [];
-
-  // Get the current user's name
-  String get _currentUserName {
-    return _userSession.displayName ?? "Anonymous User";
-  }
 
   @override
   void initState() {
@@ -135,21 +128,6 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                   child: Text("Confirm"),
                 ),
                 SizedBox(height: 10),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Scanqr()),
-                    );
-                  },
-                  icon: Icon(Icons.qr_code, color: Colors.black),
-                  label: Text(
-                      "Scan QR Code", style: TextStyle(color: Colors.black)),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    side: BorderSide(color: Colors.black),
-                  ),
-                ),
               ],
             ),
           ),
@@ -158,11 +136,14 @@ class _BudgetDetailsState extends State<BudgetDetails> {
     );
   }
 
-  // Updated method to add transaction using BudgetService and UserSession
+  // Updated method to add transaction using BudgetService and current user's name
   void _showAddTransactionDialog() {
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     bool isExpense = true;
+
+    // Get current user's name from UserSession
+    final String currentUserName = _userSession.displayName ?? "Anonymous";
 
     showDialog(
       context: context,
@@ -280,13 +261,12 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                         }
 
                         try {
-                          // Use current user's name from UserSession
                           await _budgetService.addTransaction(
                               widget.budgetId,
                               descriptionController.text,
                               amount,
                               isExpense,
-                              _currentUserName // Use the current user's name
+                              currentUserName // Use current user's name instead of "John Doe"
                           );
 
                           // Update the UI state
@@ -296,7 +276,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
                               activities.add({
                                 "avatar": "images/user.png",
-                                "name": _currentUserName, // Use the current user's name
+                                "name": currentUserName, // Use current user's name here too
                                 "description": descriptionController.text,
                                 "amount": "LKR ${amount.toStringAsFixed(0)}",
                                 "isExpense": true,
@@ -309,7 +289,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
                               activities.add({
                                 "avatar": "images/user.png",
-                                "name": _currentUserName, // Use the current user's name
+                                "name": currentUserName, // Use current user's name here too
                                 "description": descriptionController.text,
                                 "amount": "LKR ${amount.toStringAsFixed(0)}",
                                 "isExpense": false,
