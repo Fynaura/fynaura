@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/collab-budgeting/scanQr.dart';
+
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/services/budget_service.dart'; // Add this import
 

@@ -62,28 +62,7 @@ class CollabMainState extends State<CollabMain> {
     }
   }
 
-  // Delete a budget via the API
-  // Future<void> _deleteBudget(String id) async {
-  //   try {
-  //     await _budgetService.deleteBudget(id);
-  //     await _loadBudgets(); // Reload to get the updated list
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to delete budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
-  // Future<void> _deleteBudget(String id) async {
-  //   try {
-  //     print("Deleting budget with ID: $id");
-  //     await _budgetService.deleteBudget(id);
-  //     await _loadBudgets(); // Reload to get the updated list
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to delete budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
+
   Future<void> _deleteBudget(String? id) async {
     if (id == null || id == "null" || id.isEmpty) {
       setState(() {
