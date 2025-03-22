@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 import 'package:fynaura/pages/goal-oriented-saving/service/goalService.dart'
-as service;
+    as service;
 
 import 'model/Goal.dart';
 // Import GoalService
@@ -82,7 +83,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                         ),
                         SizedBox(
                             width:
-                            8), // Add a little space between icon and text
+                                8), // Add a little space between icon and text
                         Text(
                           'Add New Goal',
                           style: TextStyle(
@@ -231,7 +232,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                                     margin: EdgeInsets.only(right: 16),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
@@ -287,7 +288,7 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                                     padding: EdgeInsets.all(16),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
@@ -376,21 +377,21 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                               ),
                               child: _selectedImage != null
                                   ? ClipRRect(
-                                borderRadius: BorderRadius.circular(8),
-                                child: kIsWeb
-                                    ? Image.network(_selectedImage!.path,
-                                    fit: BoxFit.cover)
-                                    : Image.file(_selectedImage!,
-                                    fit: BoxFit.cover),
-                              )
+                                      borderRadius: BorderRadius.circular(8),
+                                      child: kIsWeb
+                                          ? Image.network(_selectedImage!.path,
+                                              fit: BoxFit.cover)
+                                          : Image.file(_selectedImage!,
+                                              fit: BoxFit.cover),
+                                    )
                                   : Center(
-                                child: Text(
-                                  'Add Image',
-                                  style: TextStyle(
-                                    color: Color(0xFF85c1e5),
-                                  ),
-                                ),
-                              ),
+                                      child: Text(
+                                        'Add Image',
+                                        style: TextStyle(
+                                          color: Color(0xFF85c1e5),
+                                        ),
+                                      ),
+                                    ),
                             ),
                           ),
                           IconButton(
@@ -429,14 +430,19 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
                               );
                               return;
                             }
+
+                            final userSession = UserSession();
+                            final uid = userSession.userId ?? 'defaultUserId';
                             // Create the Goal object
                             Goal newGoal = Goal(
+                          
                               name: _goalNameController.text,
                               targetAmount:
-                              double.parse(_goalAmountController.text),
+                                  double.parse(_goalAmountController.text),
                               startDate: _startDate!,
                               endDate: _endDate!,
                               image: _selectedImage?.path,
+                              userId: uid,
                             );
 
                             try {

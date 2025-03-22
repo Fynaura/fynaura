@@ -36,7 +36,7 @@ class ExtractedTextScreen extends StatelessWidget {
     }).toList();
 
     var uri = Uri.parse(
-        "http://192.168.127.53:3000/transaction/bulk"); // Replace with your API URL
+        "http://192.168.8.172:3000/transaction/bulk"); // Replace with your API URL
 
     var response = await http.post(
       uri,

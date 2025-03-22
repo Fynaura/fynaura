@@ -7,6 +7,7 @@ class Goal {
   DateTime endDate;
   bool isCompleted;
   String? image;
+  String userId;
   List<Transaction> history; // Add a list of Transaction to track goal history
 
   Goal({
@@ -18,14 +19,15 @@ class Goal {
     required this.endDate,
     this.isCompleted = false,
     this.image,
+    required this.userId,
     List<Transaction>? history,
   }) : history =
-      history ?? []; // If history is null, initialize it as an empty list
+            history ?? []; // If history is null, initialize it as an empty list
 
   // Factory constructor to create Goal from JSON
   factory Goal.fromJson(Map<String, dynamic> json) {
     var historyList =
-    json['history'] as List?; // Check if 'history' exists in the JSON
+        json['history'] as List?; // Check if 'history' exists in the JSON
 
     // Convert each transaction in the history list to a Transaction object
     List<Transaction> historyItems = historyList != null
@@ -35,12 +37,18 @@ class Goal {
     return Goal(
       id: json['_id'], // MongoDB returns _id, so we map it to 'id' here
       name: json['name'],
-      targetAmount: json['targetAmount'].toDouble(),
-      savedAmount: json['savedAmount'] ?? 0,
+      targetAmount: (json['targetAmount'] is int
+          ? (json['targetAmount'] as int).toDouble()
+          : json['targetAmount']) as double, // Handle type conversion
+      savedAmount: (json['savedAmount'] is int
+              ? (json['savedAmount'] as int).toDouble()
+              : json['savedAmount']) ??
+          0.0, // Handle type conversion and default to 0.0
       startDate: DateTime.parse(json['startDate']),
       endDate: DateTime.parse(json['endDate']),
       isCompleted: json['isCompleted'] ?? false,
       image: json['image'],
+      userId: json['userId'] ?? 'defaultUserId',
       history: historyItems, // Set the history field
     );
   }
@@ -48,7 +56,7 @@ class Goal {
   // Convert Goal to JSON
   Map<String, dynamic> toJson() {
     return {
-      '_id': id,  // Include the 'id' field when converting back to JSON
+      '_id': id, // Include the 'id' field when converting back to JSON
       'name': name,
       'targetAmount': targetAmount,
       'savedAmount': savedAmount,
@@ -56,6 +64,7 @@ class Goal {
       'endDate': endDate.toIso8601String(),
       'isCompleted': isCompleted,
       'image': image,
+      'userId': userId,
       'history': history
           .map((transaction) => transaction.toJson())
           .toList(), // Convert history to JSON
