@@ -1,8 +1,14 @@
 import 'package:dialog_flowtter/dialog_flowtter.dart';
 import 'package:flutter/material.dart';
-import 'Messages.dart';  // Assuming this file contains your Message class and MessagesScreen widget
 
-void main() => runApp(MyApp());
+import 'dart:async';
+import 'package:fynaura/pages/log-in/mainLogin.dart';
+import 'package:fynaura/pages/sign-up/mainSignUp.dart';
+import 'package:permission_handler/permission_handler.dart';
+
+void main() {
+  runApp(MyApp());
+}
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);

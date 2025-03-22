@@ -23,6 +23,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { AppService } from './app.service';
 import { AuthGuard } from './guard/auth.guard';
 import { UploadModule } from './upload/upload.module';
+import { GoalModule } from './goal-oriented-savings/goal.module';
 
 
 
@@ -52,6 +53,7 @@ import { UploadModule } from './upload/upload.module';
     CollabBudgetsModule,
     UserModule,
     UploadModule,
+    GoalModule,
     
   ],
   controllers: [AppController],

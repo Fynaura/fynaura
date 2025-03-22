@@ -34,6 +34,9 @@ import {
 
     @Prop()
     reminderDate?: Date;
+
+    @Prop({ required: true })
+    userId : string;
   }
   
   export const TransactionSchema = SchemaFactory.createForClass(Transaction);

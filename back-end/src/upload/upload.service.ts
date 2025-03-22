@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { GoogleAuth } from 'google-auth-library';
 import * as fs from 'fs';
@@ -25,7 +24,7 @@ interface CategorizedItem {
 export class UploadService {
   async processDocument(filePath: string): Promise<{ 
     totalAmount: string; 
-    billDate: string; 
+    //billDate: string; 
     extractedText: string; 
     categorizedItems: CategorizedItem[] 
   }> {
@@ -38,7 +37,7 @@ export class UploadService {
 
       const client = await auth.getClient();
       const url =
-        'https://us-documentai.googleapis.com/v1/projects/664418100697/locations/us/processors/bc3ca3fc5c5ae263:process';
+      'https://us-documentai.googleapis.com/v1/projects/664418100697/locations/us/processors/bc3ca3fc5c5ae263:process';
 
       // Read and encode image
       const image = fs.readFileSync(filePath).toString('base64');
@@ -60,7 +59,7 @@ export class UploadService {
       const extractedText = result.document?.text || "No text found";
 
       let totalAmount = 'Total not found';
-      let billDate = 'Date not found';
+      // let billDate = 'Date not found';
 
       if (result.document?.entities) {
         const amountEntity = result.document.entities.find((entity) =>
@@ -70,22 +69,22 @@ export class UploadService {
           totalAmount = amountEntity.mentionText || 'Total not found';
         }
 
-        const dateEntity = result.document.entities.find((entity) =>
-          entity.type.toLowerCase().includes('date'),
-        );
-        if (dateEntity) {
-          billDate = dateEntity.mentionText || 'Date not found';
-        }
+        // const dateEntity = result.document.entities.find((entity) =>
+        //   entity.type.toLowerCase().includes('date'),
+        // );
+        // if (dateEntity) {
+        //   billDate = dateEntity.mentionText || 'Date not found';
+        // }
       }
 
       console.log(`Extracted Text: ${extractedText}`);
-      console.log(`Total Amount: ${totalAmount}, Bill Date: ${billDate}`);
+      console.log(`Total Amount: ${totalAmount}`);//, Bill Date: ${billDate}
 
       // Send extracted text to Flask-based Gemini API
       const geminiResponse = await this.sendToGeminiAPI(extractedText);
       const categorizedItems = geminiResponse?.items || [];
 
-      return { totalAmount, billDate, extractedText, categorizedItems };
+      return { totalAmount,  extractedText, categorizedItems }; //billDate,
     } catch (error) {
       console.error('Error processing document:', error);
       throw new Error('Document processing failed');

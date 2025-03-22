@@ -1,9 +1,7 @@
-/* eslint-disable prettier/prettier */
 import { Controller, Post, UploadedFile, UseInterceptors, Res } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { UploadService } from './upload.service';
 import { Express, Response } from 'express';
-
 
 @Controller('upload')
 export class UploadController {
@@ -19,18 +17,18 @@ export class UploadController {
     console.log('Image received:', file.path);
 
     try {
-      const { totalAmount, billDate, extractedText, categorizedItems } = await this.uploadService.processDocument(file.path);
+      const { totalAmount,  extractedText, categorizedItems } = await this.uploadService.processDocument(file.path);//billDate,
 
       console.log(`Total Amount: ${totalAmount}`);
-      console.log(`Bill Date: ${billDate}`);
+      //console.log(`Bill Date: ${billDate}`);
       console.log(`Extracted Text: ${extractedText}`);
       console.log(`Categorized Items:`, categorizedItems);
 
-      return res.status(200).json({ 
-        totalAmount, 
-        billDate, 
-        extractedText, 
-        categorizedItems 
+      return res.status(200).json({
+        totalAmount,
+        //billDate,  // This will now be in 'YYYY-MM-DD' format
+        extractedText,
+        categorizedItems
       });
     } catch (error) {
       console.error('Error processing document:', error);
