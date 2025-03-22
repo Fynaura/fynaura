@@ -1,59 +1,53 @@
 import 'package:flutter/material.dart';
-import 'package:confetti/confetti.dart'; // Import confetti package
-import 'AddGoalScreen.dart';
-import 'GoalDetailScreen.dart';
-
-class Goal {
-  String name;
-  double targetAmount;
-  double savedAmount;
-  DateTime startDate;
-  DateTime endDate;
-  bool isCompleted;
-  String? image; // Add this line to store the image URL or path
-  List<Transaction> history;
-
-  Goal({
-    required this.name,
-    required this.targetAmount,
-    this.savedAmount = 0,
-    required this.startDate,
-    required this.endDate,
-    this.isCompleted = false,
-    this.image,
-    List<Transaction>? history,
-  }) : history = history ?? [];
-}
-
-class Transaction {
-  final double amount;
-  final DateTime date;
-  final bool isAdded;
-
-  Transaction({required this.amount, required this.date, required this.isAdded});
-}
+import 'package:confetti/confetti.dart';
+import 'package:fynaura/pages/goal-oriented-saving/AddGoalScreen.dart';
+import 'package:fynaura/pages/goal-oriented-saving/GoalDetailScreen.dart';
+import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
+import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'; // Import confetti package
 
 class GoalPage extends StatefulWidget {
   final List<Goal> goals;
+
 
   GoalPage({Key? key, required this.goals}) : super(key: key);
 
   @override
   _GoalPageState createState() => _GoalPageState();
+
 }
 
-class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin {
+class _GoalPageState extends State<GoalPage>
+    with SingleTickerProviderStateMixin {
   late List<Goal> goals;
   late TabController _tabController;
   int _selectedTabIndex = 0; // 0 = All, 1 = Completed, 2 = Progressing
-  late ConfettiController _confettiController; // For confetti effect
+  // late final ConfettiController _confettiController;
+  final GoalService _goalService = GoalService(); // For confetti effect
 
   @override
   void initState() {
     super.initState();
     goals = widget.goals;
-    _tabController = TabController(length: 3, vsync: this); // 3 tabs: All, Completed, Progressing
-    _confettiController = ConfettiController(duration: const Duration(seconds: 1)); // Initialize confetti controller
+    _tabController = TabController(
+        length: 3, vsync: this); // 3 tabs: All, Completed, Progressing
+    // _confettiController = ConfettiController(
+    //     duration: const Duration(seconds: 1)); // Initialize confetti controller
+    _loadGoals();
+  }
+
+  Future<void> _loadGoals() async {
+    try {
+      // Assuming you have a userId, replace with actual logic to get userId
+      // String userId = "user123"; // For example
+      // List<Goal> fetchedGoals = await _goalService.getGoalsByUser(userId);
+      List<Goal> fetchedGoals = await _goalService.getAllGoals();
+      setState(() {
+        goals = fetchedGoals;
+      });
+    } catch (e) {
+      // Handle error (you can show an error message or a fallback state)
+      print("Error loading goals: $e");
+    }
   }
 
   void _addGoal(Goal goal) {
@@ -69,9 +63,12 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
     if (_selectedTabIndex == 0) {
       filteredGoals = goals; // All goals
     } else if (_selectedTabIndex == 1) {
-      filteredGoals = goals.where((goal) => goal.isCompleted).toList(); // Completed goals
+      filteredGoals =
+          goals.where((goal) => goal.isCompleted).toList(); // Completed goals
     } else if (_selectedTabIndex == 2) {
-      filteredGoals = goals.where((goal) => !goal.isCompleted).toList(); // Progressing goals
+      filteredGoals = goals
+          .where((goal) => !goal.isCompleted)
+          .toList(); // Progressing goals
     }
 
     // Sort goals by date (recent first)
@@ -117,12 +114,14 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
                 itemCount: filteredGoals.length,
                 itemBuilder: (context, index) {
                   final goal = filteredGoals[index];
-                  double progress = (goal.savedAmount / goal.targetAmount).clamp(0.0, 1.0);
+                  double progress =
+                  (goal.savedAmount / goal.targetAmount).clamp(0.0, 1.0);
 
                   // Trigger confetti animation on completion
-                  if (goal.isCompleted && !goal.history.any((t) => t.isAdded)) {
-                    _confettiController.play(); // Trigger confetti animation on completion
-                  }
+                  // if (goal.isCompleted && !goal.history.any((t) => t.isAdded)) {
+                  //   _confettiController
+                  //       .play(); // Trigger confetti animation on completion
+                  // }
 
                   return Card(
                     elevation: 5,
@@ -138,15 +137,23 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
                         radius: 30,
                       )
                           : Icon(Icons.image, size: 40, color: Colors.blue),
-                      title: Text(goal.name, style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF254e7a))),
+                      title: Text(goal.name,
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF254e7a))),
                       subtitle: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text('Target: \$${goal.targetAmount.toStringAsFixed(2)}', style: TextStyle(color: Color(0xFF254e7a))),
-                          Text('Saved: \$${goal.savedAmount.toStringAsFixed(2)}', style: TextStyle(color: Color(0xFF254e7a))),
+                          Text(
+                              'Target: \$${goal.targetAmount.toStringAsFixed(2)}',
+                              style: TextStyle(color: Color(0xFF254e7a))),
+                          Text(
+                              'Saved: \$${goal.savedAmount.toStringAsFixed(2)}',
+                              style: TextStyle(color: Color(0xFF254e7a))),
                           // Progress Bar with Gradient
                           Container(
-                            height: 15,  // Adjust the height to give it more visibility
+                            height:
+                            15, // Adjust the height to give it more visibility
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.grey[300],
@@ -155,16 +162,23 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
                               children: [
                                 AnimatedContainer(
                                   duration: Duration(milliseconds: 500),
-                                  width: MediaQuery.of(context).size.width * progress,
+                                  width: MediaQuery.of(context).size.width *
+                                      progress,
                                   decoration: BoxDecoration(
                                     gradient: goal.isCompleted
                                         ? LinearGradient(
-                                      colors: [Colors.green, Colors.greenAccent],  // Gold-to-green gradient for completed goals
+                                      colors: [
+                                        Colors.green,
+                                        Colors.greenAccent
+                                      ], // Gold-to-green gradient for completed goals
                                       begin: Alignment.centerLeft,
                                       end: Alignment.centerRight,
                                     )
                                         : LinearGradient(
-                                      colors: [Color(0xFF254e7a), Colors.green],  // Blue-to-green gradient for in-progress goals
+                                      colors: [
+                                        Color(0xFF254e7a),
+                                        Colors.green
+                                      ], // Blue-to-green gradient for in-progress goals
                                       begin: Alignment.centerLeft,
                                       end: Alignment.centerRight,
                                     ),
@@ -174,7 +188,9 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
                                 Center(
                                   child: Text(
                                     '${(progress * 100).toStringAsFixed(1)}%', // Show percentage inside the bar
-                                    style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold),
                                   ),
                                 ),
                               ],
@@ -236,12 +252,12 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
           ],
         ),
       ),
-      floatingActionButton: ConfettiWidget(
-        confettiController: _confettiController,
-        blastDirectionality: BlastDirectionality.explosive,
-        emissionFrequency: 0.05,
-        numberOfParticles: 20,
-      ),
+      // floatingActionButton: ConfettiWidget(
+      //   confettiController: _confettiController,
+      //   blastDirectionality: BlastDirectionality.explosive,
+      //   emissionFrequency: 0.05,
+      //   numberOfParticles: 20,
+      // ),
     );
   }
 }
