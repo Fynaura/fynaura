@@ -29,12 +29,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
     try {
       // Fetching total income
       final incomeResponse = await http.get(
-        Uri.parse('http://192.168.127.53:3000/transaction/total-income/$uid'),
+        // Uri.parse('http://192.168.127.53:3000/transaction/total-income/$uid'),
+        Uri.parse('http://10.0.2.2:3000/transaction/total-income/$uid'),
       );
 
       // Assuming you have an endpoint to fetch total expense similarly
       final expenseResponse = await http.get(
-        Uri.parse('http://192.168.127.53:3000/transaction/total-expense/$uid'),
+        Uri.parse('http://10.0.2.2:3000/transaction/total-expense/$uid'),
       );
 
       if (incomeResponse.statusCode == 200 && expenseResponse.statusCode == 200) {

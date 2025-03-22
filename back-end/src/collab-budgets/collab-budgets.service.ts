@@ -18,7 +18,10 @@ export class CollabBudgetsService {
     return newBudget.save();
   }
 
-  async findAll(): Promise<Budget[]> {
+  async findAll(userId?: string): Promise<Budget[]> {
+    if (userId) {
+      return this.budgetModel.find({ userId: userId }).exec();
+    }
     return this.budgetModel.find().exec();
   }
 

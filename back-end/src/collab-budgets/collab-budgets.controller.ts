@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { CollabBudgetsService } from './collab-budgets.service';
 import { CreateBudgetDto } from './dto/create-budget.dto';
@@ -24,8 +25,8 @@ export class CollabBudgetsController {
   }
 
   @Get()
-  findAll() {
-    return this.collabBudgetsService.findAll();
+  findAll(@Query('userId') userId?: string) {
+    return this.collabBudgetsService.findAll(userId);
   }
 
   @Get(':id')

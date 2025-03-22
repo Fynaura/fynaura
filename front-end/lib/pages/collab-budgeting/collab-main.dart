@@ -45,13 +45,12 @@ class CollabMainState extends State<CollabMain> {
       });
     }
   }
-
   Future<void> _addBudget(String name, String amount, String date) async {
     try {
       final userSession = UserSession();
       final uid = userSession.userId;
       double parsedAmount = double.parse(amount);
-      String? userId = uid; //sample user for now
+      String? userId = uid; // This is correct
 
       await _budgetService.createBudget(name, parsedAmount, date, userId);
       await _loadBudgets();
