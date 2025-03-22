@@ -10,8 +10,8 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AMBot',
-      theme: ThemeData(brightness: Brightness.dark),
+      title: 'FynAuraBot',
+      theme: ThemeData(brightness: Brightness.light),
       home: Home(),
     );
   }
@@ -54,7 +54,7 @@ class _HomeState extends State<Home> {
             // Text input field for user to type messages
             Container(
               padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              color: Colors.deepPurple,
+              color: Colors.blueAccent,
               child: Row(
                 children: [
                   Expanded(
