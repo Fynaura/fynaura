@@ -47,6 +47,7 @@ export class TransactionsController {
 
   @Get('total-income/:userId')
   async getTotalIncome(@Param('userId') userId: string) {
+    console.log("api called");
     const totalIncome = await this.transactionService.getTotalIncomeForUser(userId);
     return {
       userId,
@@ -57,6 +58,7 @@ export class TransactionsController {
 
   @Get('total-expense/:userId')
   async getTotalExpense(@Param('userId') userId: string) {
+    console.log("api called");
     const totalExpense = await this.transactionService.getTotalExpenseForUser(userId);
     return {
       userId,
