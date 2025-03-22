@@ -10,6 +10,8 @@ import 'package:fynaura/widgets/customInput.dart';
 
 // Global variable to store the user ID
 String? userId;
+String? displayName;
+String? email;
 
 class Mainlogin extends StatefulWidget {
   const Mainlogin({super.key});
@@ -23,7 +25,7 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   final String apiUrl =
-      'http://192.168.127.53:3000/user/login'; // API endpoint for login
+      'http://192.168.8.172:3000/user/login'; // API endpoint for login
 
   String? emailError;
   String? passwordError;
@@ -104,7 +106,7 @@ class _MainloginState extends State<Mainlogin> {
 
         // Send the idToken to the backend to get user details
         final userDetailsResponse = await http.get(
-          Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
+          Uri.parse('http://192.168.8.172:3000/user/me?idToken=$idToken'),
           headers: {"Authorization": "Bearer $idToken"},
         );
 
@@ -112,6 +114,8 @@ class _MainloginState extends State<Mainlogin> {
         final userSession = UserSession();
         if (userDetails != null) {
           userSession.userId = userDetails['uid'];
+          userSession.displayName = userDetails['displayName'];
+          userSession.email = userDetails['email'];
           // Set the global user ID
           userId = userDetails['uid']; // Assuming userId is in the response
 
@@ -120,8 +124,7 @@ class _MainloginState extends State<Mainlogin> {
             context,
             MaterialPageRoute(
               builder: (context) => MainScreen(
-                displayName: userDetails['displayName'],
-                email: userDetails['email'],
+                
               ),
             ),
           );

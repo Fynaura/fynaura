@@ -3,20 +3,19 @@ import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 
 import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import '../Analize/analyze_page.dart';
 import '../profile/profile.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
 
 class MainScreen extends StatefulWidget {
-  final String displayName;
-  final String email;
+  
 
   // Constructor to receive user details
   const MainScreen({
     super.key,
-    required this.displayName,
-    required this.email,
+  
   });
 
   @override
@@ -37,9 +36,15 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
+    // Access the userId from the singleton
+    final userSession = UserSession();
+    
+    final displayName = userSession.displayName;
+    final email = userSession.email;
+
     items = [
       NavModel(
-        page: DashboardScreen(displayName: widget.displayName, email: widget.email), // Pass the details to DashboardScreen
+        page: DashboardScreen(displayName: displayName, email: email), // Pass the details to DashboardScreen
         navKey: homeNavKey,
       ),
       NavModel(

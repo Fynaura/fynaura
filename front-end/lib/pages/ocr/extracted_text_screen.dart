@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/home/main_screen.dart'; // Import MainScreen
+import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'ocr_screen.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart'; // Import UserSession
 
 class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;
@@ -19,16 +22,16 @@ class ExtractedTextScreen extends StatelessWidget {
       return {
         'type': 'expense',  // Always set to 'expense'
         'amount': item['price'],  // Assuming 'price' field is the amount
-        'category': item['category'], 
+        'category': item['category'],
         'description': item['item'],  // Assuming 'item' field is the description/note
-        'date': item['billdate'] is DateTime 
-            ? item['billdate'].toIso8601String() 
+        'date': item['billdate'] is DateTime
+            ? item['billdate'].toIso8601String()
             : item['billdate'],  // Ensure date is in ISO format
         'reminder': false,  // Always false
       };
     }).toList();
 
-    var uri = Uri.parse("http://192.168.127.53:3000/transaction/bulk");  // Replace with your API URL
+    var uri = Uri.parse("http://192.168.8.172:3000/transaction/bulk");  // Replace with your API URL
 
     var response = await http.post(
       uri,
@@ -77,7 +80,7 @@ class ExtractedTextScreen extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const OcrScreen()),
+                      MaterialPageRoute(builder: (context) => TransactionDetailsPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -93,10 +96,29 @@ class ExtractedTextScreen extends StatelessWidget {
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const OcrScreen()), // Navigate to home page
-                    );
+
+                    // Retrieve user details from UserSession
+                    String? userId = UserSession().userId;
+                    String? displayName = UserSession().displayName;
+                    String? email = UserSession().email;
+
+                    // Navigate to MainScreen if userId exists
+                    if (userId != null && displayName != null && email != null) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainScreen(
+                           
+                          ),
+                        ),
+                      );
+                    } else {
+                      // Fallback: Navigate to OcrScreen if no user is logged in
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => OcrScreen()),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
