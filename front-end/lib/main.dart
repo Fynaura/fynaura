@@ -1,6 +1,5 @@
-import 'package:dialog_flowtter/dialog_flowtter.dart';
 import 'package:flutter/material.dart';
-
+import 'package:fynaura/pages/Analize/analyze_page.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
@@ -11,113 +10,44 @@ void main() {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'FynAuraBot',
-      theme: ThemeData(brightness: Brightness.light),
-      home: Home(),
+      home: SplashScreen(),
     );
   }
 }
 
-class Home extends StatefulWidget {
-  const Home({Key? key}) : super(key: key);
-
+class SplashScreen extends StatefulWidget {
   @override
-  _HomeState createState() => _HomeState();
+  _SplashScreenState createState() => _SplashScreenState();
 }
 
-class _HomeState extends State<Home> {
-  late DialogFlowtter dialogFlowtter;
-  final TextEditingController _controller = TextEditingController(); // Text controller for user input
-  List<Map<String, dynamic>> messages = []; // To hold chat messages
-
+class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    // Initialize DialogFlowtter instance using the dialog_flow_auth.json file from assets
-    DialogFlowtter.fromFile().then((instance) {
-      dialogFlowtter = instance;
-    }).catchError((error) {
-      print("Error initializing DialogFlowtter: $error");
+    Timer(Duration(seconds: 5), () {
+      Navigator.pushReplacement(
+        context,
+        // MaterialPageRoute(builder: (context) => AnalyzePage()),
+        MaterialPageRoute(builder: (context) => Mainsignup()),
+      );
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('FynAuraBot'),
-      ),
-      body: Container(
-        child: Column(
-          children: [
-            // Displaying chat messages
-            Expanded(child: MessagesScreen(messages: messages)),
-            // Text input field for user to type messages
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-              color: Colors.blueAccent,
-              child: Row(
-                children: [
-                  Expanded(
-                    child: TextField(
-                      controller: _controller,
-                      style: TextStyle(color: Colors.white),
-                      decoration: InputDecoration(
-                        hintText: 'Type a message...',
-                        hintStyle: TextStyle(color: Colors.white70),
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                  // Send button
-                  IconButton(
-                    onPressed: () {
-                      sendMessage(_controller.text);
-                      _controller.clear(); // Clear the input field after sending
-                    },
-                    icon: Icon(Icons.send, color: Colors.white),
-                  ),
-                ],
-              ),
-            )
-          ],
-        ),
+      backgroundColor: Color(0xFF85C1E5), // Set the background color
+      body: Center(
+        child: Image.asset('images/fynaura.png'),
       ),
     );
   }
-
-  // Send message to DialogFlowtter
-  sendMessage(String text) async {
-    if (text.isEmpty) {
-      print('Message is empty');
-    } else {
-      // Add user message to chat
-      setState(() {
-        addMessage(Message(text: DialogText(text: [text])), true);
-      });
-
-      // Send the message to DialogFlowtter for response
-      DetectIntentResponse response = await dialogFlowtter.detectIntent(
-        queryInput: QueryInput(text: TextInput(text: text)),
-      );
-
-      // Check if the response contains a message
-      if (response.message == null) return;
-
-      // Add bot response to the chat
-      setState(() {
-        addMessage(response.message!);
-      });
-    }
-  }
-
-  // Function to add messages to the chat
-  addMessage(Message message, [bool isUserMessage = false]) {
-    messages.add({'message': message, 'isUserMessage': isUserMessage});
+}
+void requestAlarmPermission() async {
+  if (await Permission.scheduleExactAlarm.isDenied) {
+    await Permission.scheduleExactAlarm.request();
   }
 }
