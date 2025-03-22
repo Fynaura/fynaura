@@ -12,6 +12,7 @@ class TransactionService {
     required DateTime date,
     bool reminder = false, // Default to false
     DateTime? reminderDate, // Only for expenses
+    required String? uid,
   }) async {
     final url = Uri.parse(baseUrl);
     
@@ -22,6 +23,7 @@ class TransactionService {
       "amount": amount,
       "description": description,
       "date": date.toIso8601String(),
+      "userId": uid,
     };
 
     // Only add reminder fields if it's an expense

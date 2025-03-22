@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:io';  // Add this import to access the File class
+import 'package:fynaura/pages/ocr/ImagePreviewScreen.dart';
+import 'package:fynaura/pages/ocr/ImageSelectionOption.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart'; // Import UserSession
 import 'package:intl/intl.dart';
 import 'package:image_picker/image_picker.dart';
 import 'transaction_category_page.dart';
@@ -13,8 +15,7 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 
 class TransactionDetailsPage extends StatefulWidget {
   @override
-  _TransactionDetailsPageState createState() =>
-      _TransactionDetailsPageState();
+  _TransactionDetailsPageState createState() => _TransactionDetailsPageState();
 }
 
 class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
@@ -43,7 +44,8 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
   // Initialize notifications with timezone support.
   void _initNotifications() async {
     tz.initializeTimeZones();
-    tz.setLocalLocation(tz.getLocation('Asia/Colombo')); // Adjust to your locale
+    tz.setLocalLocation(
+        tz.getLocation('Asia/Colombo')); // Adjust to your locale
 
     const AndroidInitializationSettings initializationSettingsAndroid =
         AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -148,6 +150,10 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     final transactionService = TransactionService();
     final type = isExpense ? "expense" : "income"; // Determine the type
 
+    // Access the userId from the singleton
+    final userSession = UserSession();
+    final uid = userSession.userId;
+
     try {
       // Create the transaction through the service
       await transactionService.createTransaction(
@@ -156,6 +162,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
         amount: double.parse(amountController.text),
         description: descriptionController.text,
         date: selectedDate,
+        uid: uid, // Pass the global userId here
       );
 
       // If reminder is set, schedule it
@@ -187,14 +194,32 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     selectedDate = DateTime.now();
   }
 
-  // Pick an image from camera or gallery.
-  void pickImage(ImageSource source) async {
-    final pickedImage = await _picker.pickImage(source: source);
-    // Process the picked image here (e.g., upload or store it)
+  void pickImageAndNavigate(ImageSource source) async {
+    final pickedImage = source == ImageSource.camera
+        ? await ImageSelectionOption.pickImageFromCamera()
+        : await ImageSelectionOption.pickImageFromGallery();
+
+    if (pickedImage != null) {
+      // Navigate to ImagePreviewScreen with the picked image
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ImagePreviewScreen(image: pickedImage),
+        ),
+      );
+    } else {
+      // Show an error or message if no image was selected
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("No image selected")),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final userSession = UserSession();
+    final uid = userSession.userId;
+
     return Scaffold(
       appBar: AppBar(
         title: Text('Add Transaction', style: TextStyle(color: Color(0xFF9DB2CE))),
@@ -213,6 +238,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 buildToggleButton("Income", !isExpense),
+                SizedBox(width: 15),
                 buildToggleButton("Expense", isExpense),
               ],
             ),
@@ -369,7 +395,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
         ElevatedButton.icon(
-          onPressed: () => pickImage(ImageSource.camera),
+          onPressed: () => pickImageAndNavigate(ImageSource.camera),  // Use pickImageAndNavigate for Camera
           icon: Icon(Icons.camera_alt, color: Colors.white),
           label: Text("Camera"),
           style: ElevatedButton.styleFrom(
@@ -380,7 +406,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
           ),
         ),
         ElevatedButton.icon(
-          onPressed: () => pickImage(ImageSource.gallery),
+          onPressed: () => pickImageAndNavigate(ImageSource.gallery),  // Use pickImageAndNavigate for Gallery
           icon: Icon(Icons.photo, color: Colors.white),
           label: Text("Gallery"),
           style: ElevatedButton.styleFrom(

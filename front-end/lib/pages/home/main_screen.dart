@@ -1,22 +1,27 @@
-
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 
 import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import '../Analize/analyze_page.dart';
 import '../profile/profile.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
 
-
-
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  
+
+  // Constructor to receive user details
+  const MainScreen({
+    super.key,
+  
+  });
 
   @override
   State<MainScreen> createState() => _MainScreenState();
 }
+
 
 class _MainScreenState extends State<MainScreen> {
   final homeNavKey = GlobalKey<NavigatorState>();
@@ -31,19 +36,24 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void initState() {
     super.initState();
-    items = [
+    // Access the userId from the singleton
+    final userSession = UserSession();
+    
+    final displayName = userSession.displayName;
+    final email = userSession.email;
 
-NavModel(
-  page: DashboardScreen(),  // Use DashboardScreen as the Home tab
-  navKey: homeNavKey,
-),
+    items = [
+      NavModel(
+        page: DashboardScreen(displayName: displayName, email: email), // Pass the details to DashboardScreen
+        navKey: homeNavKey,
+      ),
       NavModel(
         page: AnalyzePage(), // Update to use title
         navKey: analyticsNavKey,
       ),
       NavModel(
         page: CollabMain(), // Update to use title
-        navKey: planNavKey, // Update to use key  
+        navKey: planNavKey, // Update to use key
       ),
       NavModel(
         page: ProfilePage(), // Update to use title
@@ -68,13 +78,13 @@ NavModel(
           index: selectedTab,
           children: items
               .map((page) => Navigator(
-            key: page.navKey,
-            onGenerateInitialRoutes: (navigator, initialRoute) {
-              return [
-                MaterialPageRoute(builder: (context) => page.page)
-              ];
-            },
-          ))
+                    key: page.navKey,
+                    onGenerateInitialRoutes: (navigator, initialRoute) {
+                      return [
+                        MaterialPageRoute(builder: (context) => page.page)
+                      ];
+                    },
+                  ))
               .toList(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -85,16 +95,13 @@ NavModel(
           child: FloatingActionButton(
             backgroundColor: Colors.white,
             elevation: 0,
-
             onPressed: () => Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => TransactionDetailsPage()),
-
             ),
             shape: RoundedRectangleBorder(
               side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
               borderRadius: BorderRadius.circular(100),
-
             ),
             child: const Icon(
               Icons.add,
@@ -106,9 +113,10 @@ NavModel(
           pageIndex: selectedTab,
           onTap: (index) {
             if (index == selectedTab) {
-
-              items[index].navKey.currentState?.popUntil((route) => route.isFirst);
-
+              items[index]
+                  .navKey
+                  .currentState
+                  ?.popUntil((route) => route.isFirst);
             } else {
               setState(() {
                 selectedTab = index;
@@ -120,4 +128,3 @@ NavModel(
     );
   }
 }
-

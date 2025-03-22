@@ -1,15 +1,16 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Post, Body, ValidationPipe, UsePipes, Get, UseGuards, Query } from '@nestjs/common';
+import { Controller, Post, Body, ValidationPipe, UsePipes, Get, Query } from '@nestjs/common';
 import { UserService } from './user.service';
 
 import { RegisterUserDto } from './dto/register-user.dto';
 import { LoginDto } from './dto/login.dto';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { AuthGuard } from '../guard/auth.guard';
+import { ApiBearerAuth, ApiResponse } from '@nestjs/swagger';
+import { SendPasswordResetDto } from './dto/send-password-reset.dto';
+
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) { }
 
 
   @Post('register')
@@ -25,7 +26,7 @@ export class UserController {
   }
 
   @Get()
-  @UseGuards(AuthGuard)
+
   @ApiBearerAuth()
   findAll() {
     return this.userService.findAll();
@@ -35,6 +36,28 @@ export class UserController {
   refreshAuth(@Query('refreshToken') refreshToken: string) {
     return this.userService.refreshAuthToken(refreshToken);
   }
+
+
+
+  @Get('me')
+  async getUserDetails(@Query('idToken') idToken: string) {
+    return await this.userService.getUserDetails(idToken);
+  }
+
+  @Post('password-reset')
+  @ApiResponse({
+    status: 200,
+    description: 'Password reset link sent successfully.',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'Invalid email format or user not found.',
+  })
+  async sendPasswordResetLink(@Body() sendPasswordResetDto: SendPasswordResetDto) {
+    return this.userService.sendPasswordResetLink(sendPasswordResetDto.email);
+  }
+
+
 
 //   @Post()
 //   create(@Body() createUserDto: CreateUserDto) {

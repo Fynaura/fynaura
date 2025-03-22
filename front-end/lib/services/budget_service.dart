@@ -1,10 +1,13 @@
 
 
 import 'dart:convert';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 
 class BudgetService {
   final String baseUrl = "http://192.168.127.53:3000/collab-budgets"; // API base URL
+  // final String baseUrl = "http://10.0.2.2:3000/collab-budgets"; // API base URL
+
 
   // Fetch all budgets
   // Future<List<Map<String, dynamic>>> getBudgets() async {
@@ -59,7 +62,7 @@ class BudgetService {
   }
 
   // Create a new budget
-  Future<void> createBudget(String name, double amount, String date, String userId) async {
+  Future<void> createBudget(String name, double amount, String date, String? userId) async {
     final response = await http.post(
       Uri.parse(baseUrl),
       headers: {"Content-Type": "application/json"},
@@ -99,6 +102,8 @@ class BudgetService {
 
   Future<void> addTransaction(String budgetId, String description, double amount,
       bool isExpense, String addedBy) async {
+    final userSession = UserSession();
+    final uid = userSession.userId;
     final response = await http.post(
       Uri.parse("$baseUrl/$budgetId/transactions"),
       headers: {"Content-Type": "application/json"},
@@ -107,7 +112,8 @@ class BudgetService {
         "amount": amount,
         "date": DateTime.now().toIso8601String(),
         "addedBy": addedBy,
-        "isExpense": isExpense
+        "isExpense": isExpense,
+        "userId":uid,
       }),
     );
 
