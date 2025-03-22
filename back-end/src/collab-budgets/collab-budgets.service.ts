@@ -18,7 +18,14 @@ export class CollabBudgetsService {
     return newBudget.save();
   }
 
-  async findAll(): Promise<Budget[]> {
+  async findAll(userId?: string): Promise<Budget[]> {
+    if (userId) {
+      return this.budgetModel
+        .find({
+          $or: [{ userId }, { collaborators: userId }],
+        })
+        .exec();
+    }
     return this.budgetModel.find().exec();
   }
 
@@ -71,7 +78,6 @@ export class CollabBudgetsService {
 
     budget.expenses.push(transaction);
 
-    // Update the total amount if needed
     if (transactionDto.isExpense) {
       budget.amount -= transactionDto.amount;
     } else {
@@ -79,5 +85,48 @@ export class CollabBudgetsService {
     }
 
     return budget.save();
+  }
+  async addCollaborator(budgetId: string, userId: string): Promise<Budget> {
+    const budget = await this.budgetModel.findById(budgetId).exec();
+
+    if (!budget) {
+      throw new NotFoundException('Budget not found');
+    }
+
+    // Check if the user is already a collaborator
+    if (budget.collaborators.includes(userId)) {
+      return budget; // User is already a collaborator, return the budget unchanged
+    }
+
+    // Add the user to the collaborators array
+    budget.collaborators.push(userId);
+
+    // Save and return the updated budget
+    return budget.save();
+  }
+
+  // Add a new endpoint to get all budgets including collaborative ones for a user
+  async findAllForUser(
+    userId: string,
+    includeCollaborative: boolean = true,
+  ): Promise<Budget[]> {
+    if (!userId) {
+      throw new NotFoundException('User ID is required');
+    }
+
+    let query = {};
+
+    if (includeCollaborative) {
+      query = {
+        $or: [
+          { userId: userId }, // Budgets owned by the user
+          { collaborators: userId }, // Budgets where user is a collaborator
+        ],
+      };
+    } else {
+      query = { userId: userId }; // Only budgets owned by the user
+    }
+
+    return this.budgetModel.find(query).exec();
   }
 }
