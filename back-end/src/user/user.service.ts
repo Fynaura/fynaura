@@ -178,12 +178,12 @@ export class UserService {
       });
       console.log('User Record:', userRecord);
 
-            // Save the user to MongoDB (after Firebase user creation)
-            const user = new UserEntity;
-            user.firstName = registerUser.firstName;
-            user.lastName = registerUser.lastName;
-            user.email = registerUser.email;
-            user.userId = userRecord.uid;
+      // Save the user to MongoDB (after Firebase user creation)
+      const user = new UserEntity();
+      user.firstName = registerUser.firstName;
+      user.lastName = registerUser.lastName;
+      user.email = registerUser.email;
+      user.userId = userRecord.uid;
 
       // Return a formatted response instead of the raw user object
 
@@ -221,10 +221,10 @@ export class UserService {
     try {
       const { idToken, refreshToken, expiresIn } =
         await this.signInWithEmailAndPassword(email, password);
-        const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
-        const userId = decodedToken.uid; 
-        console.log('Logged in user UID:', userId);
-      return { idToken, refreshToken, expiresIn, uid:userId};
+      const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
+      const userId = decodedToken.uid;
+      console.log('Logged in user UID:', userId);
+      return { idToken, refreshToken, expiresIn, uid: userId };
     } catch (error: any) {
       if (error.message.includes('EMAIL_NOT_FOUND')) {
         throw new Error('User not found.');
@@ -241,7 +241,6 @@ export class UserService {
       email,
       password,
       returnSecureToken: true,
-      
     });
   }
   private async sendPostRequest(url: string, data: any) {
@@ -320,10 +319,10 @@ export class UserService {
       // Verify the idToken with Firebase Admin SDK
       const decodedToken = await firebaseAdmin.auth().verifyIdToken(idToken);
       const uid = decodedToken.uid; // Extract UID from the decoded token
-  
+
       // Now, fetch the user's details from Firebase using the UID
       const userRecord = await firebaseAdmin.auth().getUser(uid);
-  
+
       // You can return user details here
       return {
         uid: userRecord.uid,
@@ -332,7 +331,10 @@ export class UserService {
       };
     } catch (error) {
       console.error('Error fetching user details:', error);
-      throw new HttpException('Unable to fetch user details', HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(
+        'Unable to fetch user details',
+        HttpStatus.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
@@ -349,12 +351,12 @@ export class UserService {
       // Handle specific Firebase errors and include the Firebase error message
       if (error.code === 'auth/user-not-found') {
         throw new HttpException(
-          `Error from Firebase: ${error.message}`,  // Include Firebase error message
+          `Error from Firebase: ${error.message}`, // Include Firebase error message
           HttpStatus.NOT_FOUND,
         );
       } else if (error.code === 'auth/invalid-email') {
         throw new HttpException(
-          `Error from Firebase: ${error.message}`,  // Include Firebase error message
+          `Error from Firebase: ${error.message}`, // Include Firebase error message
           HttpStatus.BAD_REQUEST,
         );
       } else {
@@ -365,5 +367,21 @@ export class UserService {
       }
     }
   }
-  
+
+  //for collab
+  async checkUserExists(userId: string): Promise<boolean> {
+    console.log(`Checking if user exists: ${userId}`);
+    try {
+      const userRecord = await firebaseAdmin.auth().getUser(userId);
+      console.log(`User found: ${userRecord.uid}`);
+      return true;
+    } catch (error) {
+      console.error(`Error checking user: ${error.code} - ${error.message}`);
+      if (error.code === 'auth/user-not-found') {
+        console.log(`User not found: ${userId}`);
+        return false;
+      }
+      throw error;
+    }
+  }
 }

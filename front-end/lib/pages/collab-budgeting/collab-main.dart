@@ -34,55 +34,66 @@ class CollabMainState extends State<CollabMain> {
 
     try {
       final budgets = await _budgetService.getBudgets();
+      print('Loaded budgets: $budgets'); // Add this for debugging
+
       setState(() {
         createdBudgets = budgets;
         isLoading = false;
       });
     } catch (e) {
+      print('Error loading budgets: $e'); // Add this for debugging
       setState(() {
         errorMessage = "Failed to load budgets: ${e.toString()}";
         isLoading = false;
       });
     }
   }
+
   Future<void> _addBudget(String name, String amount, String date) async {
     try {
       final userSession = UserSession();
       final uid = userSession.userId;
-      double parsedAmount = double.parse(amount);
-      String? userId = uid; // This is correct
 
-      await _budgetService.createBudget(name, parsedAmount, date, userId);
+      // Debug prints
+      print('Adding budget: name=$name, amount=$amount, date=$date, userId=$uid');
+
+      if (amount.isEmpty) {
+        setState(() {
+          errorMessage = "Amount cannot be empty";
+        });
+        return;
+      }
+
+      double parsedAmount;
+      try {
+        parsedAmount = double.parse(amount);
+      } catch (e) {
+        setState(() {
+          errorMessage = "Invalid amount format";
+        });
+        return;
+      }
+
+      String? userId = uid;
+
+      final newBudget = await _budgetService.createBudget(name, parsedAmount, date, userId);
+      print('Budget created successfully: $newBudget');
+
+      // Option 1: Force reload budgets from API
       await _loadBudgets();
+
+      // Option 2: Add the new budget to the list immediately
+      // setState(() {
+      //   createdBudgets.add(newBudget);
+      // });
     } catch (e) {
+      print('Error in _addBudget: $e'); // Add this for debugging
       setState(() {
         errorMessage = "Failed to create budget: ${e.toString()}";
       });
     }
   }
 
-  // Delete a budget via the API
-  // Future<void> _deleteBudget(String id) async {
-  //   try {
-  //     await _budgetService.deleteBudget(id);
-  //     await _loadBudgets(); // Reload to get the updated list
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to delete budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
-  // Future<void> _deleteBudget(String id) async {
-  //   try {
-  //     print("Deleting budget with ID: $id");
-  //     await _budgetService.deleteBudget(id);
-  //     await _loadBudgets(); // Reload to get the updated list
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to delete budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
   Future<void> _deleteBudget(String? id) async {
     if (id == null || id == "null" || id.isEmpty) {
       setState(() {
@@ -112,7 +123,10 @@ class CollabMainState extends State<CollabMain> {
       builder: (BuildContext context) {
         return CustomPopup(onBudgetCreated: _addBudget);
       },
-    );
+    ).then((_) {
+      // Force reload budgets when dialog is closed
+      _loadBudgets();
+    });
   }
 
   @override
@@ -217,6 +231,16 @@ class CollabMainState extends State<CollabMain> {
                     ),
                   ),
 
+                // Debug text to show the number of budgets loaded
+                if (!isLoading)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Text(
+                      "Debug: Loaded ${createdBudgets.length} budgets",
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  ),
+
                 // Budget list
                 if (!isLoading && createdBudgets.isNotEmpty)
                   Column(
@@ -230,21 +254,10 @@ class CollabMainState extends State<CollabMain> {
                                 budgetName: budget["name"] ?? "",
                                 budgetAmount: budget["amount"].toString(),
                                 budgetDate: budget["date"] ?? "",
-                                budgetId: budget["id"]
-                                    .toString(), // Add this parameter
+                                budgetId: budget["id"].toString(),
                               ),
                             ),
                           ).then((_) => _loadBudgets());
-                          // Navigator.push(
-                          //   context,
-                          //   MaterialPageRoute(
-                          //     builder: (context) => BudgetDetails(
-                          //       budgetName: budget["name"] ?? "",
-                          //       budgetAmount: budget["amount"].toString(),
-                          //       budgetDate: budget["date"] ?? "",
-                          //     ),
-                          //   ),
-                          // ).then((_) => _loadBudgets()); // Reload after returning from details
                         },
                         child: Dismissible(
                           key: Key(budget["id"]?.toString() ??
@@ -311,11 +324,11 @@ class CollabMainState extends State<CollabMain> {
                                   SizedBox(height: 10),
                                   Row(
                                     crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Column(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "LKR ${budget["amount"].toString()}",
@@ -324,14 +337,14 @@ class CollabMainState extends State<CollabMain> {
                                               color: Colors.grey[700],
                                             ),
                                           ),
-                                          // Due date removed as requested
+                                          // Removed the debug text that showed budget ID
                                         ],
                                       ),
                                       Spacer(),
                                       CircleAvatar(
                                         radius: 20,
                                         backgroundImage:
-                                            AssetImage("images/user.png"),
+                                        AssetImage("images/user.png"),
                                       ),
                                     ],
                                   ),
