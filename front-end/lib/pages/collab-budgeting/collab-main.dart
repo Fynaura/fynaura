@@ -1,7 +1,6 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/services/budget_service.dart';
@@ -47,11 +46,12 @@ class CollabMainState extends State<CollabMain> {
     }
   }
 
-
   Future<void> _addBudget(String name, String amount, String date) async {
     try {
+      final userSession = UserSession();
+      final uid = userSession.userId;
       double parsedAmount = double.parse(amount);
-      String userId = "123456"; //sample user for now
+      String? userId = uid; //sample user for now
 
       await _budgetService.createBudget(name, parsedAmount, date, userId);
       await _loadBudgets();
@@ -209,7 +209,8 @@ class CollabMainState extends State<CollabMain> {
                                 budgetName: budget["name"] ?? "",
                                 budgetAmount: budget["amount"].toString(),
                                 budgetDate: budget["date"] ?? "",
-                                budgetId: budget["id"].toString(), // Add this parameter
+                                budgetId: budget["id"]
+                                    .toString(), // Add this parameter
                               ),
                             ),
                           ).then((_) => _loadBudgets());
@@ -225,7 +226,8 @@ class CollabMainState extends State<CollabMain> {
                           // ).then((_) => _loadBudgets()); // Reload after returning from details
                         },
                         child: Dismissible(
-                          key: Key(budget["id"]?.toString() ?? UniqueKey().toString()),
+                          key: Key(budget["id"]?.toString() ??
+                              UniqueKey().toString()),
                           background: Container(
                             color: Colors.red,
                             alignment: Alignment.centerRight,
@@ -239,15 +241,19 @@ class CollabMainState extends State<CollabMain> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text("Confirm"),
-                                  content: Text("Are you sure you want to delete this budget?"),
+                                  content: Text(
+                                      "Are you sure you want to delete this budget?"),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.of(context).pop(false),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
                                       child: Text("Cancel"),
                                     ),
                                     TextButton(
-                                      onPressed: () => Navigator.of(context).pop(true),
-                                      child: Text("Delete", style: TextStyle(color: Colors.red)),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: Text("Delete",
+                                          style: TextStyle(color: Colors.red)),
                                     ),
                                   ],
                                 );
@@ -283,10 +289,12 @@ class CollabMainState extends State<CollabMain> {
                                   ),
                                   SizedBox(height: 10),
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "LKR ${budget["amount"].toString()}",
@@ -301,7 +309,8 @@ class CollabMainState extends State<CollabMain> {
                                       Spacer(),
                                       CircleAvatar(
                                         radius: 20,
-                                        backgroundImage: AssetImage("images/user.png"),
+                                        backgroundImage:
+                                            AssetImage("images/user.png"),
                                       ),
                                     ],
                                   ),

@@ -1,28 +1,69 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/ocr/ocr_screen.dart';
-
-import 'ImageSelectionOption.dart';
+import 'package:fynaura/pages/home/main_screen.dart'; // Import MainScreen
+import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'ocr_screen.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart'; // Import UserSession
 
 class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;
-  //final String billDate;
   final List<Map<String, dynamic>> categorizedItems;
 
   const ExtractedTextScreen({
     super.key,
     required this.totalAmount,
-    //required this.billDate,
     required this.categorizedItems,
   });
 
-  void _saveData(BuildContext context) {
-    //save data logic here
+  // Function to send the extracted data to the backend for saving
+  Future<void> _saveData(BuildContext context) async {
+    final userSession = UserSession();
+    final uid = userSession.userId;
+    List<Map<String, dynamic>> formattedData = categorizedItems.map((item) {
+      return {
+        'type': 'expense', // Always set to 'expense'
+        'amount': item['price'], // Assuming 'price' field is the amount
+        'category': item['category'],
+        'description':
+            item['item'], // Assuming 'item' field is the description/note
+        'date': item['billdate'] is DateTime
+            ? item['billdate'].toIso8601String()
+            : item['billdate'], // Ensure date is in ISO format
+        'reminder': false, // Always false
+        'userId': uid,
+      };
+    }).toList();
+
+    var uri = Uri.parse(
+        "http://192.168.8.172:3000/transaction/bulk"); // Replace with your API URL
+
+    var response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode(formattedData),
+    );
+
+    if (response.statusCode == 200) {
+      print("Data saved successfully!");
+      // Show success dialog
+      _showSuccessDialog(context);
+    } else {
+      print("Failed to save data. Status Code: ${response.statusCode}");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Error: Could not save data.")),
+      );
+    }
+  }
+
+  // Success dialog after data is saved
+  void _showSuccessDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -45,43 +86,62 @@ class ExtractedTextScreen extends StatelessWidget {
                     Navigator.pop(context);
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => const OcrScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => TransactionDetailsPage()),
                     );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
-                  child: const Text("Add Another Transaction", style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: const Text("Add Another Transaction",
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
               ),
-
               const SizedBox(height: 8),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const OcrScreen()),// should change for navigate to home
-                    );
+
+                    // Retrieve user details from UserSession
+                    String? userId = UserSession().userId;
+                    String? displayName = UserSession().displayName;
+                    String? email = UserSession().email;
+
+                    // Navigate to MainScreen if userId exists
+                    if (userId != null &&
+                        displayName != null &&
+                        email != null) {
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => MainScreen(),
+                        ),
+                      );
+                    } else {
+                      // Fallback: Navigate to OcrScreen if no user is logged in
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => OcrScreen()),
+                      );
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.blue,
                     padding: const EdgeInsets.symmetric(vertical: 8),
                   ),
-                  child: const Text("Home", style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: const Text("Home",
+                      style: TextStyle(color: Colors.white, fontSize: 16)),
                 ),
               ),
-
             ],
           ),
         );
       },
     );
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -97,7 +157,10 @@ class ExtractedTextScreen extends StatelessWidget {
               onPressed: () => _saveData(context),
               child: const Text(
                 "Save",
-                style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                    color: Colors.blue,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -108,7 +171,8 @@ class ExtractedTextScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow("Total Bill Amount", "\$$totalAmount", Colors.black),
+            _buildDetailRow(
+                "Total Bill Amount", "\$$totalAmount", Colors.black),
             const SizedBox(height: 5),
             Expanded(
               child: ListView.builder(
@@ -139,7 +203,8 @@ class ExtractedTextScreen extends StatelessWidget {
             const SizedBox(height: 10),
             _buildRichText("Category    ", item['category']),
             _buildRichText("Item name ", item['item']),
-            _buildRichText("Price           ", "\$${item['price']}", color: Colors.black),
+            _buildRichText("Price           ", "\$${item['price']}",
+                color: Colors.black),
             _buildRichText("Date            ", item['billdate']),
             _buildRichText("Quantity     ", item['quantity'].toString()),
           ],
@@ -148,19 +213,25 @@ class ExtractedTextScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildText(String text, {Color? color, bool isBold = false, double size = 16}) {
+  Widget _buildText(String text,
+      {Color? color, bool isBold = false, double size = 16}) {
     return Text(
       text,
-      style: TextStyle(fontSize: size, fontWeight: isBold ? FontWeight.bold : FontWeight.normal, color: color),
+      style: TextStyle(
+          fontSize: size,
+          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
+          color: color),
     );
   }
 
-  Widget _buildRichText(String label, String value, {Color color = Colors.black}) {
+  Widget _buildRichText(String label, String value,
+      {Color color = Colors.black}) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: RichText(
         text: TextSpan(
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
           children: [
             TextSpan(text: "$label: ", style: TextStyle(color: Colors.black)),
             TextSpan(text: value, style: TextStyle(color: color)),
@@ -173,10 +244,14 @@ class ExtractedTextScreen extends StatelessWidget {
   Widget _buildDetailRow(String label, String value, Color color) {
     return RichText(
       text: TextSpan(
-        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
+        style:
+            TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
         children: [
           TextSpan(text: "$label: "),
-          TextSpan(text: value, style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+          TextSpan(
+              text: value,
+              style: TextStyle(
+                  fontSize: 20, fontWeight: FontWeight.bold, color: color)),
         ],
       ),
     );
