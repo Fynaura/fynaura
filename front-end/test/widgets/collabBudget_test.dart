@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:fynaura/pages/collab-budgeting/collab-Main.dart';
+import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/widgets/CustomPopup.dart'; // Assuming this is where the popup is defined
 
 void main() {
