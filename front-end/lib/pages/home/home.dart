@@ -22,6 +22,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late Future<List<Goal>> _userGoals;
   late Future<Map<String, dynamic>> _totalIncomeAndExpense;
+  String selectedPeriod = 'today';
 
   Future<List<Goal>> _fetchUserGoals() async {
     final userSession = UserSession();
@@ -29,10 +30,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       final response = await http.get(
-
         Uri.parse('http://192.168.127.53:3000/goals/user/$uid'),
       );
-
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = json.decode(response.body);
@@ -104,211 +103,205 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       _totalIncomeAndExpense =
           _fetchTotalIncomeAndExpense('today'); // Default to 'today'
+      _userGoals = _fetchUserGoals();
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white, // Background set to white
-      appBar: AppBar(
-        title: Text('Welcome ${widget.displayName ?? "No Name"}!'),
-        centerTitle: true,
         backgroundColor: Color(0xFF254e7a),
-        elevation: 0,
-        actions: [
-          IconButton(
-            icon: Icon(Icons.notifications, color: Colors.grey),
-            onPressed: () {},
-          ),
-        ],
-      ),
-      body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _onRefresh, // Trigger refresh when the user pulls down
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Tab for Time Period Selection: This Week, This Month, This Year
-                DefaultTabController(
-                  length: 3, // Number of tabs
-                  child: Column(
-                    children: [
-                      TabBar(
-                        labelColor:
-                            Color(0xFF254e7a), // White text for selected tab
-                        unselectedLabelColor:
-                            Colors.black, // Black text for unselected tab
-                        indicatorColor: Color(
-                            0xFF254e7a), // Blue indicator for the selected tab
-                        indicatorWeight: 3.0, // Slightly thicker indicator line
-                        tabs: [
-                          Tab(text: 'Today'),
-                          Tab(text: 'Week'),
-                          Tab(text: 'Month'),
-                        ],
-                        onTap: (index) {
-                          // Fetch data when a tab is selected
-                          String period = '';
-                          if (index == 0) {
-                            period = 'today';
-                          } else if (index == 1) {
-                            period = 'week';
-                          } else if (index == 2) {
-                            period = 'month';
-                          }
-
-                          setState(() {
-                            _totalIncomeAndExpense =
-                                _fetchTotalIncomeAndExpense(period);
-                          });
-                        },
-                      ),
-                      Container(
-                        height: 10, // For the tab content area
-                        child: TabBarView(
-                          children: [
-                            // Content under the "Today" tab
-                            Center(child: SizedBox.shrink()),
-                            // Content under the "This Week" tab
-                            Center(child: SizedBox.shrink()),
-                            // Content under the "This Month" tab
-                            Center(child: SizedBox.shrink()),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                SizedBox(height: 20),
-
-                // Income and Expense Section
-                FutureBuilder<Map<String, dynamic>>(
-                  future: _totalIncomeAndExpense,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Failed to load data'));
-                    } else if (snapshot.hasData) {
-                      final data = snapshot.data!;
-                      return Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          IncomeExpenseCard(
-                            title: 'Income',
-                            amount: 'LKR ${data['totalIncome']}',
-                            color: Color(0xFF254e7a),
-                          ),
-                          IncomeExpenseCard(
-                            title: 'Expense',
-                            amount: 'LKR ${data['totalExpense']}',
-                            color: Colors.red.shade300,
-                          ),
-                        ],
-                      );
-                    } else {
-                      return Center(child: Text('No data available'));
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          title: Text('Welcome ${widget.displayName ?? "No Name"}!'),
+          centerTitle: true,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          bottom: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: DefaultTabController(
+              length: 3, // Number of tabs
+              child: TabBar(
+                labelColor: Colors.white, // White text for selected tab
+                unselectedLabelColor:
+                Colors.grey, // Grey text for unselected tabs
+                indicatorColor: Colors.white, // White indicator for selected tab
+                indicatorWeight: 3.0,
+                onTap: (index) {
+                  // Update selected period when a tab is selected
+                  setState(() {
+                    if (index == 0) {
+                      selectedPeriod = 'today';
+                    } else if (index == 1) {
+                      selectedPeriod = 'week';
+                    } else if (index == 2) {
+                      selectedPeriod = 'month';
                     }
-                  },
-                ),
-
-                SizedBox(height: 20),
-
-                // Budget Plan Section with Horizontal Scroll
-                Text('Budget Plan',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF254e7a))),
-                SizedBox(height: 10),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: [
-                      BudgetCard(
-                          title: 'Monthly Budget',
-                          amount: 'LKR 18,000',
-                          total: 'LKR 50,000',
-                          progress: 0.7),
-                      SizedBox(width: 20),
-                      BudgetCard(
-                          title: 'Conversation',
-                          amount: 'LKR 18,000',
-                          total: 'LKR 50,000',
-                          progress: 0.7),
-                      SizedBox(width: 20),
-                      BudgetCard(
-                          title: 'Anniversary',
-                          amount: 'LKR 18,000',
-                          total: 'LKR 50,000',
-                          progress: 0.7),
-                      SizedBox(width: 20),
-                      BudgetCard(
-                          title: "Mom's Birthday",
-                          amount: 'LKR 18,000',
-                          total: 'LKR 50,000',
-                          progress: 0.7),
-                      SizedBox(width: 20),
-                      BudgetCard(
-                          title: "Xian's Birthday",
-                          amount: 'LKR 18,000',
-                          total: 'LKR 50,000',
-                          progress: 0.7),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30),
-
-                // Goals Section with Two Columns
-                Text('Goals',
-                    style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Color(0xFF254e7a))),
-                SizedBox(height: 20),
-                FutureBuilder<List<Goal>>(
-                  future: _userGoals,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
-                    } else if (snapshot.hasError) {
-                      return Center(child: Text('Failed to load goals'));
-                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                      return Center(child: Text('No goals found'));
-                    }
-
-                    final goals = snapshot.data!;
-
-                    return GridView.builder(
-                      shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 20.0,
-                        mainAxisSpacing: 20.0,
-                      ),
-                      itemCount: goals.length,
-                      itemBuilder: (context, index) {
-                        final goal = goals[index];
-                        final progress = (goal.savedAmount / goal.targetAmount)
-                            .clamp(0.0, 1.0);
-                        return GoalCard(
-                          title: goal.name,
-                          progress: progress,
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+                    // Re-fetch income and expense data based on the selected period
+                    _totalIncomeAndExpense =
+                        _fetchTotalIncomeAndExpense(selectedPeriod);
+                  });
+                },
+                tabs: [
+                  Tab(text: 'Today'),
+                  Tab(text: 'Week'),
+                  Tab(text: 'Month'),
+                ],
+              ),
             ),
           ),
+          actions: [
+            IconButton(
+              icon: Icon(Icons.notifications, color: Colors.grey),
+              onPressed: () {},
+            ),
+          ],
         ),
-      ),
+        body: SafeArea(
+          bottom: true,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(30), // Round top left corner
+                topRight: Radius.circular(30), // Round top right corner
+              ),
+            ),
+            child: RefreshIndicator(
+              onRefresh: _onRefresh,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.all(20.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Your other content remains unchanged
+                    SizedBox(height: 20),
+
+                    // Income and Expense Section
+                    FutureBuilder<Map<String, dynamic>>(
+                      future: _totalIncomeAndExpense,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Failed to load data'));
+                        } else if (snapshot.hasData) {
+                          final data = snapshot.data!;
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              IncomeExpenseCard(
+                                title: 'Income',
+                                amount: 'LKR ${data['totalIncome']}',
+                                color: Color(0xFF254e7a),
+                              ),
+                              IncomeExpenseCard(
+                                title: 'Expense',
+                                amount: 'LKR ${data['totalExpense']}',
+                                color: Colors.red.shade300,
+                              ),
+                            ],
+                          );
+                        } else {
+                          return Center(child: Text('No data available'));
+                        }
+                      },
+                    ),
+                    SizedBox(height: 20),
+
+                    // Budget Plan Section
+                    Text('Budget Plan',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF254e7a))),
+                    SizedBox(height: 10),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          BudgetCard(
+                              title: 'Monthly Budget',
+                              amount: 'LKR 18,000',
+                              total: 'LKR 50,000',
+                              progress: 0.7),
+                          SizedBox(width: 20),
+                          BudgetCard(
+                              title: 'Conversation',
+                              amount: 'LKR 18,000',
+                              total: 'LKR 50,000',
+                              progress: 0.7),
+                          SizedBox(width: 20),
+                          BudgetCard(
+                              title: 'Anniversary',
+                              amount: 'LKR 18,000',
+                              total: 'LKR 50,000',
+                              progress: 0.7),
+                          SizedBox(width: 20),
+                          BudgetCard(
+                              title: "Mom's Birthday",
+                              amount: 'LKR 18,000',
+                              total: 'LKR 50,000',
+                              progress: 0.7),
+                          SizedBox(width: 20),
+                          BudgetCard(
+                              title: "Xian's Birthday",
+                              amount: 'LKR 18,000',
+                              total: 'LKR 50,000',
+                              progress: 0.7),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 30),
+
+                    // Goals Section with Two Columns
+                    Text('Goals',
+                        style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                            color: Color(0xFF254e7a))),
+                    SizedBox(height: 20),
+                    FutureBuilder<List<Goal>>(
+                      future: _userGoals,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else if (snapshot.hasError) {
+                          return Center(child: Text('Failed to load goals'));
+                        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                          return Center(child: Text('No goals found'));
+                        }
+
+                        final goals = snapshot.data!;
+
+                        return GridView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 20.0,
+                            mainAxisSpacing: 20.0,
+                          ),
+                          itemCount: goals.length,
+                          itemBuilder: (context, index) {
+                            final goal = goals[index];
+                            final progress =
+                            (goal.savedAmount / goal.targetAmount)
+                                .clamp(0.0, 1.0);
+                            return GoalCard(
+                              title: goal.name,
+                              progress: progress,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        )
     );
   }
 }
@@ -321,9 +314,9 @@ class IncomeExpenseCard extends StatelessWidget {
 
   const IncomeExpenseCard(
       {Key? key,
-      required this.title,
-      required this.amount,
-      required this.color})
+        required this.title,
+        required this.amount,
+        required this.color})
       : super(key: key);
 
   @override
@@ -368,10 +361,10 @@ class BudgetCard extends StatelessWidget {
 
   const BudgetCard(
       {Key? key,
-      required this.title,
-      required this.amount,
-      required this.total,
-      required this.progress})
+        required this.title,
+        required this.amount,
+        required this.total,
+        required this.progress})
       : super(key: key);
 
   @override
@@ -434,10 +427,12 @@ class GoalCard extends StatelessWidget {
     return Container(
       padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(18),  // Increased corner radius for softer look
+        borderRadius: BorderRadius.circular(
+            18), // Increased corner radius for softer look
         boxShadow: [
           BoxShadow(
-            color: Color(0xFF254e7a).withOpacity(0.2), // Subtle shadow for depth
+            color:
+            Color(0xFF254e7a).withOpacity(0.2), // Subtle shadow for depth
             spreadRadius: 2,
             blurRadius: 6,
             offset: Offset(0, 4), // Slight downward offset for depth
@@ -445,8 +440,9 @@ class GoalCard extends StatelessWidget {
         ],
         gradient: LinearGradient(
           colors: [
-            Color(0xFF254e7a).withOpacity(0.8), // Darker blue for a sophisticated look
-            Color(0xFF6a9cbe).withOpacity(0.7)  // Lighter blue for contrast
+            Color(0xFF254e7a)
+                .withOpacity(0.8), // Darker blue for a sophisticated look
+            Color(0xFF6a9cbe).withOpacity(0.7) // Lighter blue for contrast
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -462,20 +458,21 @@ class GoalCard extends StatelessWidget {
               fontSize: 18,
               fontWeight: FontWeight.bold,
               color: Colors.white,
-              letterSpacing: 1.2,  // Slight spacing for a modern feel
+              letterSpacing: 1.2, // Slight spacing for a modern feel
             ),
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 15),
           CircularProgressIndicator(
             value: progress,
-            strokeWidth: 10,  // Thicker progress indicator
+            strokeWidth: 10, // Thicker progress indicator
             backgroundColor: Colors.white.withOpacity(0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),  // White progress bar for contrast
+            valueColor: AlwaysStoppedAnimation<Color>(
+                Colors.white), // White progress bar for contrast
           ),
           SizedBox(height: 15),
           Text(
-            "${(progress * 100).toStringAsFixed(0)}%",  // Display percentage of progress
+            "${(progress * 100).toStringAsFixed(0)}%", // Display percentage of progress
             style: TextStyle(
               fontSize: 14,
               fontWeight: FontWeight.bold,
