@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
-
-      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab_main_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" afterDir="false" />
-
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-
+      <change beforePath="$PROJECT_DIR$/back-end/src/main.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/main.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/back-end/src/transactions/transactions.service.spec.ts" beforeDir="false" afterPath="$PROJECT_DIR$/back-end/src/transactions/transactions.service.spec.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,18 +31,18 @@
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "namindu-07"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;namindu-07&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/Fynaura/fynaura.git",
-    "accountId": "4fabbdef-5757-4d96-a8ec-0e8c7c2a5644"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/Fynaura/fynaura.git&quot;,
+    &quot;accountId&quot;: &quot;4fabbdef-5757-4d96-a8ec-0e8c7c2a5644&quot;
   }
-}]]></component>
+}</component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
@@ -60,7 +51,6 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;Flutter.main.dart.executor&quot;: &quot;Run&quot;,
@@ -73,29 +63,11 @@
     &quot;git-widget-placeholder&quot;: &quot;CI&quot;,
     &quot;io.flutter.reload.alreadyRun&quot;: &quot;true&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/flutter/flutter_windows_3.27.0-stable/flutter/bin/cache/dart-sdk&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/dimal/OneDrive/Desktop/Fynaura/front-end&quot;,
     &quot;settings.editor.selected.configurable&quot;: &quot;dart.settings&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
-  </component>
-
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Flutter.main.dart.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "RunOnceActivity.readMode.enableVisualFormatting": "true",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "dart.analysis.tool.window.visible": "false",
-    "git-widget-placeholder": "feature/updates",
-    "io.flutter.reload.alreadyRun": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/dimal/StudioProjects/fynaura/front-end",
-    "settings.editor.selected.configurable": "dart.settings",
-    "show.migrate.to.gradle.popup": "false"
-
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">
       <option name="filePath" value="$PROJECT_DIR$/front-end/lib/main.dart" />
@@ -107,10 +79,8 @@
     </configuration>
     <recent_temporary>
       <list>
-
         <item itemvalue="Flutter.main.dart" />
         <item itemvalue="Flutter.main.dart" />
-
       </list>
     </recent_temporary>
   </component>
@@ -125,7 +95,17 @@
     </task>
     <servers />
   </component>
-
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
@@ -143,18 +123,5 @@
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
-  </component>
-
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-
   </component>
 </project>
