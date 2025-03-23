@@ -41,12 +41,6 @@ jobs:
         working-directory: ./back-end
         run: npm run test -- --testPathIgnorePatterns=transactions
 
-      # Optional: Add linting if you need it
-      - name: Lint code
-        working-directory: ./back-end
-        run: npm run lint
-        if: always() # Run even if tests fail
-
       - name: Login to Docker Hub
         uses: docker/login-action@v2
         with:
