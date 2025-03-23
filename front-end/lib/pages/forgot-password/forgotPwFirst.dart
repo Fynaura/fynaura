@@ -30,7 +30,7 @@ class _ForgotPwFirstState extends State<ForgotPwFirst> {
 
     try {
       final response = await http.post(
-        Uri.parse('http://<YOUR_BACKEND_URL>/auth/password-reset'),  // Update with your NestJS backend URL
+        Uri.parse('http://192.168.127.53:3000/auth/password-reset'),  // Update with your NestJS backend URL
         headers: {'Content-Type': 'application/json'},
         body: json.encode({'email': email}),
       );

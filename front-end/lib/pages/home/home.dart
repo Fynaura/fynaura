@@ -29,8 +29,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       final response = await http.get(
+
         Uri.parse('http://192.168.127.53:3000/goals/user/$uid'),
       );
+
 
       if (response.statusCode == 200) {
         final List<dynamic> jsonList = json.decode(response.body);
