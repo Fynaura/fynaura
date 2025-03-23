@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String? displayName;
@@ -19,10 +20,32 @@ class DashboardScreen extends StatefulWidget {
 }
 
 class _DashboardScreenState extends State<DashboardScreen> {
+  late Future<List<Goal>> _userGoals;
   late Future<Map<String, dynamic>> _totalIncomeAndExpense;
 
+  Future<List<Goal>> _fetchUserGoals() async {
+    final userSession = UserSession();
+    final uid = userSession.userId;
+
+    try {
+      final response = await http.get(
+        Uri.parse('http://192.168.127.53:3000/goals/user/$uid'),
+      );
+
+      if (response.statusCode == 200) {
+        final List<dynamic> jsonList = json.decode(response.body);
+        return jsonList.map((goalJson) => Goal.fromJson(goalJson)).toList();
+      } else {
+        throw Exception('Failed to load user goals');
+      }
+    } catch (e) {
+      throw Exception('Failed to fetch goals: $e');
+    }
+  }
+
   // Function to fetch total income and expense from the API
-  Future<Map<String, dynamic>> _fetchTotalIncomeAndExpense(String period) async {
+  Future<Map<String, dynamic>> _fetchTotalIncomeAndExpense(
+      String period) async {
     final userSession = UserSession();
     final uid = userSession.userId;
 
@@ -30,7 +53,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Constructing the API URL based on the selected period
       String incomeUrl = '';
       String expenseUrl = '';
-      String baseUrl = 'http://192.168.127.53:3000/transaction'; // Make sure this matches your backend
+      String baseUrl =
+          'http://192.168.127.53:3000/transaction'; // Make sure this matches your backend
 
       // Construct the URLs based on the period selected
       if (period == 'today') {
@@ -48,7 +72,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       final incomeResponse = await http.get(Uri.parse(incomeUrl));
       final expenseResponse = await http.get(Uri.parse(expenseUrl));
 
-      if (incomeResponse.statusCode == 200 && expenseResponse.statusCode == 200) {
+      if (incomeResponse.statusCode == 200 &&
+          expenseResponse.statusCode == 200) {
         final incomeData = json.decode(incomeResponse.body);
         final expenseData = json.decode(expenseResponse.body);
 
@@ -69,12 +94,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     super.initState();
     // Initialize data for 'today' period when the screen loads
     _totalIncomeAndExpense = _fetchTotalIncomeAndExpense('today');
+    _userGoals = _fetchUserGoals();
   }
 
   // Refresh function to trigger the data fetch again
   Future<void> _onRefresh() async {
     setState(() {
-      _totalIncomeAndExpense = _fetchTotalIncomeAndExpense('today'); // Default to 'today'
+      _totalIncomeAndExpense =
+          _fetchTotalIncomeAndExpense('today'); // Default to 'today'
     });
   }
 
@@ -241,31 +268,37 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         fontWeight: FontWeight.bold,
                         color: Color(0xFF254e7a))),
                 SizedBox(height: 20),
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2, // Two columns
-                    crossAxisSpacing: 20.0,
-                    mainAxisSpacing: 20.0,
-                  ),
-                  itemCount: 4, // Number of goals
-                  itemBuilder: (BuildContext context, int index) {
-                    return GoalCard(
-                      title: index == 0
-                          ? 'Bicycle'
-                          : index == 1
-                              ? 'Earphone'
-                              : index == 2
-                                  ? 'Cricket Bat'
-                                  : 'iPhone 14',
-                      progress: index == 0
-                          ? 0.7
-                          : index == 1
-                              ? 0.7
-                              : index == 2
-                                  ? 0.7
-                                  : 0.2,
+                FutureBuilder<List<Goal>>(
+                  future: _userGoals,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Failed to load goals'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return Center(child: Text('No goals found'));
+                    }
+
+                    final goals = snapshot.data!;
+
+                    return GridView.builder(
+                      shrinkWrap: true,
+                      physics: NeverScrollableScrollPhysics(),
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 2,
+                        crossAxisSpacing: 20.0,
+                        mainAxisSpacing: 20.0,
+                      ),
+                      itemCount: goals.length,
+                      itemBuilder: (context, index) {
+                        final goal = goals[index];
+                        final progress = (goal.savedAmount / goal.targetAmount)
+                            .clamp(0.0, 1.0);
+                        return GoalCard(
+                          title: goal.name,
+                          progress: progress,
+                        );
+                      },
                     );
                   },
                 ),
@@ -386,6 +419,7 @@ class BudgetCard extends StatelessWidget {
 }
 
 // Goal Card
+// Goal Card with enhanced design
 class GoalCard extends StatelessWidget {
   final String title;
   final double progress;
@@ -396,41 +430,56 @@ class GoalCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(20),
+      padding: EdgeInsets.all(18),
       decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(18),  // Increased corner radius for softer look
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xFF254e7a).withOpacity(0.2), // Subtle shadow for depth
+            spreadRadius: 2,
+            blurRadius: 6,
+            offset: Offset(0, 4), // Slight downward offset for depth
+          ),
+        ],
         gradient: LinearGradient(
           colors: [
-            Color(0xFF254e7a).withOpacity(0.5),
-            Color(0xFF254e7a).withOpacity(0.8)
+            Color(0xFF254e7a).withOpacity(0.8), // Darker blue for a sophisticated look
+            Color(0xFF6a9cbe).withOpacity(0.7)  // Lighter blue for contrast
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Color(0xFF254e7a).withOpacity(0.1),
-            spreadRadius: 1,
-            blurRadius: 3,
-            offset: Offset(0, 3),
-          ),
-        ],
       ),
       width: 150,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(title,
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
-          SizedBox(height: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,  // Slight spacing for a modern feel
+            ),
+            textAlign: TextAlign.center,
+          ),
+          SizedBox(height: 15),
           CircularProgressIndicator(
-              value: progress,
-              strokeWidth: 8,
-              backgroundColor: Colors.white.withOpacity(0.4),
-              color: Colors.white),
+            value: progress,
+            strokeWidth: 10,  // Thicker progress indicator
+            backgroundColor: Colors.white.withOpacity(0.2),
+            valueColor: AlwaysStoppedAnimation<Color>(Colors.white),  // White progress bar for contrast
+          ),
+          SizedBox(height: 15),
+          Text(
+            "${(progress * 100).toStringAsFixed(0)}%",  // Display percentage of progress
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+            ),
+          ),
         ],
       ),
     );
