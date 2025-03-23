@@ -6,40 +6,6 @@ import 'package:http/http.dart' as http;
 
 class BudgetService {
   final String baseUrl = "http://192.168.127.53:3000/collab-budgets"; // API base URL
-  // final String baseUrl = "http://10.0.2.2:3000/collab-budgets"; // API base URL
-
-
-  // Fetch all budgets
-  // Future<List<Map<String, dynamic>>> getBudgets() async {
-  //   final response = await http.get(Uri.parse(baseUrl));
-  //
-  //   if (response.statusCode == 200) {
-  //     List<dynamic> data = json.decode(response.body);
-  //     return data.cast<Map<String, dynamic>>();
-  //   } else {
-  //     throw Exception("Failed to load budgets");
-  //   }
-  // }
-
-  // Future<List<Map<String, dynamic>>> getBudgets() async {
-  //   final response = await http.get(Uri.parse(baseUrl));
-  //
-  //   if (response.statusCode == 200) {
-  //     List<dynamic> data = json.decode(response.body);
-  //
-  //     // Transform data to ensure each budget has an "id" field
-  //     return data.map<Map<String, dynamic>>((item) {
-  //       var budget = Map<String, dynamic>.from(item);
-  //       // Map MongoDB _id to id for Flutter
-  //       if (budget.containsKey("_id") && !budget.containsKey("id")) {
-  //         budget["id"] = budget["_id"];
-  //       }
-  //       return budget;
-  //     }).toList();
-  //   } else {
-  //     throw Exception("Failed to load budgets");
-  //   }
-  // }
 
   Future<List<Map<String, dynamic>>> getBudgets() async {
     final response = await http.get(Uri.parse(baseUrl));
