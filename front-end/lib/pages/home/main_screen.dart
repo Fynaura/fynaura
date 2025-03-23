@@ -10,12 +10,12 @@ import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
 
 class MainScreen extends StatefulWidget {
-  
+
 
   // Constructor to receive user details
   const MainScreen({
     super.key,
-  
+
   });
 
   @override
@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
     super.initState();
     // Access the userId from the singleton
     final userSession = UserSession();
-    
+
     final displayName = userSession.displayName;
     final email = userSession.email;
 
@@ -78,37 +78,16 @@ class _MainScreenState extends State<MainScreen> {
           index: selectedTab,
           children: items
               .map((page) => Navigator(
-                    key: page.navKey,
-                    onGenerateInitialRoutes: (navigator, initialRoute) {
-                      return [
-                        MaterialPageRoute(builder: (context) => page.page)
-                      ];
-                    },
-                  ))
+            key: page.navKey,
+            onGenerateInitialRoutes: (navigator, initialRoute) {
+              return [
+                MaterialPageRoute(builder: (context) => page.page)
+              ];
+            },
+          ))
               .toList(),
         ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Container(
-          margin: const EdgeInsets.only(top: 10),
-          height: 64,
-          width: 64,
-          child: FloatingActionButton(
-            backgroundColor: Colors.white,
-            elevation: 0,
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TransactionDetailsPage()),
-            ),
-            shape: RoundedRectangleBorder(
-              side: const BorderSide(width: 3, color: Color(0xFF85C1E5)),
-              borderRadius: BorderRadius.circular(100),
-            ),
-            child: const Icon(
-              Icons.add,
-              color: Color(0xFF85C1E5),
-            ),
-          ),
-        ),
+
         bottomNavigationBar: NavBar(
           pageIndex: selectedTab,
           onTap: (index) {
