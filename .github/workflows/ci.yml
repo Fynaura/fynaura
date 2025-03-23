@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: "18"
           cache: "npm"
-          cache-dependency-path: "./back-end/package-lock.json"
+          cache-dependency-path: "./back-end/package.json"
 
       - name: Install dependencies
         working-directory: ./back-end
