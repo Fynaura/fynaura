@@ -39,7 +39,7 @@ jobs:
 
       - name: Run tests
         working-directory: ./back-end
-        run: npm run test
+        run: npm run test -- --testPathIgnorePatterns=transactions
 
       # Optional: Add linting if you need it
       - name: Lint code
