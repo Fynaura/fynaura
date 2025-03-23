@@ -2,7 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:confetti/confetti.dart';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'
-    as service; // Add the confetti package
+    as service;
+import 'package:uuid/uuid.dart'; // Add the confetti package
+
+bool isMongoId(String id) {
+  final regex = RegExp(r'^[a-f\d]{24}$');
+  return regex.hasMatch(id);
+}
+
 
 // Import GoalPage for Goal class
 
@@ -60,42 +67,45 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
             ),
             TextButton(
               onPressed: () async {
-                double amountToAdd =
-                    double.tryParse(_amountController.text) ?? 0.0;
+                double amountToAdd = double.tryParse(_amountController.text) ?? 0.0;
 
-                if (amountToAdd > 0) {
-                    setState(() {
-                      goal.savedAmount += amountToAdd;
+                if (amountToAdd > 0 && amountToAdd.isFinite && !amountToAdd.isNaN) {
+                  final String tempId = const Uuid().v4();
+
+                  setState(() {
+                    goal.savedAmount += amountToAdd;
                     goal.history.add(Transaction(
-                        amount: amountToAdd,
-                        date: DateTime.now(),
-                        isAdded: true));
-                    service.GoalService().addAmount(goal.id, amountToAdd);
-                    service.GoalService().addTransaction(goal.id, amountToAdd, DateTime.now().toString(), true);
-                      
-                    });
-                    
+                      id: tempId,
+                      amount: amountToAdd,
+                      date: DateTime.now(),
+                      isAdded: true,
+                    ));
+                  });
 
-                    // Check if goal is completed
-                    if (goal.savedAmount >= goal.targetAmount) {
-                      goal.isCompleted = true;
-                      _confettiController
-                          .play(); // Trigger confetti animation on completion
-                      // Mark the goal as completed on the backend
-                      try {
-                        await service.GoalService()
-                            .markGoalAsCompleted(goal.id);
-                      } catch (e) {
-                        print('Failed to mark goal as completed: $e');
-                      }
-                    
-                     setState(() {});
-                  };
+                  await service.GoalService().addAmount(goal.id, amountToAdd);
+                  print('Sending amountToAdd: $amountToAdd');
+
+                  await service.GoalService().addTransaction(
+                    goal.id,
+                    amountToAdd,
+                    DateTime.now().toString(),
+                    true,
+                  );
+
+                  if (goal.savedAmount >= goal.targetAmount) {
+                    goal.isCompleted = true;
+                    _confettiController.play();
+                    await service.GoalService().markGoalAsCompleted(goal.id);
+                    setState(() {});
+                  }
                 }
-                Navigator.pop(context); // Close the dialog
+
+
+                Navigator.pop(context);
               },
               child: Text('Add', style: TextStyle(color: Color(0xFF254e7a))),
             ),
+
           ],
         );
       },
@@ -104,76 +114,77 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
 
   // Method to prompt user for the amount to subtract
   Future<void> _subtractAmount() async {
-    if (goal.isCompleted) return; // Prevent subtracting if goal is completed
+  if (goal.isCompleted) return;
 
-    TextEditingController _amountController = TextEditingController();
+  TextEditingController _amountController = TextEditingController();
 
-    // Show an alert dialog for the user to input the amount
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text("Subtract Amount",
-              style: TextStyle(color: Color(0xFF254e7a))),
-          content: TextField(
-            controller: _amountController,
-            keyboardType: TextInputType.number,
-            decoration: InputDecoration(
-              labelText: 'Amount',
-              hintText: 'Enter the amount to subtract',
-              focusedBorder: OutlineInputBorder(
-                borderSide: BorderSide(color: Color(0xFF254e7a)),
-              ),
+  showDialog(
+    context: context,
+    builder: (context) {
+      return AlertDialog(
+        title: Text("Subtract Amount", style: TextStyle(color: Color(0xFF254e7a))),
+        content: TextField(
+          controller: _amountController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            labelText: 'Amount',
+            hintText: 'Enter the amount to subtract',
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(color: Color(0xFF254e7a)),
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(
-                    context); // Close the dialog without subtracting anything
-              },
-              child: Text('Cancel', style: TextStyle(color: Colors.red)),
-            ),
-            TextButton(
-              onPressed: () {
-                double amountToSubtract =
-                    double.tryParse(_amountController.text) ?? 0.0;
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text('Cancel', style: TextStyle(color: Colors.red)),
+          ),
+          TextButton(
+            onPressed: () async {
+              double amountToSubtract = double.tryParse(_amountController.text) ?? 0.0;
 
-                if (amountToSubtract > 0 &&
-                    goal.savedAmount - amountToSubtract >= 0) {
-           
-                    goal.savedAmount -= amountToSubtract;
-                    goal.history.add(Transaction(
-                        amount: amountToSubtract,
-                        date: DateTime.now(),
-                        isAdded: false));
-                    service.GoalService().subtractAmount(goal.id, amountToSubtract);    
+              if (amountToSubtract > 0 && goal.savedAmount >= amountToSubtract) {
+                final String tempId = const Uuid().v4();
 
-                    // Check if goal is completed
-                    if (goal.savedAmount >= goal.targetAmount) {
-                      goal.isCompleted = true;
-                      _confettiController
-                          .play(); // Trigger confetti animation on completion
-                    }
-                  
-                } else if (amountToSubtract <= 0) {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text("Please enter a positive amount")));
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content:
-                          Text("Cannot subtract more than current progress")));
-                }
-                Navigator.pop(context); // Close the dialog
-              },
-              child:
-                  Text('Subtract', style: TextStyle(color: Color(0xFF254e7a))),
-            ),
-          ],
-        );
-      },
-    );
-  }
+                setState(() {
+                  goal.savedAmount -= amountToSubtract;
+                  goal.history.add(Transaction(
+                    id: tempId,
+                    amount: amountToSubtract,
+                    date: DateTime.now(),
+                    isAdded: false,
+                  ));
+                });
+
+                await service.GoalService().subtractAmount(goal.id, amountToSubtract);
+                await service.GoalService().addTransaction(
+                  goal.id,
+                  amountToSubtract,
+                  DateTime.now().toString(),
+                  false,
+                );
+
+                Navigator.pop(context);
+              } else if (amountToSubtract <= 0) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Please enter a positive amount")),
+                );
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Cannot subtract more than saved amount")),
+                );
+              }
+            },
+            child: Text('Subtract', style: TextStyle(color: Color(0xFF254e7a))),
+          ),
+        ],
+      );
+    },
+  );
+}
+
 
   @override
   Widget build(BuildContext context) {
@@ -350,29 +361,96 @@ class _GoalDetailScreenState extends State<GoalDetailScreen> {
                 itemCount: goal.history.length,
                 itemBuilder: (context, index) {
                   final transaction = goal.history[index];
-                  return Card(
-                    elevation: 5,
-                    margin: EdgeInsets.symmetric(vertical: 5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
+                  return Dismissible(
+                    key: Key(transaction.id), // make sure each transaction has a unique id
+                    direction: DismissDirection.endToStart,
+                    background: Container(
+                      alignment: Alignment.centerRight,
+                      padding: EdgeInsets.only(right: 20),
+                      color: Colors.red,
+                      child: Icon(Icons.delete, color: Colors.white),
                     ),
-                    child: ListTile(
-                      contentPadding: EdgeInsets.all(10),
-                      title: Text(
-                        '\$${transaction.amount.toStringAsFixed(2)}',
-                        style: TextStyle(fontWeight: FontWeight.bold),
+                    confirmDismiss: (direction) async {
+                      return await showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          title: Text('Delete Transaction'),
+                          content: Text('Are you sure you want to delete this transaction?'),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(false),
+                              child: Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.of(context).pop(true),
+                              child: Text('Delete', style: TextStyle(color: Colors.red)),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    onDismissed: (direction) async {
+                      final removedTransaction = goal.history[index];
+
+                      // Check if transaction is synced with backend
+                      if (isMongoId(removedTransaction.id)) {
+                        try {
+                          await service.GoalService().deleteTransaction(goal.id, removedTransaction.id);
+                          setState(() {
+                            goal.history.removeAt(index);
+                            goal.savedAmount -= removedTransaction.isAdded
+                                ? removedTransaction.amount
+                                : -removedTransaction.amount;
+                          });
+
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Transaction deleted")),
+                          );
+                        } catch (e) {
+                          print("Delete failed: $e");
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Failed to delete transaction")),
+                          );
+                        }
+                      } else {
+                        // Local-only transaction, just remove from UI
+                        setState(() {
+                          goal.history.removeAt(index);
+                          goal.savedAmount -= removedTransaction.isAdded
+                              ? removedTransaction.amount
+                              : -removedTransaction.amount;
+                        });
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("Local transaction deleted")),
+                        );
+                      }
+                    },
+
+                    child: Card(
+                      elevation: 5,
+                      margin: EdgeInsets.symmetric(vertical: 5),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
-                      subtitle: Text(transaction.date.toString(),
-                          style: TextStyle(
-                              color: Color(0xFF254e7a))), // Blue color
-                      trailing: Icon(
-                        transaction.isAdded
-                            ? Icons.add_circle
-                            : Icons.remove_circle,
-                        color: transaction.isAdded ? Colors.green : Colors.red,
+                      child: ListTile(
+                        contentPadding: EdgeInsets.all(10),
+                        title: Text(
+                          '\$${transaction.amount.toStringAsFixed(2)}',
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        subtitle: Text(
+                          transaction.date.toString(),
+                          style: TextStyle(color: Color(0xFF254e7a)),
+                        ),
+                        trailing: Icon(
+                          transaction.isAdded ? Icons.add_circle : Icons.remove_circle,
+                          color: transaction.isAdded ? Colors.green : Colors.red,
+                        ),
                       ),
                     ),
                   );
+
                 },
               ),
             ),

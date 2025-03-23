@@ -9,26 +9,23 @@ import { Goal, GoalDocument } from './schema/goal.schema';
 export class GoalService {
   constructor(
     @InjectModel(Goal.name) private goalModel: Model<GoalDocument>,
-  ) { }
+  ) {}
 
   // Create a new goal
   async create(createGoalDto: CreateGoalDto): Promise<Goal> {
     const newGoal = new this.goalModel(createGoalDto);
-    return await newGoal.save(); // Return the goal after saving it
+    return await newGoal.save();
   }
 
+  // Get all goals (admin or dev)
   async findAll(): Promise<Goal[]> {
     return this.goalModel.find().exec();
   }
 
-  // Find all goals for a specific user
+  // Get goals by userId
   async findByUserId(userId: string): Promise<Goal[]> {
-    return this.goalModel.find({ userId }).exec(); // Filter goals by userId
+    return this.goalModel.find({ userId }).exec();
   }
-  // // Find all goals for a specific user
-  // async findAll(userId: string): Promise<Goal[]> {
-  //   return this.goalModel.find({ userId }).exec();
-  // }
 
   // Find a goal by ID
   async findOne(id: string): Promise<Goal | null> {
@@ -49,17 +46,16 @@ export class GoalService {
   async addAmount(id: string, amount: number): Promise<Goal | null> {
     const goal = await this.goalModel.findById(id).exec();
   
-    // Ensure amount is a valid number
     const numericAmount = Number(amount);
     if (isNaN(numericAmount)) {
       throw new Error('Invalid amount: not a number');
     }
   
     if (goal) {
-      // Also make sure savedAmount is a number
       goal.savedAmount = Number(goal.savedAmount) || 0;
       goal.savedAmount += numericAmount;
   
+      // ✅ Optional but good
       if (goal.savedAmount >= goal.targetAmount) {
         goal.isCompleted = true;
       }
@@ -71,69 +67,103 @@ export class GoalService {
     return null;
   }
   
+  
 
   // Subtract amount from a goal
   async subtractAmount(id: string, amount: number): Promise<Goal | null> {
     const goal = await this.goalModel.findById(id).exec();
-    if (goal && goal.savedAmount >= amount) {
-      goal.savedAmount -= amount;
+  
+    if (!goal) return null;
+  
+    const numericAmount = Number(amount);
+    if (isNaN(numericAmount)) {
+      throw new Error('Invalid amount: not a number');
+    }
+  
+    goal.savedAmount = Number(goal.savedAmount) || 0;
+  
+    if (goal.savedAmount >= numericAmount) {
+      goal.savedAmount -= numericAmount;
       await goal.save();
       return goal;
     }
-    return null;
+  
+    throw new Error('Cannot subtract more than saved amount');
   }
+  
 
-  // Add a transaction history entry
-  async addTransaction(id: string, transaction: { amount: number; date: string; isAdded: boolean }): Promise<Goal | null> {
+  // ✅ Add a transaction history entry
+  async addTransaction(
+    id: string,
+    transaction: { amount: number; date: string; isAdded: boolean },
+  ): Promise<Goal | null> {
     const goal = await this.goalModel.findById(id).exec();
     if (goal) {
-      goal.history.push(transaction);
+      goal.history.push({
+        amount: transaction.amount,
+        date: transaction.date,
+        isAdded: transaction.isAdded,
+      }); // Let Mongoose handle _id
+
       await goal.save();
       return goal;
     }
     return null;
   }
 
+  // ✅ Remove a transaction and update savedAmount accordingly
+  async removeTransaction(goalId: string, transactionId: string): Promise<Goal | null> {
+    const goal = await this.goalModel.findById(goalId).exec();
+    if (!goal) return null;
+  
+    // Find the transaction
+    const transactionIndex = goal.history.findIndex(tx => tx._id?.toString() === transactionId);
+    if (transactionIndex === -1) return null;
 
+    // ✅ Log the deletion for debugging
+    console.log(`Deleting transaction ${transactionId} from goal ${goalId}`);
+  
+    const transaction = goal.history[transactionIndex];
+  
+    // Adjust savedAmount
+    goal.savedAmount -= transaction.isAdded ? transaction.amount : -transaction.amount;
+  
+    // Remove the transaction
+    goal.history.splice(transactionIndex, 1);
+  
+    // Save the updated goal
+    return await goal.save();
+  }
+  
+  
+
+  // Mark goal as completed
   async markGoalAsCompleted(goalId: string): Promise<void> {
-    try {
-      // Find the goal by ID and update the 'isCompleted' field to true
-      const updatedGoal = await this.goalModel.findByIdAndUpdate(
-        goalId,
-        { isCompleted: true }, // Update the goal's completion status
-        { new: true } // Return the updated goal
-      );
+    const updatedGoal = await this.goalModel.findByIdAndUpdate(
+      goalId,
+      { isCompleted: true },
+      { new: true },
+    );
 
-      if (!updatedGoal) {
-        throw new Error('Goal not found');
-      }
-
-      // Goal is marked as completed
-      console.log('Goal marked as completed:', updatedGoal);
-    } catch (error) {
-      console.error('Error in markGoalAsCompleted:', error);
-      throw new Error('Failed to mark goal as completed');
+    if (!updatedGoal) {
+      throw new Error('Goal not found');
     }
+
+    console.log('Goal marked as completed:', updatedGoal);
   }
 
-  // Calculate progress percentage
+  // Calculate progress % using total transaction amounts
   async calculateGoalProgress(goalId: string): Promise<number> {
-    // Fetch the goal by its ID
     const goal = await this.goalModel.findById(goalId).exec();
-
     if (!goal) {
       throw new Error('Goal not found');
     }
 
-    // Sum the amounts in the history
-    const totalSavedAmount = goal.history.reduce((total, transaction) => {
-      return total + transaction.amount;
+    const totalSavedAmount = goal.history.reduce((total, tx) => {
+      return total + tx.amount;
     }, 0);
 
-    // Calculate progress as (totalSavedAmount / targetAmount) * 100
     const progressPercentage = (totalSavedAmount / goal.targetAmount) * 100;
-
     return progressPercentage;
   }
-
 }

@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Transaction } from './schemas/transaction.schema';
+import * as moment from 'moment';
 import { TransactionDTO } from './entity/transaction.entity'; // Assuming this is the correct path for your DTO
 
 @Injectable()
@@ -28,6 +29,76 @@ export class TransactionsService {
 
   async getAllTransactions(): Promise<Transaction[]> {
     return await this.transactionModel.find();
+
+  }
+
+  private getDateRange(period: string): { start: Date; end: Date } {
+    const now = moment();
+
+    if (period === 'today') {
+      return {
+        start: now.startOf('day').toDate(),
+        end: now.endOf('day').toDate(),
+      };
+    } else if (period === 'week') {
+      return {
+        start: now.startOf('week').toDate(),
+        end: now.endOf('week').toDate(),
+      };
+    } else if (period === 'month') {
+      return {
+        start: now.startOf('month').toDate(),
+        end: now.endOf('month').toDate(),
+      };
+    }
+    throw new Error('Invalid period');
+  }
+
+  
+
+  async getTotalExpense(uid: string, period: string): Promise<number> {
+    const { start, end } = this.getDateRange(period);
+
+    const expense = await this.transactionModel.aggregate([
+      {
+        $match: {
+          userId: uid,
+          type: 'expense', // Filtering for expense transactions
+          date: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalExpense: { $sum: '$amount' }, // Summing up the amount for the total expense
+        },
+      },
+    ]);
+
+    return expense.length > 0 ? expense[0].totalExpense : 0;
+  }
+
+   // Function to fetch the total income for the specified period
+   async getTotalIncome(uid: string, period: string): Promise<number> {
+    const { start, end } = this.getDateRange(period);
+
+    const income = await this.transactionModel.aggregate([
+      {
+        $match: {
+          userId: uid,
+          type: 'income', // Filtering for income transactions
+          date: { $gte: start, $lte: end },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          totalIncome: { $sum: '$amount' }, // Summing up the amount for the total income
+        },
+      },
+    ]);
+
+    return income.length > 0 ? income[0].totalIncome : 0;
   }
 
   // Method to get the balance for every hour in the last 24 hours

@@ -73,28 +73,30 @@ class Goal {
 }
 
 class Transaction {
+  final String id;
   final double amount;
   final DateTime date;
   final bool isAdded;
 
   Transaction({
+    required this.id,
     required this.amount,
     required this.date,
     required this.isAdded,
   });
 
-  // Factory constructor to create Transaction from JSON
   factory Transaction.fromJson(Map<String, dynamic> json) {
     return Transaction(
+      id: json['_id'], // ✅ expects MongoDB _id
       amount: json['amount'].toDouble(),
       date: DateTime.parse(json['date']),
       isAdded: json['isAdded'],
     );
   }
 
-  // Convert Transaction to JSON
   Map<String, dynamic> toJson() {
     return {
+      '_id': id,
       'amount': amount,
       'date': date.toIso8601String(),
       'isAdded': isAdded,

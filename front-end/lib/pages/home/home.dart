@@ -22,20 +22,31 @@ class _DashboardScreenState extends State<DashboardScreen> {
   late Future<Map<String, dynamic>> _totalIncomeAndExpense;
 
   // Function to fetch total income and expense from the API
-  Future<Map<String, dynamic>> _fetchTotalIncomeAndExpense() async {
+  Future<Map<String, dynamic>> _fetchTotalIncomeAndExpense(String period) async {
     final userSession = UserSession();
     final uid = userSession.userId;
 
     try {
-      // Fetching total income
-      final incomeResponse = await http.get(
-        Uri.parse('http://192.168.8.172:3000/transaction/total-income/$uid'),
-      );
+      // Constructing the API URL based on the selected period
+      String incomeUrl = '';
+      String expenseUrl = '';
+      String baseUrl = 'http://192.168.127.53:3000/transaction'; // Make sure this matches your backend
 
-      // Assuming you have an endpoint to fetch total expense similarly
-      final expenseResponse = await http.get(
-        Uri.parse('http://192.168.8.172:3000/transaction/total-expense/$uid'),
-      );
+      // Construct the URLs based on the period selected
+      if (period == 'today') {
+        incomeUrl = '$baseUrl/total-income/$uid/today';
+        expenseUrl = '$baseUrl/total-expense/$uid/today';
+      } else if (period == 'week') {
+        incomeUrl = '$baseUrl/total-income/$uid/week';
+        expenseUrl = '$baseUrl/total-expense/$uid/week';
+      } else if (period == 'month') {
+        incomeUrl = '$baseUrl/total-income/$uid/month';
+        expenseUrl = '$baseUrl/total-expense/$uid/month';
+      }
+
+      // Fetching total income and expense data
+      final incomeResponse = await http.get(Uri.parse(incomeUrl));
+      final expenseResponse = await http.get(Uri.parse(expenseUrl));
 
       if (incomeResponse.statusCode == 200 && expenseResponse.statusCode == 200) {
         final incomeData = json.decode(incomeResponse.body);
@@ -56,13 +67,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
   @override
   void initState() {
     super.initState();
-    _totalIncomeAndExpense = _fetchTotalIncomeAndExpense();
+    // Initialize data for 'today' period when the screen loads
+    _totalIncomeAndExpense = _fetchTotalIncomeAndExpense('today');
   }
 
   // Refresh function to trigger the data fetch again
   Future<void> _onRefresh() async {
     setState(() {
-      _totalIncomeAndExpense = _fetchTotalIncomeAndExpense();
+      _totalIncomeAndExpense = _fetchTotalIncomeAndExpense('today'); // Default to 'today'
     });
   }
 
@@ -90,12 +102,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Personalized greeting
-                Text(
-                  'Hello, ${widget.displayName ?? "No email"}',
-                  style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                ),
-
                 // Tab for Time Period Selection: This Week, This Month, This Year
                 DefaultTabController(
                   length: 3, // Number of tabs
@@ -114,16 +120,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Tab(text: 'Week'),
                           Tab(text: 'Month'),
                         ],
+                        onTap: (index) {
+                          // Fetch data when a tab is selected
+                          String period = '';
+                          if (index == 0) {
+                            period = 'today';
+                          } else if (index == 1) {
+                            period = 'week';
+                          } else if (index == 2) {
+                            period = 'month';
+                          }
+
+                          setState(() {
+                            _totalIncomeAndExpense =
+                                _fetchTotalIncomeAndExpense(period);
+                          });
+                        },
                       ),
                       Container(
-                        height: 50, // For the tab content area
+                        height: 10, // For the tab content area
                         child: TabBarView(
                           children: [
-                            // Content under the "This Week" tab (currently no content)
+                            // Content under the "Today" tab
                             Center(child: SizedBox.shrink()),
-                            // Content under the "This Month" tab (currently no content)
+                            // Content under the "This Week" tab
                             Center(child: SizedBox.shrink()),
-                            // Content under the "This Year" tab (currently no content)
+                            // Content under the "This Month" tab
                             Center(child: SizedBox.shrink()),
                           ],
                         ),
@@ -131,6 +153,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ],
                   ),
                 ),
+
                 SizedBox(height: 20),
 
                 // Income and Expense Section
@@ -163,6 +186,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     }
                   },
                 ),
+
                 SizedBox(height: 20),
 
                 // Budget Plan Section with Horizontal Scroll
@@ -299,10 +323,6 @@ class IncomeExpenseCard extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 // Budget Card
 class BudgetCard extends StatelessWidget {

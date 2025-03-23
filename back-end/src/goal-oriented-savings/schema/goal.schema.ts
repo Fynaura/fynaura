@@ -1,43 +1,60 @@
 /* eslint-disable prettier/prettier */
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { Document } from 'mongoose';
+import { Document, Types } from 'mongoose'; // ⬅ Add Types for ObjectId
 
 export type GoalDocument = Goal & Document;
 
+// -----------------------------
+// Transaction Subdocument Schema
+// -----------------------------
+@Schema({ _id: true }) // Auto-generate _id for each transaction
+export class Transaction {
+  @Prop({ required: true })
+  amount: number;
+
+  @Prop({ required: true })
+  date: string;
+
+  @Prop({ required: true })
+  isAdded: boolean;
+
+  // ✅ Add this so TypeScript knows each transaction has an _id
+  _id?: Types.ObjectId;
+}
+
+export const TransactionSchema = SchemaFactory.createForClass(Transaction);
+
+// -----------------------------
+// Goal Schema
+// -----------------------------
 @Schema({ timestamps: true })
 export class Goal {
   @Prop({ required: true })
-  name: string;  // The name of the goal
+  name: string;
 
   @Prop({ required: true })
-  targetAmount: number;  // The target amount for the goal
+  targetAmount: number;
 
-  @Prop({ required: false })
-  savedAmount: number;  // The amount saved towards the goal
-
-  @Prop({ required: true })
-  startDate: string;  // The start date of the goal
+  @Prop({ required: false, default: 0 })
+  savedAmount: number;
 
   @Prop({ required: true })
-  endDate: string;  // The end date for the goal
+  startDate: string;
+
+  @Prop({ required: true })
+  endDate: string;
 
   @Prop({ default: false })
-  isCompleted: boolean;  // Boolean to check if the goal is completed
+  isCompleted: boolean;
 
   @Prop({ type: String, default: null })
-  image: string | null;  // Optional image path for the goal
+  image: string | null;
 
-  @Prop({ default: [] })
-  history: [
-    {
-      amount: number;
-      date: string;
-      isAdded: boolean;  // Whether the transaction was an addition or subtraction
-    }
-  ];  // History of transactions related to the goal
+  @Prop({ type: [TransactionSchema], default: [] })
+  history: Transaction[];
 
   @Prop({ required: false })
-  userId: string;  // The user who created the goal
+  userId: string;
 }
 
 export const GoalSchema = SchemaFactory.createForClass(Goal);

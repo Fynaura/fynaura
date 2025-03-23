@@ -73,18 +73,28 @@ class GoalService {
 
   // Add Amount to Goal
   Future<Goal> addAmount(String goalId, double amount) async {
-    final response = await http.post(
-      Uri.parse('$baseUrl/goal/$goalId/addAmount'),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'amount': amount}),
-    );
+  final response = await http.post(
+    Uri.parse('$baseUrl/goal/$goalId/addAmount'),
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode({'amount': amount}),
+  );
 
-    if (response.statusCode == 200) {
-      return Goal.fromJson(jsonDecode(response.body));
+  print('addAmount response: ${response.statusCode} → ${response.body}');
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    final decoded = jsonDecode(response.body);
+
+    // Safety: Ensure decoded is Map and has _id
+    if (decoded is Map<String, dynamic> && decoded.containsKey('_id')) {
+      return Goal.fromJson(decoded);
     } else {
-      throw Exception('Failed to add amount: ${response.body}');
+      throw Exception('Unexpected response structure: $decoded');
     }
+  } else {
+    throw Exception('Failed to add amount: ${response.body}');
   }
+}
+
 
   // Subtract Amount from Goal
   Future<Goal> subtractAmount(String goalId, double amount) async {
@@ -94,11 +104,15 @@ class GoalService {
       body: jsonEncode({'amount': amount}),
     );
 
-    if (response.statusCode == 200) {
+    print('subtractAmount response: ${response.statusCode} → ${response.body}');
+
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
       return Goal.fromJson(jsonDecode(response.body));
     } else {
       throw Exception('Failed to subtract amount: ${response.body}');
     }
+
   }
 
   // Add a Transaction to the Goal
@@ -112,12 +126,16 @@ class GoalService {
         'isAdded': isAdded,
       }),
     );
+    print('addTransaction response: ${response.statusCode} → ${response.body}');
 
-    if (response.statusCode == 200) {
-      return Goal.fromJson(jsonDecode(response.body));
+
+    if (response.statusCode >= 200 && response.statusCode < 300) {
+      final decoded = jsonDecode(response.body);
+      return Goal.fromJson(decoded);
     } else {
       throw Exception('Failed to add transaction: ${response.body}');
     }
+
   }
 
   Future<List<Goal>> getAllGoals() async {
@@ -164,5 +182,21 @@ class GoalService {
       throw Exception('Failed to delete goal: ${response.body}');
     }
   }
+
+  // Delete a transaction from a goal
+  Future<void> deleteTransaction(String goalId, String transactionId) async {
+  final response = await http.delete(
+    Uri.parse('$baseUrl/$goalId/transaction/$transactionId'),
+    headers: {'Content-Type': 'application/json'},
+  );
+
+  if (response.statusCode >= 200 && response.statusCode < 300) {
+    print("Deleted transaction $transactionId successfully");
+  } else {
+    throw Exception('Failed to delete transaction: ${response.body}');
+  }
+}
+
+
 
 }

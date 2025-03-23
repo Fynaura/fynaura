@@ -39,7 +39,7 @@ class _GoalPageState extends State<GoalPage> with SingleTickerProviderStateMixin
         goals = fetchedGoals;
       });
     } catch (e) {
-      print("Error loading goals: $e");
+      print("Error loading goals: $e");
     }
   }
 

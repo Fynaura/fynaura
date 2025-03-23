@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Put, Delete, HttpCode, HttpStatus, NotFoundException } from '@nestjs/common';
 import { GoalService } from './goal.service';  // Adjust import path accordingly
 import { CreateGoalDto, UpdateGoalDto } from './dto/goal.dto';  // Adjust import path accordingly
 import { Goal } from './schema/goal.schema';
@@ -104,5 +104,20 @@ export class GoalController {
   @Get('user/:userId')
   async findGoalsByUser(@Param('userId') userId: string): Promise<Goal[]> {
     return this.goalService.findByUserId(userId);
-  }
+  }
+
+  @Delete(':goalId/transaction/:transactionId')
+    async deleteTransaction(
+      @Param('goalId') goalId: string,
+      @Param('transactionId') transactionId: string,
+    ) {
+      console.log('DELETE route hit');  
+    const updatedGoal = await this.goalService.removeTransaction(goalId, transactionId);
+    if (!updatedGoal) {
+      throw new NotFoundException('Goal or Transaction not found');
+    }
+    return updatedGoal;
+  }
+
+
 }
