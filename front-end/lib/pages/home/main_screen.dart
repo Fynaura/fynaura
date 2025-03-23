@@ -4,7 +4,7 @@ import 'package:fynaura/pages/add-transactions/transaction_detail_page.dart';
 import 'package:fynaura/pages/collab-budgeting/collab-main.dart';
 import 'package:fynaura/pages/home/home.dart';
 import 'package:fynaura/pages/user-session/UserSession.dart';
-import '../Analize/analyze_page.dart';
+// import '../Analize/analyze_page.dart';
 import '../profile/profile.dart';
 import 'package:fynaura/widgets/nav_bar.dart';
 import 'package:fynaura/widgets/nav_model.dart';
@@ -47,10 +47,10 @@ class _MainScreenState extends State<MainScreen> {
         page: DashboardScreen(displayName: displayName, email: email), // Pass the details to DashboardScreen
         navKey: homeNavKey,
       ),
-      NavModel(
-        page: AnalyzePage(), // Update to use title
-        navKey: analyticsNavKey,
-      ),
+      // NavModel(
+      //   page: AnalyzePage(), // Update to use title
+      //   navKey: analyticsNavKey,
+      // ),
       NavModel(
         page: CollabMain(), // Update to use title
         navKey: planNavKey, // Update to use key
