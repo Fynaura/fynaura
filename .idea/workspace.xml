@@ -5,11 +5,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9cfdc47d-308a-4b75-8b15-5f26459cc8bf" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab_main_test.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/libraries/Dart_Packages.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab_main_test.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/test/collab_main_test.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/front-end/pubspec.lock" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/budgetDetails.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/lib/pages/collab-budgeting/collab-main.dart" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/front-end/pubspec.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/pubspec.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" beforeDir="false" afterPath="$PROJECT_DIR$/front-end/test/collab_main_test.mocks.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -52,11 +54,6 @@
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\dimal\OneDrive\Desktop\Fynaura\front-end\test" />
-    </key>
-  </component>
   <component name="RunManager">
     <configuration name="main.dart" type="FlutterRunConfigurationType" factoryName="Flutter" temporary="true" nameIsGenerated="true">
       <option name="filePath" value="$PROJECT_DIR$/front-end/lib/main.dart" />
