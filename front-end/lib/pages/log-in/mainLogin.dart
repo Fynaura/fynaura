@@ -25,8 +25,8 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
-  final String apiUrl =
-      'http://192.168.127.53:3000/user/login'; // API endpoint for login
+  final String apiUrl = 'http://10.0.2.2:3000/user/login';
+      // 'http://192.168.127.53:3000/user/login'; // API endpoint for login
 
   String? emailError;
   String? passwordError;
@@ -107,7 +107,8 @@ class _MainloginState extends State<Mainlogin> {
 
         // Send the idToken to the backend to get user details
         final userDetailsResponse = await http.get(
-          Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
+          // Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
+          Uri.parse('http://10.0.2.2:3000/user/me?idToken=$idToken'),
           headers: {"Authorization": "Bearer $idToken"},
         );
 
@@ -280,12 +281,22 @@ class _MainloginState extends State<Mainlogin> {
               CustomButton(
                 text: isLoading ? "Please wait..." : "Login",
                 backgroundColor:
-                    isLoading ? Colors.grey : const Color(0xFF1E232C),
+                isLoading ? Colors.grey : const Color(0xFF1E232C),
                 textColor: Colors.white,
                 onPressed: isLoading
                     ? _doNothing
                     : loginUser, // Disable button when loading
               ),
+
+              // CustomButton(
+              //   text: isLoading ? "Please wait..." : "Login",
+              //   backgroundColor:
+              //       isLoading ? Colors.grey : const Color(0xFF1E232C),
+              //   textColor: Colors.white,
+              //   onPressed: isLoading
+              //       ? _doNothing
+              //       : loginUser, // Disable button when loading
+              // ),
               const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -303,8 +314,7 @@ class _MainloginState extends State<Mainlogin> {
                     onPressed: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const Mainsignup()),
+                        MaterialPageRoute(builder: (context) => const Mainsignup()),
                       );
                     },
                     child: const Text(
@@ -315,7 +325,25 @@ class _MainloginState extends State<Mainlogin> {
                         color: Color(0xFF254E7A),
                       ),
                     ),
-                  ),
+                  )
+
+                  // TextButton(
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //           builder: (context) => const Mainsignup()),
+                  //     );
+                  //   },
+                  //   child: const Text(
+                  //     "Sign up",
+                  //     style: TextStyle(
+                  //       fontFamily: 'Urbanist',
+                  //       fontWeight: FontWeight.bold,
+                  //       color: Color(0xFF254E7A),
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
               const SizedBox(height: 20),

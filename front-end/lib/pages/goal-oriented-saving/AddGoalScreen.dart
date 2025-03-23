@@ -5,7 +5,7 @@ import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-import 'package:fynaura/pages/goal-oriented-saving/service/goalService.dart'
+import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'
     as service;
 
 import 'model/Goal.dart';

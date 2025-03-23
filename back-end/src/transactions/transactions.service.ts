@@ -1,3 +1,7 @@
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable prettier/prettier */
 import { Injectable, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
@@ -12,9 +16,11 @@ export class TransactionsService {
   constructor(
     @InjectModel(Transaction.name)
     private readonly transactionModel: Model<Transaction>,
-  ) { }
+  ) {}
 
-  async create(createTransactionDto: CreateTransactionDto): Promise<Transaction> {
+  async create(
+    createTransactionDto: CreateTransactionDto,
+  ): Promise<Transaction> {
     const newTransaction = new this.transactionModel(createTransactionDto);
     return newTransaction.save();
   }
@@ -29,7 +35,6 @@ export class TransactionsService {
 
   async getAllTransactions(): Promise<Transaction[]> {
     return await this.transactionModel.find();
-
   }
 
   private getDateRange(period: string): { start: Date; end: Date } {
@@ -54,8 +59,6 @@ export class TransactionsService {
     throw new Error('Invalid period');
   }
 
-  
-
   async getTotalExpense(uid: string, period: string): Promise<number> {
     const { start, end } = this.getDateRange(period);
 
@@ -78,8 +81,8 @@ export class TransactionsService {
     return expense.length > 0 ? expense[0].totalExpense : 0;
   }
 
-   // Function to fetch the total income for the specified period
-   async getTotalIncome(uid: string, period: string): Promise<number> {
+  // Function to fetch the total income for the specified period
+  async getTotalIncome(uid: string, period: string): Promise<number> {
     const { start, end } = this.getDateRange(period);
 
     const income = await this.transactionModel.aggregate([
@@ -128,36 +131,56 @@ export class TransactionsService {
 
     // Calculate running balance for each hour
     let cumulativeBalance = 0;
-    const balanceHistory: TransactionDTO[] = hourlyBalances.map((balance, index) => {
-      cumulativeBalance += balance; // Update cumulative balance
+    const balanceHistory: TransactionDTO[] = hourlyBalances.map(
+      (balance, index) => {
+        cumulativeBalance += balance; // Update cumulative balance
 
-      // Create the DTO for the current hour, with the required missing properties
-      return {
-        timestamp: new Date(now.getFullYear(), now.getMonth(), now.getDate(), index), // Hourly timestamp
-        balance: cumulativeBalance,  // Running balance
-        amount: balance,  // Amount of transactions for this hour
-        type: balance >= 0 ? 'income' : 'expense',  // Just an indicator for type (can be customized)
-        category: 'N/A', // Placeholder, you can modify as necessary
-        description: 'Hourly balance update', // Placeholder description
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate(), index), // Add the missing 'date' field
-        reminder: false, // Add the missing 'reminder' field, you can set this to false or adjust as needed
-        userId: 'N/A', // Placeholder, you can modify as necessary
-      };
-    });
+        // Create the DTO for the current hour, with the required missing properties
+        return {
+          timestamp: new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            index,
+          ), // Hourly timestamp
+          balance: cumulativeBalance, // Running balance
+          amount: balance, // Amount of transactions for this hour
+          type: balance >= 0 ? 'income' : 'expense', // Just an indicator for type (can be customized)
+          category: 'N/A', // Placeholder, you can modify as necessary
+          description: 'Hourly balance update', // Placeholder description
+          date: new Date(
+            now.getFullYear(),
+            now.getMonth(),
+            now.getDate(),
+            index,
+          ), // Add the missing 'date' field
+          reminder: false, // Add the missing 'reminder' field, you can set this to false or adjust as needed
+          userId: 'N/A', // Placeholder, you can modify as necessary
+        };
+      },
+    );
 
     return balanceHistory;
   }
 
-  async createBulk(bulkTransactions: CreateTransactionDto[]): Promise<{ status: number, message: string }> {
+  async createBulk(
+    bulkTransactions: CreateTransactionDto[],
+  ): Promise<{ status: number; message: string }> {
     try {
       // Insert bulk transactions into the database
       await this.transactionModel.insertMany(bulkTransactions);
 
       // Return 200 status code and a success message
-      return { status: HttpStatus.OK, message: 'Bulk transactions created successfully' };
+      return {
+        status: HttpStatus.OK,
+        message: 'Bulk transactions created successfully',
+      };
     } catch (error) {
       // Handle error and return a 500 status code for internal server error
-      return { status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Error creating bulk transactions' };
+      return {
+        status: HttpStatus.INTERNAL_SERVER_ERROR,
+        message: 'Error creating bulk transactions',
+      };
     }
   }
   // Method to retrieve transactions based on userId
@@ -166,24 +189,32 @@ export class TransactionsService {
   }
 
   async getTotalIncomeForUser(userId: string): Promise<number> {
-    const transactions = await this.transactionModel.find({
-      userId: userId,
-      type: 'income'
-    }).exec();
+    const transactions = await this.transactionModel
+      .find({
+        userId: userId,
+        type: 'income',
+      })
+      .exec();
 
-    const totalIncome = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+    const totalIncome = transactions.reduce(
+      (acc, transaction) => acc + transaction.amount,
+      0,
+    );
     return totalIncome;
   }
 
   async getTotalExpenseForUser(userId: string): Promise<number> {
-    const transactions = await this.transactionModel.find({ 
-      userId: userId, 
-      type: 'expense' 
-    }).exec();
-    
-    const totalExpense = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
+    const transactions = await this.transactionModel
+      .find({
+        userId: userId,
+        type: 'expense',
+      })
+      .exec();
+
+    const totalExpense = transactions.reduce(
+      (acc, transaction) => acc + transaction.amount,
+      0,
+    );
     return totalExpense;
   }
-
-
 }

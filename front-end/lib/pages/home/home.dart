@@ -29,7 +29,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.127.53:3000/goals/user/$uid'),
+        // Uri.parse('http://192.168.127.53:3000/goals/user/$uid'),
+        Uri.parse('http://10.0.2.2:3000/goals/user/$uid'),
       );
 
       if (response.statusCode == 200) {
@@ -53,8 +54,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
       // Constructing the API URL based on the selected period
       String incomeUrl = '';
       String expenseUrl = '';
-      String baseUrl =
-          'http://192.168.127.53:3000/transaction'; // Make sure this matches your backend
+      String baseUrl = 'http://10.0.2.2:3000/transaction';
+          // 'http://192.168.127.53:3000/transaction'; // Make sure this matches your backend
 
       // Construct the URLs based on the period selected
       if (period == 'today') {
