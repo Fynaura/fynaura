@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:confetti/confetti.dart';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'
@@ -12,6 +13,7 @@ bool isMongoId(String id) {
 
 
 // Import GoalPage for Goal class
+
 
 class GoalDetailScreen extends StatefulWidget {
   final Goal goal;
