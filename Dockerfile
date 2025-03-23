@@ -15,7 +15,7 @@ RUN npm run build
 # Don't run tests in Dockerfile - they've already run in the CI pipeline
 # RUN npm run test
 
-# Expose port 
+# Expose port (adjust as needed for your app)
 EXPOSE 3000
 
 # Start the application

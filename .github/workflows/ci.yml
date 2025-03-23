@@ -14,24 +14,36 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
+      # Debug step to see repository contents
+      - name: List directory contents
+        run: |
+          echo "Repository root:"
+          ls -la
+          echo "Back-end directory:"
+          ls -la back-end || echo "back-end directory not found"
+
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "18"
           cache: "npm"
-          cache-dependency-path: "C:/Users/dimal/OneDrive/Desktop/Fynaura/back-end/package-lock.json"
+          cache-dependency-path: "./back-end/package-lock.json"
 
       - name: Install dependencies
+        working-directory: ./back-end
         run: npm ci
 
       - name: Build application
+        working-directory: ./back-end
         run: npm run build
 
       - name: Run tests
+        working-directory: ./back-end
         run: npm run test
 
       # Optional: Add linting if you need it
       - name: Lint code
+        working-directory: ./back-end
         run: npm run lint
         if: always() # Run even if tests fail
 
@@ -44,6 +56,6 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v4
         with:
-          context: .
+          context: ./back-end
           push: true
           tags: ${{ secrets.DOCKER_USERNAME }}/nestjs-app:latest
