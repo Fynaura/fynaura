@@ -3,6 +3,7 @@ import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
+import 'package:fynaura/services/budget_service.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String? displayName;
@@ -22,7 +23,19 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late Future<List<Goal>> _userGoals;
   late Future<Map<String, dynamic>> _totalIncomeAndExpense;
+  late Future<List<Map<String, dynamic>>> _userBudgets;
   String selectedPeriod = 'today';
+  final BudgetService _budgetService = BudgetService();
+
+  // Fetch the user's budgets
+  Future<List<Map<String, dynamic>>> _fetchUserBudgets() async {
+    try {
+      return await _budgetService.getBudgets();
+    } catch (e) {
+      print("Error fetching budgets: $e");
+      return [];
+    }
+  }
 
   Future<List<Goal>> _fetchUserGoals() async {
     final userSession = UserSession();
@@ -30,7 +43,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.127.53:3000/goals/user/$uid'),
+        Uri.parse('http://192.168.8.172:3000/goals/user/$uid'),
       );
 
       if (response.statusCode == 200) {
@@ -55,7 +68,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       String incomeUrl = '';
       String expenseUrl = '';
       String baseUrl =
-          'http://192.168.127.53:3000/transaction'; // Make sure this matches your backend
+          'http://192.168.8.172:3000/transaction'; // Make sure this matches your backend
 
       // Construct the URLs based on the period selected
       if (period == 'today') {
@@ -96,6 +109,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     // Initialize data for 'today' period when the screen loads
     _totalIncomeAndExpense = _fetchTotalIncomeAndExpense('today');
     _userGoals = _fetchUserGoals();
+    _userBudgets = _fetchUserBudgets();
   }
 
   // Refresh function to trigger the data fetch again
@@ -104,6 +118,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
       _totalIncomeAndExpense =
           _fetchTotalIncomeAndExpense('today'); // Default to 'today'
       _userGoals = _fetchUserGoals();
+      _userBudgets = _fetchUserBudgets();
     });
   }
 
@@ -209,50 +224,42 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     SizedBox(height: 20),
 
-                    // Budget Plan Section
-                    Text('Budget Plan',
-                        style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF254e7a))),
-                    SizedBox(height: 10),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          BudgetCard(
-                              title: 'Monthly Budget',
-                              amount: 'LKR 18,000',
-                              total: 'LKR 50,000',
-                              progress: 0.7),
-                          SizedBox(width: 20),
-                          BudgetCard(
-                              title: 'Conversation',
-                              amount: 'LKR 18,000',
-                              total: 'LKR 50,000',
-                              progress: 0.7),
-                          SizedBox(width: 20),
-                          BudgetCard(
-                              title: 'Anniversary',
-                              amount: 'LKR 18,000',
-                              total: 'LKR 50,000',
-                              progress: 0.7),
-                          SizedBox(width: 20),
-                          BudgetCard(
-                              title: "Mom's Birthday",
-                              amount: 'LKR 18,000',
-                              total: 'LKR 50,000',
-                              progress: 0.7),
-                          SizedBox(width: 20),
-                          BudgetCard(
-                              title: "Xian's Birthday",
-                              amount: 'LKR 18,000',
-                              total: 'LKR 50,000',
-                              progress: 0.7),
-                        ],
-                      ),
-                    ),
-                    SizedBox(height: 30),
+                    // Budget Plan Section with FutureBuilder to display fetched budgets
+                Text('Budget Plan', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Color(0xFF254e7a))),
+                SizedBox(height: 10),
+              
+                // Display a loading spinner while fetching budgets
+                FutureBuilder<List<Map<String, dynamic>>>(
+                  future: _userBudgets,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Failed to load budgets'));
+                    } else if (snapshot.hasData) {
+                      final budgets = snapshot.data!;
+                      return SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          children: budgets.map((budget) {
+                            return Padding(
+                              padding: const EdgeInsets.only(right: 20.0), // Adds space between each card
+                              child: BudgetCard(
+                                title: budget["name"] ?? "Unnamed Budget",
+                                amount: "LKR ${budget["amount"].toString()}",
+                                total: "LKR ${budget["amount"].toString()}", // You can replace this with the total amount if needed
+                                progress: 0.7, // You can calculate the progress based on the amount saved
+                              ),
+                            );
+                          }).toList(),
+                        ),
+                      );
+                    } else {
+                      return Center(child: Text('No budgets available'));
+                    }
+                  },
+                ),
+                SizedBox(height: 30),
 
                     // Goals Section with Two Columns
                     Text('Goals',
@@ -352,20 +359,20 @@ class IncomeExpenseCard extends StatelessWidget {
   }
 }
 
-// Budget Card
+// Budget Card Widget
 class BudgetCard extends StatelessWidget {
   final String title;
   final String amount;
   final String total;
   final double progress;
 
-  const BudgetCard(
-      {Key? key,
-        required this.title,
-        required this.amount,
-        required this.total,
-        required this.progress})
-      : super(key: key);
+  const BudgetCard({
+    Key? key,
+    required this.title,
+    required this.amount,
+    required this.total,
+    required this.progress,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -395,10 +402,7 @@ class BudgetCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(title,
-              style: TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white)),
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
           SizedBox(height: 10),
           Text('$amount of $total',
               style: TextStyle(fontSize: 14, color: Colors.white)),

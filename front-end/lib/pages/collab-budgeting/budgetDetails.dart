@@ -1,9 +1,7 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/collab-budgeting/scanQr.dart';
 import 'package:fynaura/widgets/backBtn.dart';
-import 'package:fynaura/services/budget_service.dart'; // Add this import
+import 'package:fynaura/services/budget_service.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 
 class BudgetDetails extends StatefulWidget {
   final String budgetName;
@@ -26,6 +24,7 @@ class BudgetDetails extends StatefulWidget {
 class _BudgetDetailsState extends State<BudgetDetails> {
   List<String> avatars = ["images/user.png"]; // Initial avatar list
   final BudgetService _budgetService = BudgetService(); // Add budget service
+  final UserSession _userSession = UserSession(); // Get UserSession instance
 
   // Track the current balance and activities
   late double currentAmount;
@@ -68,94 +67,145 @@ class _BudgetDetailsState extends State<BudgetDetails> {
   }
 
   void _addAvatar() {
+    final TextEditingController userIdController = TextEditingController();
+    bool isLoading = false;
+    String? errorMessage;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.person_add, size: 24, color: Colors.black54),
-                    SizedBox(width: 8),
-                    Text(
-                      "Invite Collaborators",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Icon(Icons.person_add, size: 24, color: Colors.black54),
+                        SizedBox(width: 8),
+                        Text(
+                          "Invite Collaborators",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.close, color: Colors.black54),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text("Your budget has been created. Invite your friends to join!"),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: userIdController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        hintText: "User ID",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorText: errorMessage,
                       ),
                     ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.black54),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                    SizedBox(height: 10),
+                    if (isLoading)
+                      Center(child: CircularProgressIndicator())
+                    else
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          minimumSize: Size(double.infinity, 50),
+                        ),
+                        onPressed: () async {
+                          if (userIdController.text.isEmpty) {
+                            setState(() {
+                              errorMessage = "Please enter a user ID";
+                            });
+                            return;
+                          }
+
+                          // Don't allow adding yourself as a collaborator
+                          if (userIdController.text == _userSession.userId) {
+                            setState(() {
+                              errorMessage = "You cannot add yourself as a collaborator";
+                            });
+                            return;
+                          }
+
+                          setState(() {
+                            isLoading = true;
+                            errorMessage = null;
+                          });
+
+                          try {
+                            // Check if user exists
+                            final userExists = await _budgetService.checkUserExists(userIdController.text);
+
+                            if (!userExists) {
+                              setState(() {
+                                isLoading = false;
+                                errorMessage = "User does not exist";
+                              });
+                              return;
+                            }
+
+                            // Add collaborator to budget
+                            await _budgetService.addCollaborator(
+                              widget.budgetId,
+                              userIdController.text,
+                            );
+
+                            // Update the UI state
+                            this.setState(() {
+                              avatars.add("images/user.png"); // Add new avatar
+                            });
+
+                            Navigator.pop(context); // Close the popup
+
+                            // Show success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Collaborator added successfully")),
+                            );
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                              errorMessage = "Failed to add collaborator: $e";
+                            });
+                          }
+                        },
+                        child: Text("Confirm"),
+                      ),
+                    SizedBox(height: 10),
                   ],
                 ),
-                SizedBox(height: 10),
-                Text(
-                    "Your budget has been created. Invite your friends to join!"),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person),
-                    hintText: "User ID",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    minimumSize: Size(double.infinity, 50),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      avatars.add("images/user.png"); // Add new avatar
-                    });
-                    Navigator.pop(context); // Close the popup
-                  },
-                  child: Text("Confirm"),
-                ),
-                SizedBox(height: 10),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Scanqr()),
-                    );
-                  },
-                  icon: Icon(Icons.qr_code, color: Colors.black),
-                  label: Text(
-                      "Scan QR Code", style: TextStyle(color: Colors.black)),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    side: BorderSide(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  // Updated method to add transaction using BudgetService
+  // Updated method to add transaction using BudgetService and current user's name
   void _showAddTransactionDialog() {
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     bool isExpense = true;
+
+    // Get current user's name from UserSession
+    final String currentUserName = _userSession.displayName ?? "Anonymous";
 
     showDialog(
       context: context,
@@ -278,7 +328,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                               descriptionController.text,
                               amount,
                               isExpense,
-                              "John Doe" // Replace with actual user info
+                              currentUserName // Use current user's name instead of "John Doe"
                           );
 
                           // Update the UI state
@@ -288,7 +338,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
                               activities.add({
                                 "avatar": "images/user.png",
-                                "name": "John Doe",
+                                "name": currentUserName, // Use current user's name here too
                                 "description": descriptionController.text,
                                 "amount": "LKR ${amount.toStringAsFixed(0)}",
                                 "isExpense": true,
@@ -301,7 +351,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
 
                               activities.add({
                                 "avatar": "images/user.png",
-                                "name": "John Doe",
+                                "name": currentUserName, // Use current user's name here too
                                 "description": descriptionController.text,
                                 "amount": "LKR ${amount.toStringAsFixed(0)}",
                                 "isExpense": false,
