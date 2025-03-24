@@ -22,7 +22,7 @@ class _MainSignupState extends State<Mainsignup> {
 
 
 
-  final String apiUrl = 'http://192.168.8.172:3000/user/register';
+  final String apiUrl = 'http://192.168.127.53:3000/user/register';
 
 
   // Error and success message state variables
@@ -315,7 +315,7 @@ class _MainSignupState extends State<Mainsignup> {
               const SizedBox(height: 20),
               CustomButton(
                 text: isLoading ? "Please wait..." : "Register",
-                backgroundColor: isLoading ? Colors.grey : const Color(0xFF1E232C),
+                backgroundColor: isLoading ? Colors.grey : Color(0xFF254e7a),
                 textColor: Colors.white,
                 onPressed: isLoading ? _doNothing : registerUser,
               ),

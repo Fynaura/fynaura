@@ -133,7 +133,6 @@ class CollabMainState extends State<CollabMain> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CustomBackButton(),
       ),
       body: RefreshIndicator(
         onRefresh: _loadBudgets,

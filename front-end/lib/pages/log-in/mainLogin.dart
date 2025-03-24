@@ -26,7 +26,7 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   final String apiUrl =
-      'http://192.168.8.172:3000/user/login'; // API endpoint for login
+      'http://192.168.127.53:3000/user/login'; // API endpoint for login
 
   String? emailError;
   String? passwordError;
@@ -107,7 +107,7 @@ class _MainloginState extends State<Mainlogin> {
 
         // Send the idToken to the backend to get user details
         final userDetailsResponse = await http.get(
-          Uri.parse('http://192.168.8.172:3000/user/me?idToken=$idToken'),
+          Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
           headers: {"Authorization": "Bearer $idToken"},
         );
 
@@ -280,7 +280,7 @@ class _MainloginState extends State<Mainlogin> {
               CustomButton(
                 text: isLoading ? "Please wait..." : "Login",
                 backgroundColor:
-                    isLoading ? Colors.grey : const Color(0xFF1E232C),
+                    isLoading ? Colors.grey : Color(0xFF254e7a),
                 textColor: Colors.white,
                 onPressed: isLoading
                     ? _doNothing
