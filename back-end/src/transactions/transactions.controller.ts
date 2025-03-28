@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 
 
-import { Body, Get, HttpCode, Param, Post } from '@nestjs/common';
+import { Body, Get, HttpCode, Param, Post, Query } from '@nestjs/common';
 import { Controller } from '@nestjs/common';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { TransactionsService } from './transactions.service';
@@ -69,6 +69,14 @@ export class TransactionsController {
     console.log(`✅ Received ${bulkTransactions.length} transactions`);
     console.log(bulkTransactions)
     return await this.transactionService.createBulk(bulkTransactions);
+  }
+
+  @Get('balance/:userId')
+  async getBalance(
+    @Param('userId') userId: string,
+    @Query('filter') filter: 'Today' | 'This Week' | 'This Month',
+  ) {
+    return await this.transactionService.getBalance(userId, filter);
   }
 
   // @Get('total-income/:userId')

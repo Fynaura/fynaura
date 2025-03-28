@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/Analize/TransactionModel.dart';
+import 'package:fynaura/pages/testana/tempchart.dart';
 import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 import 'package:fynaura/widgets/analyze/money_chart.dart';  // Import MoneyChart
@@ -21,6 +22,7 @@ class _AnalyzePageState extends State<AnalyzePage> with SingleTickerProviderStat
   List<Transaction> filteredTransactions = [];
   String selectedFilter = 'Today';  // Default filter is Today
   late TabController _tabController;
+  final userSession = UserSession();
 
   @override
   void initState() {
@@ -32,7 +34,7 @@ class _AnalyzePageState extends State<AnalyzePage> with SingleTickerProviderStat
 
   // Fetch hourly balance data from the backend
   Future<void> fetchHourlyBalanceData() async {
-    final response = await http.get(Uri.parse('http://192.168.127.53:3000/transaction/hourly-balance'));
+    final response = await http.get(Uri.parse('http://192.168.110.53:3000/transaction/hourly-balance'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response and cast it as List<Map<String, dynamic>>
@@ -53,9 +55,8 @@ class _AnalyzePageState extends State<AnalyzePage> with SingleTickerProviderStat
 
   // Fetch transactions for the list
   Future<void> fetchTransactions() async {
-    final userSession = UserSession();
     final uid = userSession.userId; 
-    final response = await http.get(Uri.parse('http://192.168.127.53:3000/transaction/$uid'));
+    final response = await http.get(Uri.parse('http://192.168.110.53:3000/transaction/$uid'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response and map it to Transaction model
@@ -251,6 +252,33 @@ class _AnalyzePageState extends State<AnalyzePage> with SingleTickerProviderStat
                     ),
                   ),
                   
+                  SliverToBoxAdapter(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            "Expenses Statistics",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18,
+                            ),
+                          ),
+                          SizedBox(height: 15),
+                          Container(
+                            height: 300 + (filteredTransactions.length * 2),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: Colors.white,
+                            ),
+                            child: LineChartWidget(),  // Pass transactions to PieChartSample2
+                          ),
+                          SizedBox(height: 50),
+                        ],
+                      ),
+                    ),
+                  ),
                   // Adding PieChart (Expenses Statistics)
                   SliverToBoxAdapter(
                     child: Padding(
