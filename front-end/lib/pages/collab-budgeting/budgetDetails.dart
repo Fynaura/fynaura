@@ -45,6 +45,26 @@ class _BudgetDetailsState extends State<BudgetDetails> {
     _loadTransactions();
   }
 
+
+
+  Future<void> _loadCollaborators() async {
+    try {
+      final collaborators = await _budgetService.getCollaborators(widget.budgetId);
+      setState(() {
+        // Update avatars based on collaborators
+        avatars = collaborators.map((collaborator) => "images/user.png").toList();
+      });
+    } catch (e) {
+      print('Failed to load collaborators: $e');
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadCollaborators();  // Ensure collaborators are reloaded when the screen is displayed
+  }
+
   Future<void> _loadTransactions() async {
     try {
       final transactions = await _budgetService.getTransactions(widget.budgetId);
@@ -65,6 +85,8 @@ class _BudgetDetailsState extends State<BudgetDetails> {
       print("Failed to load transactions: $e");
     }
   }
+
+
 
   void _addAvatar() {
     final TextEditingController userIdController = TextEditingController();
