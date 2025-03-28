@@ -17,21 +17,22 @@ export class UploadController {
     console.log('Image received:', file.path);
 
     try {
-      const { totalAmount, billDate, extractedText } = await this.uploadService.processDocument(file.path);
+      const { totalAmount,  extractedText, categorizedItems } = await this.uploadService.processDocument(file.path);//billDate,
 
       console.log(`Total Amount: ${totalAmount}`);
-      console.log(`Bill Date: ${billDate}`);
+      //console.log(`Bill Date: ${billDate}`);
       console.log(`Extracted Text: ${extractedText}`);
+      console.log(`Categorized Items:`, categorizedItems);
 
-      // Properly return JSON response
-      return res.status(200).json({ totalAmount, billDate, extractedText });
+      return res.status(200).json({
+        totalAmount,
+        //billDate,  // This will now be in 'YYYY-MM-DD' format
+        extractedText,
+        categorizedItems
+      });
     } catch (error) {
       console.error('Error processing document:', error);
       return res.status(500).json({ error: error.message });
     }
   }
 }
-
-
-
-

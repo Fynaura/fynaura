@@ -1,10 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
-import 'package:fynaura/widgets/customInput.dart';
 import 'package:fynaura/services/budget_service.dart';
 import 'package:fynaura/widgets/CustomPopup.dart';
 
@@ -36,11 +34,14 @@ class CollabMainState extends State<CollabMain> {
 
     try {
       final budgets = await _budgetService.getBudgets();
+      print('Loaded budgets: $budgets'); // Add this for debugging
+
       setState(() {
         createdBudgets = budgets;
         isLoading = false;
       });
     } catch (e) {
+      print('Error loading budgets: $e'); // Add this for debugging
       setState(() {
         errorMessage = "Failed to load budgets: ${e.toString()}";
         isLoading = false;
@@ -48,43 +49,51 @@ class CollabMainState extends State<CollabMain> {
     }
   }
 
-
   Future<void> _addBudget(String name, String amount, String date) async {
     try {
-      double parsedAmount = double.parse(amount);
-      String userId = "123456"; //sample user for now
+      final userSession = UserSession();
+      final uid = userSession.userId;
 
-      await _budgetService.createBudget(name, parsedAmount, date, userId);
+      // Debug prints
+      print('Adding budget: name=$name, amount=$amount, date=$date, userId=$uid');
+
+      if (amount.isEmpty) {
+        setState(() {
+          errorMessage = "Amount cannot be empty";
+        });
+        return;
+      }
+
+      double parsedAmount;
+      try {
+        parsedAmount = double.parse(amount);
+      } catch (e) {
+        setState(() {
+          errorMessage = "Invalid amount format";
+        });
+        return;
+      }
+
+      String? userId = uid;
+
+      final newBudget = await _budgetService.createBudget(name, parsedAmount, date, userId);
+      print('Budget created successfully: $newBudget');
+
+      // Option 1: Force reload budgets from API
       await _loadBudgets();
+
+      // Option 2: Add the new budget to the list immediately
+      // setState(() {
+      //   createdBudgets.add(newBudget);
+      // });
     } catch (e) {
+      print('Error in _addBudget: $e'); // Add this for debugging
       setState(() {
         errorMessage = "Failed to create budget: ${e.toString()}";
       });
     }
   }
 
-  // Delete a budget via the API
-  // Future<void> _deleteBudget(String id) async {
-  //   try {
-  //     await _budgetService.deleteBudget(id);
-  //     await _loadBudgets(); // Reload to get the updated list
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to delete budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
-  // Future<void> _deleteBudget(String id) async {
-  //   try {
-  //     print("Deleting budget with ID: $id");
-  //     await _budgetService.deleteBudget(id);
-  //     await _loadBudgets(); // Reload to get the updated list
-  //   } catch (e) {
-  //     setState(() {
-  //       errorMessage = "Failed to delete budget: ${e.toString()}";
-  //     });
-  //   }
-  // }
   Future<void> _deleteBudget(String? id) async {
     if (id == null || id == "null" || id.isEmpty) {
       setState(() {
@@ -114,14 +123,16 @@ class CollabMainState extends State<CollabMain> {
       builder: (BuildContext context) {
         return CustomPopup(onBudgetCreated: _addBudget);
       },
-    );
+    ).then((_) {
+      // Force reload budgets when dialog is closed
+      _loadBudgets();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CustomBackButton(),
       ),
       body: RefreshIndicator(
         onRefresh: _loadBudgets,
@@ -219,6 +230,16 @@ class CollabMainState extends State<CollabMain> {
                     ),
                   ),
 
+                // Debug text to show the number of budgets loaded
+                if (!isLoading)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 10.0),
+                    child: Text(
+                      "Debug: Loaded ${createdBudgets.length} budgets",
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    ),
+                  ),
+
                 // Budget list
                 if (!isLoading && createdBudgets.isNotEmpty)
                   Column(
@@ -232,12 +253,14 @@ class CollabMainState extends State<CollabMain> {
                                 budgetName: budget["name"] ?? "",
                                 budgetAmount: budget["amount"].toString(),
                                 budgetDate: budget["date"] ?? "",
+                                budgetId: budget["id"].toString(),
                               ),
                             ),
-                          ).then((_) => _loadBudgets()); // Reload after returning from details
+                          ).then((_) => _loadBudgets());
                         },
                         child: Dismissible(
-                          key: Key(budget["id"]?.toString() ?? UniqueKey().toString()),
+                          key: Key(budget["id"]?.toString() ??
+                              UniqueKey().toString()),
                           background: Container(
                             color: Colors.red,
                             alignment: Alignment.centerRight,
@@ -251,15 +274,19 @@ class CollabMainState extends State<CollabMain> {
                               builder: (BuildContext context) {
                                 return AlertDialog(
                                   title: Text("Confirm"),
-                                  content: Text("Are you sure you want to delete this budget?"),
+                                  content: Text(
+                                      "Are you sure you want to delete this budget?"),
                                   actions: [
                                     TextButton(
-                                      onPressed: () => Navigator.of(context).pop(false),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(false),
                                       child: Text("Cancel"),
                                     ),
                                     TextButton(
-                                      onPressed: () => Navigator.of(context).pop(true),
-                                      child: Text("Delete", style: TextStyle(color: Colors.red)),
+                                      onPressed: () =>
+                                          Navigator.of(context).pop(true),
+                                      child: Text("Delete",
+                                          style: TextStyle(color: Colors.red)),
                                     ),
                                   ],
                                 );
@@ -295,10 +322,12 @@ class CollabMainState extends State<CollabMain> {
                                   ),
                                   SizedBox(height: 10),
                                   Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
                                     children: [
                                       Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                         children: [
                                           Text(
                                             "LKR ${budget["amount"].toString()}",
@@ -307,13 +336,14 @@ class CollabMainState extends State<CollabMain> {
                                               color: Colors.grey[700],
                                             ),
                                           ),
-                                          // Due date removed as requested
+                                          // Removed the debug text that showed budget ID
                                         ],
                                       ),
                                       Spacer(),
                                       CircleAvatar(
                                         radius: 20,
-                                        backgroundImage: AssetImage("images/user.png"),
+                                        backgroundImage:
+                                        AssetImage("images/user.png"),
                                       ),
                                     ],
                                   ),

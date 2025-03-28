@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/forgot-password/forgotPwFirst.dart';
-
+import 'package:fynaura/pages/home/main_screen.dart'; // Import MainScreen for navigation
+import 'package:fynaura/pages/profile/profile.dart'; // Import ProfilePage for forgot password
+import 'package:fynaura/pages/user-session/UserSession.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 import 'package:fynaura/widgets/CustomButton.dart';
-import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/widgets/customInput.dart';
 
-import '../home/main_screen.dart';
+// Global variable to store the user ID
+String? userId;
+String? displayName;
+String? email;
 
 class Mainlogin extends StatefulWidget {
   const Mainlogin({super.key});
@@ -16,11 +22,143 @@ class Mainlogin extends StatefulWidget {
 }
 
 class _MainloginState extends State<Mainlogin> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  final String apiUrl =
+      'http://192.168.127.53:3000/user/login'; // API endpoint for login
+
+  String? emailError;
+  String? passwordError;
+  String? generalError;
+  bool isLoading = false;
+
+  String? get currentUserId => userId;
+
+  // Validate form before submission
+  bool validateForm() {
+    bool isValid = true;
+
+    setState(() {
+      emailError = null;
+      passwordError = null;
+      generalError = null;
+    });
+
+    if (emailController.text.isEmpty) {
+      setState(() {
+        emailError = "Email is required";
+      });
+      isValid = false;
+    }
+
+    final emailRegex = RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$');
+    if (emailController.text.isNotEmpty &&
+        !emailRegex.hasMatch(emailController.text)) {
+      setState(() {
+        emailError = "Please enter a valid email address";
+      });
+      isValid = false;
+    }
+
+    if (passwordController.text.isEmpty) {
+      setState(() {
+        passwordError = "Password is required";
+      });
+      isValid = false;
+    }
+
+    return isValid;
+  }
+
+  // Empty function to use when button should be disabled
+  void _doNothing() {}
+
+  // Login user method
+  Future<void> loginUser() async {
+    if (!validateForm()) {
+      return;
+    }
+
+    setState(() {
+      isLoading = true;
+    });
+
+    final Map<String, dynamic> data = {
+      'email': emailController.text,
+      'password': passwordController.text,
+    };
+
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {"Content-Type": "application/json"},
+        body: json.encode(data),
+      );
+
+      setState(() {
+        isLoading = false;
+      });
+
+      final responseData = json.decode(response.body);
+
+      if (response.statusCode == 200 || responseData.containsKey('idToken')) {
+        String idToken = responseData['idToken'];
+
+        // Send the idToken to the backend to get user details
+        final userDetailsResponse = await http.get(
+          Uri.parse('http://192.168.127.53:3000/user/me?idToken=$idToken'),
+          headers: {"Authorization": "Bearer $idToken"},
+        );
+
+        final userDetails = json.decode(userDetailsResponse.body);
+        final userSession = UserSession();
+        if (userDetails != null) {
+          userSession.userId = userDetails['uid'];
+          userSession.displayName = userDetails['displayName'];
+          userSession.email = userDetails['email'];
+          // Set the global user ID
+          userId = userDetails['uid']; // Assuming userId is in the response
+
+          // Navigate to the MainScreen with user details
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+              builder: (context) => MainScreen(
+                
+              ),
+            ),
+          );
+        } else {
+          setState(() {
+            generalError = 'Failed to fetch user details.';
+          });
+        }
+      } else {
+        Map<String, dynamic> errorResponse = responseData;
+        setState(() {
+          generalError = errorResponse['message'] ??
+              "Login failed. Please try again later.";
+        });
+      }
+    } catch (e) {
+      setState(() {
+        isLoading = false;
+        generalError =
+            "Network error. Please check your connection and try again.";
+      });
+      print("Error during login: $e");
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: CustomBackButton(), // Custom back button
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () => Navigator.pop(context),
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -28,7 +166,6 @@ class _MainloginState extends State<Mainlogin> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Logo
               const SizedBox(height: 30),
               Center(
                 child: Image.asset(
@@ -37,8 +174,6 @@ class _MainloginState extends State<Mainlogin> {
                 ),
               ),
               const SizedBox(height: 20),
-
-              // Welcome Back Text
               const Text(
                 "Welcome back!",
                 style: TextStyle(
@@ -48,173 +183,120 @@ class _MainloginState extends State<Mainlogin> {
                 ),
               ),
               const SizedBox(height: 8),
-
-              // Subtext
               const Text(
                 "Enter your email and password to login",
                 style: TextStyle(
                   fontFamily: 'Urbanist',
                   fontWeight: FontWeight.w600,
                   fontSize: 14,
-                  color: const Color(0xFF6A707C),
+                  color: Color(0xFF6A707C),
                 ),
-              ),
-              const SizedBox(height: 32),
-
-              // Email Input
-              CustomInputField(
-                hintText: "Enter your email",
-                controller: TextEditingController(),
               ),
               const SizedBox(height: 20),
 
-              // Forgot Password
+              // General error message
+              if (generalError != null)
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  margin: const EdgeInsets.only(bottom: 10),
+                  decoration: BoxDecoration(
+                    color: Colors.red.shade100,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Row(
+                    children: [
+                      const Icon(Icons.error_outline, color: Colors.red),
+                      const SizedBox(width: 10),
+                      Expanded(
+                        child: Text(
+                          generalError!,
+                          style: const TextStyle(color: Colors.red),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+              const SizedBox(height: 12),
+              CustomInputField(
+                hintText: "Enter your email",
+                controller: emailController,
+              ),
+
+              // Email error message
+              if (emailError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      emailError!,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 20),
               CustomInputField(
                 hintText: "Enter your password",
-                controller: TextEditingController(),
-                obscureText:
-                    true, // This will obscure the text for password input
+                controller: passwordController,
+                obscureText: true,
               ),
-              // Forgot Password
+
+              // Password error message
+              if (passwordError != null)
+                Padding(
+                  padding: const EdgeInsets.only(top: 5),
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                      passwordError!,
+                      style: const TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+                ),
+
               Align(
                 alignment: Alignment.centerRight,
                 child: TextButton(
                   onPressed: () {
-                    // Navigate sign up page
                     Navigator.push(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const ForgotPwFirst()),
+                      MaterialPageRoute(builder: (context) => ForgotPwFirst()),
                     );
-                    // Navigate to forgot password screen or trigger relevant functionality
                   },
                   child: const Text(
                     "Forgot Password?",
                     style: TextStyle(
                       fontFamily: 'Urbanist',
-                      fontWeight: FontWeight.w600, // Semi-bold
+                      fontWeight: FontWeight.w600,
                       fontSize: 14,
-                      color: Color(0xFF6A707C), // Hex color #6A707C
+                      color: Color(0xFF6A707C),
                     ),
                   ),
                 ),
               ),
               const SizedBox(height: 10),
-
-              // Login Button
               CustomButton(
-                text: "Login",
-                backgroundColor: const Color(0xFF1E232C),
+                text: isLoading ? "Please wait..." : "Login",
+                backgroundColor:
+                    isLoading ? Colors.grey : Color(0xFF254e7a),
                 textColor: Colors.white,
-                onPressed: () {
-                  print("Login pressed,open home");
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context)=> MainScreen()),
-                    );
-                },
+                onPressed: isLoading
+                    ? _doNothing
+                    : loginUser, // Disable button when loading
               ),
               const SizedBox(height: 20),
-
-              // OR Divider
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300)),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 8.0),
-                    child: Text(
-                      "Or Login with",
-                      style: TextStyle(
-                        fontFamily: 'Urbanist',
-                        fontWeight: FontWeight.w600,
-                        color: Colors.grey,
-                      ),
-                    ),
-                  ),
-                  //creates a horizontal line
-                  Expanded(child: Divider(color: const Color(0xFFE8ECF4))),
-                ],
-              ),
-              const SizedBox(height: 20),
-
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // Google Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle, // Makes it round
-                      border: Border.all(
-                          color: Color(0xFFEFF0F6), width: 2), // Stroke
-                    ),
-                    padding: EdgeInsets.all(10), // Space inside the border
-                    child: Image.asset(
-                      "images/google.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15), // Spacing between icons
-
-                  // Facebook Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/fb.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-
-                  // Apple Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/apple.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                  const SizedBox(width: 15),
-
-                  // Phone Icon
-                  Container(
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: Color(0xFFEFF0F6), width: 2),
-                    ),
-                    padding: EdgeInsets.all(10),
-                    child: Image.asset(
-                      "images/cellphone.png",
-                      height: 24,
-                      width: 24,
-                    ),
-                  ),
-                ],
-              ),
-
-              const SizedBox(height: 100),
-
-              // Register Now
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Don’t have an account?",
+                    "Don't have an account?",
                     style: TextStyle(
                       fontFamily: 'Urbanist',
                       fontWeight: FontWeight.w600,
                       fontSize: 14,
+                      color: Color(0xFF6A707C),
                     ),
                   ),
                   TextButton(
@@ -226,7 +308,7 @@ class _MainloginState extends State<Mainlogin> {
                       );
                     },
                     child: const Text(
-                      "Register Now",
+                      "Sign up",
                       style: TextStyle(
                         fontFamily: 'Urbanist',
                         fontWeight: FontWeight.bold,
@@ -236,6 +318,7 @@ class _MainloginState extends State<Mainlogin> {
                   ),
                 ],
               ),
+              const SizedBox(height: 20),
             ],
           ),
         ),

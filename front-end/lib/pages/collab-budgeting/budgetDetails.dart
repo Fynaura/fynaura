@@ -1,20 +1,20 @@
-
-
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/collab-budgeting/scanQr.dart';
-import 'package:fynaura/widgets/CustomButton.dart';
 import 'package:fynaura/widgets/backBtn.dart';
+import 'package:fynaura/services/budget_service.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 
 class BudgetDetails extends StatefulWidget {
   final String budgetName;
   final String budgetAmount;
   final String budgetDate;
+  final String budgetId;
 
   const BudgetDetails({
     super.key,
     required this.budgetName,
     required this.budgetAmount,
     required this.budgetDate,
+    required this.budgetId,
   });
 
   @override
@@ -23,6 +23,8 @@ class BudgetDetails extends StatefulWidget {
 
 class _BudgetDetailsState extends State<BudgetDetails> {
   List<String> avatars = ["images/user.png"]; // Initial avatar list
+  final BudgetService _budgetService = BudgetService(); // Add budget service
+  final UserSession _userSession = UserSession(); // Get UserSession instance
 
   // Track the current balance and activities
   late double currentAmount;
@@ -38,97 +40,172 @@ class _BudgetDetailsState extends State<BudgetDetails> {
     // Initialize the current amount from the budget amount passed from collab main
     currentAmount = double.tryParse(widget.budgetAmount.replaceAll(',', '')) ?? 50000;
     initialAmount = currentAmount; // Store initial amount to calculate percentage
+
+    // Load transactions
+    _loadTransactions();
+  }
+
+  Future<void> _loadTransactions() async {
+    try {
+      final transactions = await _budgetService.getTransactions(widget.budgetId);
+
+      setState(() {
+        activities = transactions.map((transaction) {
+          return {
+            "avatar": "images/user.png",
+            "name": transaction["addedBy"] ?? "Unknown",
+            "description": transaction["description"] ?? "",
+            "amount": "LKR ${transaction["amount"].toString()}",
+            "isExpense": transaction["isExpense"] ?? true,
+          };
+        }).toList();
+      });
+    } catch (e) {
+      // Handle error
+      print("Failed to load transactions: $e");
+    }
   }
 
   void _addAvatar() {
+    final TextEditingController userIdController = TextEditingController();
+    bool isLoading = false;
+    String? errorMessage;
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        return Dialog(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Icon(Icons.person_add, size: 24, color: Colors.black54),
-                    SizedBox(width: 8),
-                    Text(
-                      "Invite Collaborators",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                    Row(
+                      children: [
+                        Icon(Icons.person_add, size: 24, color: Colors.black54),
+                        SizedBox(width: 8),
+                        Text(
+                          "Invite Collaborators",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Spacer(),
+                        IconButton(
+                          icon: Icon(Icons.close, color: Colors.black54),
+                          onPressed: () => Navigator.pop(context),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 10),
+                    Text("Your budget has been created. Invite your friends to join!"),
+                    SizedBox(height: 10),
+                    TextField(
+                      controller: userIdController,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.person),
+                        hintText: "User ID",
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        errorText: errorMessage,
                       ),
                     ),
-                    Spacer(),
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.black54),
-                      onPressed: () => Navigator.pop(context),
-                    ),
+                    SizedBox(height: 10),
+                    if (isLoading)
+                      Center(child: CircularProgressIndicator())
+                    else
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          foregroundColor: Colors.white,
+                          minimumSize: Size(double.infinity, 50),
+                        ),
+                        onPressed: () async {
+                          if (userIdController.text.isEmpty) {
+                            setState(() {
+                              errorMessage = "Please enter a user ID";
+                            });
+                            return;
+                          }
+
+                          // Don't allow adding yourself as a collaborator
+                          if (userIdController.text == _userSession.userId) {
+                            setState(() {
+                              errorMessage = "You cannot add yourself as a collaborator";
+                            });
+                            return;
+                          }
+
+                          setState(() {
+                            isLoading = true;
+                            errorMessage = null;
+                          });
+
+                          try {
+                            // Check if user exists
+                            final userExists = await _budgetService.checkUserExists(userIdController.text);
+
+                            if (!userExists) {
+                              setState(() {
+                                isLoading = false;
+                                errorMessage = "User does not exist";
+                              });
+                              return;
+                            }
+
+                            // Add collaborator to budget
+                            await _budgetService.addCollaborator(
+                              widget.budgetId,
+                              userIdController.text,
+                            );
+
+                            // Update the UI state
+                            this.setState(() {
+                              avatars.add("images/user.png"); // Add new avatar
+                            });
+
+                            Navigator.pop(context); // Close the popup
+
+                            // Show success message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text("Collaborator added successfully")),
+                            );
+                          } catch (e) {
+                            setState(() {
+                              isLoading = false;
+                              errorMessage = "Failed to add collaborator: $e";
+                            });
+                          }
+                        },
+                        child: Text("Confirm"),
+                      ),
+                    SizedBox(height: 10),
                   ],
                 ),
-                SizedBox(height: 10),
-                Text(
-                    "Your budget has been created. Invite your friends to join!"),
-                SizedBox(height: 10),
-                TextField(
-                  decoration: InputDecoration(
-                    prefixIcon: Icon(Icons.person),
-                    hintText: "User ID",
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.black,
-                    foregroundColor: Colors.white,
-                    minimumSize: Size(double.infinity, 50),
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      avatars.add("images/user.png"); // Add new avatar
-                    });
-                    Navigator.pop(context); // Close the popup
-                  },
-                  child: Text("Confirm"),
-                ),
-                SizedBox(height: 10),
-                OutlinedButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Scanqr()),
-                    );
-                  },
-                  icon: Icon(Icons.qr_code, color: Colors.black),
-                  label: Text(
-                      "Scan QR Code", style: TextStyle(color: Colors.black)),
-                  style: OutlinedButton.styleFrom(
-                    minimumSize: Size(double.infinity, 50),
-                    side: BorderSide(color: Colors.black),
-                  ),
-                ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
 
-  // Show dialog to add new expense or income
+  // Updated method to add transaction using BudgetService and current user's name
   void _showAddTransactionDialog() {
     final TextEditingController amountController = TextEditingController();
     final TextEditingController descriptionController = TextEditingController();
     bool isExpense = true;
+
+    // Get current user's name from UserSession
+    final String currentUserName = _userSession.displayName ?? "Anonymous";
 
     showDialog(
       context: context,
@@ -234,7 +311,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                         foregroundColor: Colors.white,
                         minimumSize: Size(double.infinity, 50),
                       ),
-                      onPressed: () {
+                      onPressed: () async {
                         // Get amount from controller
                         double amount = double.tryParse(amountController.text) ?? 0;
                         if (amount <= 0 || descriptionController.text.isEmpty) {
@@ -245,45 +322,51 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                           return;
                         }
 
-                        // Update the current amount based on whether it's expense or income
-                        this.setState(() {
-                          if (isExpense) {
-                            // Reduce the current amount by the expense
-                            currentAmount = currentAmount - amount;
+                        try {
+                          await _budgetService.addTransaction(
+                              widget.budgetId,
+                              descriptionController.text,
+                              amount,
+                              isExpense,
+                              currentUserName // Use current user's name instead of "John Doe"
+                          );
 
-                            // Add expense activity
-                            activities.add({
-                              "avatar": "images/user.png",
-                              "name": "John Doe",
-                              "description": descriptionController.text,
-                              "amount": "LKR ${amount.toStringAsFixed(0)}",
-                              "isExpense": true,
-                            });
+                          // Update the UI state
+                          this.setState(() {
+                            if (isExpense) {
+                              currentAmount = currentAmount - amount;
 
-                            // Calculate new percentage remaining
-                            percentageRemaining = (currentAmount / initialAmount) * 100;
-                            // Ensure it doesn't go below 0
-                            if (percentageRemaining < 0) percentageRemaining = 0;
-                          } else {
-                            // Increase the current amount by income
-                            currentAmount = currentAmount + amount;
+                              activities.add({
+                                "avatar": "images/user.png",
+                                "name": currentUserName, // Use current user's name here too
+                                "description": descriptionController.text,
+                                "amount": "LKR ${amount.toStringAsFixed(0)}",
+                                "isExpense": true,
+                              });
 
-                            // Add income activity
-                            activities.add({
-                              "avatar": "images/user.png",
-                              "name": "John Doe",
-                              "description": descriptionController.text,
-                              "amount": "LKR ${amount.toStringAsFixed(0)}",
-                              "isExpense": false,
-                            });
+                              percentageRemaining = (currentAmount / initialAmount) * 100;
+                              if (percentageRemaining < 0) percentageRemaining = 0;
+                            } else {
+                              currentAmount = currentAmount + amount;
 
-                            // Calculate new percentage remaining
-                            percentageRemaining = (currentAmount / initialAmount) * 100;
-                            // Cap at 100% if needed
-                            if (percentageRemaining > 100) percentageRemaining = 100;
-                          }
-                        });
+                              activities.add({
+                                "avatar": "images/user.png",
+                                "name": currentUserName, // Use current user's name here too
+                                "description": descriptionController.text,
+                                "amount": "LKR ${amount.toStringAsFixed(0)}",
+                                "isExpense": false,
+                              });
 
+                              percentageRemaining = (currentAmount / initialAmount) * 100;
+                              if (percentageRemaining > 100) percentageRemaining = 100;
+                            }
+                          });
+
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("Failed to add transaction: $e")),
+                          );
+                        }
                         Navigator.pop(context);
                       },
                       child: Text("Add"),

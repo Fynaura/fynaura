@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/profile/GoalPage.dart';
+import 'package:fynaura/pages/goal-oriented-saving/Goalpage.dart';
+
 import 'package:fynaura/pages/profile/edit_profile_page.dart';
+
+import '../goal-oriented-saving/model/Goal.dart';
+
+
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -9,6 +14,8 @@ class ProfilePage extends StatefulWidget {
 
 class _ProfilePageState extends State<ProfilePage> {
   String selectedAvatar = "images/fynaura.png"; // Default avatar
+  int auraPoints = 1000; // Example points
+  List<Goal> goals = []; // Example empty list of goals
 
   void _selectAvatar() {
     showDialog(
@@ -38,6 +45,12 @@ class _ProfilePageState extends State<ProfilePage> {
         );
       },
     );
+  }
+
+  void updateAuraPoints(int points) {
+    setState(() {
+      auraPoints += points;
+    });
   }
 
   @override
@@ -72,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => EditProfilePage()), // Correctly navigate to the EditProfilePage
+                      MaterialPageRoute(builder: (context) => ProfileEditorPage()),
                     );
                   },
                 )
@@ -91,28 +104,16 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: Text("Track and complete your goals"),
               trailing: Icon(Icons.arrow_forward_ios, size: 16),
               onTap: () {
+                // ✅ Navigate to GoalPage and pass required parameters
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => GoalPage(auraPoints: 1000, onUpdatePoints: (points) {})), // Pass data to GoalPage
+                  MaterialPageRoute(
+                    builder: (context) => GoalPage(
+                      goals: goals,
+                    ),
+                  ),
                 );
               },
-            ),
-            ListTile(
-              leading: Icon(Icons.lock, color: Color(0xFF85C1E5)),
-              title: Text("Face ID / Touch ID"),
-              subtitle: Text("Manage your device security"),
-              trailing: Switch(value: false, onChanged: (value) {}),
-            ),
-            ListTile(
-              leading: Icon(Icons.security, color: Color(0xFF85C1E5)),
-              title: Text("Two-Factor Authentication"),
-              subtitle: Text("Further secure your account"),
-              trailing: Icon(Icons.arrow_forward_ios, size: 16),
-            ),
-            ListTile(
-              leading: Icon(Icons.logout, color: Colors.red),
-              title: Text("Log out", style: TextStyle(color: Colors.red)),
-              onTap: () {},
             ),
           ],
         ),
