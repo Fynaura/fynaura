@@ -19,7 +19,7 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
-  //firebase ;dwadwa
+  //firebase ;
   const firebaseKeyFilePath =
     'C:/IIT Notes/L5 - Degree/Software Development Group Project/Actice/New folder (2)/fynaura/back-end/src/authentication/firebase_auth.json';
   const firebaseServiceAccount /*: ServiceAccount*/ = JSON.parse(

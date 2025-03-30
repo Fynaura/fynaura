@@ -185,52 +185,5 @@ export class TransactionsService {
     return totalExpense;
   }
 
-  // Method to retrieve the user's balance
-  async getBalance(userId: string, filter: 'Today' | 'This Week' | 'This Month'): Promise<number> {
-    const now = new Date();
-    let startDate: Date;
-    let endDate: Date = new Date(now.setHours(23, 59, 59, 999)); // End of the day
-
-    // Determine the start date based on filter type
-    if (filter === 'Today') {
-      startDate = new Date(now.setHours(0, 0, 0, 0)); // Start of the day
-    } else if (filter === 'This Week') {
-      const dayOfWeek = now.getDay();
-      const daysSinceMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1; // Get Monday of the current week
-      startDate = new Date(now.setDate(now.getDate() - daysSinceMonday));
-      endDate = new Date(new Date(startDate).setDate(startDate.getDate() + 6)); // End of the week (Sunday)
-    } else if (filter === 'This Month') {
-      startDate = new Date(now.getFullYear(), now.getMonth(), 1); // Start of the month
-    } else {
-      throw new Error('Invalid filter type');
-    }
-
-    // Query the database for transactions in the specified range and for the specific user
-    const transactions = await this.transactionModel
-      .find({
-        userId: userId,
-        date: {
-          $gte: startDate,
-          $lte: endDate,
-        },
-      })
-      .exec();
-
-    // Calculate total income and total expense
-    let totalIncome = 0;
-    let totalExpense = 0;
-
-    transactions.forEach((transaction) => {
-      if (transaction.type === 'income') {
-        totalIncome += transaction.amount;
-      } else if (transaction.type === 'expense') {
-        totalExpense += transaction.amount;
-      }
-    });
-
-    // Return the balance (income - expense)
-    return totalIncome - totalExpense;
-  }
-
 
 }
