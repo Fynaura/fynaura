@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+
 class TransactionCategoryPage extends StatefulWidget {
   final bool isExpense;
   TransactionCategoryPage({required this.isExpense});
@@ -35,6 +36,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
   List<String> customCategories = [];
 
+
   @override
   void initState() {
     super.initState();
@@ -49,9 +51,10 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
   void _addCustomCategory() async {
     TextEditingController controller = TextEditingController();
     await showDialog(
+
       context: context,
       builder: (context) => AlertDialog(
-        title: Text("Add Custom Category", style: TextStyle(color: Color(0xFF254e7a))),
+        title: Text("Add Custom Category", style: TextStyle(color: Color(0xFF9DB2CE))),
         content: TextField(
           controller: controller,
           decoration: InputDecoration(hintText: "Enter category name"),
@@ -59,9 +62,10 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text("Cancel", style: TextStyle(color: Color(0xFF254e7a))),
+            child: Text("Cancel"),
           ),
           TextButton(
+
             onPressed: () async {
               controller.text = controller.text.trim();
               if (controller.text.isEmpty) {
@@ -88,7 +92,7 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
               Navigator.pop(context);
             },
-            child: Text("Add", style: TextStyle(color: Color(0xFF254e7a))),
+            child: Text("Add"),
           ),
         ],
       ),
@@ -109,13 +113,10 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Select Category", style: TextStyle(color: Colors.white)),
-        backgroundColor: Color(0xFF254e7a), // Dark blue background for AppBar
-        centerTitle: true, // Center the title text
-        leading: BackButton(color: Colors.white),
+        title: Text("Select Category", style: TextStyle(color: Color(0xFF9DB2CE))),
+        leading: BackButton(),
       ),
-      body: Container(
-        color: Colors.white, // Set the background of the page to white
+      body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: GridView.builder(
           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
@@ -130,23 +131,15 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
                 onTap: _addCustomCategory,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white, // White background for the "Add" tile
+                    color: Colors.grey.shade200,
                     borderRadius: BorderRadius.circular(12),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Color(0xFF254e7a).withOpacity(0.1), // Light blue shadow
-                        spreadRadius: 2,
-                        blurRadius: 4,
-                        offset: Offset(0, 4), // Shadow direction
-                      ),
-                    ],
                   ),
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.add, color: Color(0xFF254e7a), size: 36),
+                      Icon(Icons.add, color: Colors.grey.shade700, size: 36),
                       SizedBox(height: 8),
-                      Text("Add", style: TextStyle(color: Color(0xFF254e7a))),
+                      Text("Add", style: TextStyle(color: Colors.grey.shade700)),
                     ],
                   ),
                 ),
@@ -160,28 +153,24 @@ class _TransactionCategoryPageState extends State<TransactionCategoryPage> {
               },
               child: Container(
                 decoration: BoxDecoration(
-                  color: Color(0xFFEBF1FD),
+
+                  color: Color(0xFF85C1E5),
+
                   borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF254e7a).withOpacity(0.1), // Light blue shadow
-                      spreadRadius: 2,
-                      blurRadius: 4,
-                      offset: Offset(0, 4), // Shadow direction
-                    ),
-                  ],
                 ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(category["icon"], color: Color(0xFF254e7a), size: 36), // Dark blue icon color
+
+                    Icon(category["icon"], color: Colors.white, size: 36),
                     SizedBox(height: 8),
                     Text(
                       category["name"],
                       style: TextStyle(
                         fontWeight: FontWeight.w500,
-                        color: Color(0xFF254e7a), // Dark blue text color
+                        color: Colors.white,
                       ),
+
                       textAlign: TextAlign.center,
                       overflow: TextOverflow.ellipsis,
                     ),
