@@ -312,7 +312,7 @@ class _AnalyzePageState extends State<AnalyzePage>
                           ),
                           SizedBox(height: 15),
                           Container(
-                            height: 300 + (filteredTransactions.length * 2),
+                            height: 350 + (filteredTransactions.length * 2),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: Colors.white,
