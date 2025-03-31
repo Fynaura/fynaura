@@ -140,13 +140,25 @@ class PieChart2State extends State<PieChartSample2> {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(
-          category,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: _getCategoryColor(category),
-          ),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              _getCategoryIcon(category),
+              size: 18,
+              color: _getCategoryColor(category),
+            ),
+            SizedBox(width: 4),
+            Text(
+              category,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: _getCategoryColor(category),
+              ),
+            ),
+          ],
         ),
         Text(
           'LKR ${amount.toStringAsFixed(2)}',
@@ -217,7 +229,7 @@ class PieChart2State extends State<PieChartSample2> {
       margin: EdgeInsets.symmetric(horizontal: 10),
       child: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 10),
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
           child: Wrap(
             spacing: 10,
             runSpacing: 8,
@@ -246,11 +258,16 @@ class PieChart2State extends State<PieChartSample2> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      height: 15,
-                      width: 15,
+                      height: 24,
+                      width: 24,
                       decoration: BoxDecoration(
                         color: _getCategoryColor(category),
                         shape: BoxShape.circle,
+                      ),
+                      child: Icon(
+                        _getCategoryIcon(category),
+                        size: 14,
+                        color: Colors.white,
                       ),
                     ),
                     SizedBox(width: 6),
@@ -279,7 +296,39 @@ class PieChart2State extends State<PieChartSample2> {
     );
   }
 
-  // Helper function to return a color based on the category
+  // Helper function to return an icon based on the category
+  IconData _getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'grocery':
+        return Icons.shopping_basket;
+      case 'food':
+        return Icons.restaurant;
+      case 'entertainment':
+        return Icons.movie;
+      case 'transport':
+        return Icons.directions_car;
+      case 'utilities':
+        return Icons.power;
+      case 'shopping':
+        return Icons.shopping_bag;
+      case 'education':
+        return Icons.school;
+      case 'health':
+        return Icons.medical_services;
+      case 'subscriptions':
+        return Icons.subscriptions;
+      case 'salary':
+        return Icons.account_balance_wallet;
+      case 'rent':
+        return Icons.home;
+      case 'clothes':
+        return Icons.shopping_bag;
+      default:
+        return Icons.category;
+    }
+  }
+
+  // Helper function to return a color based on the category (unchanged)
   Color _getCategoryColor(String category) {
     // Define a more visually pleasing color palette
     final Map<String, Color> colorMap = {

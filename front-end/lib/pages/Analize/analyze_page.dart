@@ -17,6 +17,12 @@ class AnalyzePage extends StatefulWidget {
 
 class _AnalyzePageState extends State<AnalyzePage>
     with SingleTickerProviderStateMixin {
+  // Define app's color palette based on TransactionDetailsPage
+  static const Color primaryColor = Color(0xFF254e7a);     // Primary blue
+  static const Color accentColor = Color(0xFF85c1e5);      // Light blue accent
+  static const Color lightBgColor = Color(0xFFEBF1FD);     // Light background
+  static const Color whiteColor = Colors.white;            // White background
+  
   List<Transaction> transactions = [];
   bool isLoading = true;
   List<Map<String, dynamic>> hourlyBalanceData = [];
@@ -68,6 +74,8 @@ class _AnalyzePageState extends State<AnalyzePage>
       List<dynamic> data = json.decode(response.body);
       setState(() {
         transactions = data.map((json) => Transaction.fromJson(json)).toList();
+        // Sort all transactions by date (newest first) right after fetching
+        transactions.sort((a, b) => b.date.compareTo(a.date));
         filterTransactions(selectedFilter); // Apply the selected filter
       });
     } else {
@@ -96,10 +104,16 @@ class _AnalyzePageState extends State<AnalyzePage>
             transaction.date.year == now.year;
       }).toList();
     } else if (filter == 'This Week') {
+      // Calculate the start of the week (Sunday) and end of the week (Saturday)
+      DateTime startOfWeek = now.subtract(Duration(days: now.weekday % 7));
+      startOfWeek = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+      
+      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
+      endOfWeek = DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day, 23, 59, 59);
+      
       filtered = transactions.where((transaction) {
-        return transaction.date
-                .isAfter(now.subtract(Duration(days: now.weekday - 1))) &&
-            transaction.date.isBefore(now.add(Duration(days: 7 - now.weekday)));
+        return transaction.date.isAfter(startOfWeek.subtract(Duration(seconds: 1))) && 
+               transaction.date.isBefore(endOfWeek.add(Duration(seconds: 1)));
       }).toList();
     } else if (filter == 'This Month') {
       filtered = transactions.where((transaction) {
@@ -108,10 +122,43 @@ class _AnalyzePageState extends State<AnalyzePage>
       }).toList();
     }
 
+    // Sort the filtered transactions by date (newest first)
+    filtered.sort((a, b) => b.date.compareTo(a.date));
+
     setState(() {
       filteredTransactions = filtered;
       selectedFilter = filter;
     });
+  }
+
+  // Helper function to get an icon for the transaction category
+  IconData getCategoryIcon(String category) {
+    switch (category.toLowerCase()) {
+      case 'grocery':
+        return Icons.shopping_basket;
+      case 'food':
+        return Icons.restaurant;
+      case 'entertainment':
+        return Icons.movie;
+      case 'transport':
+        return Icons.directions_car;
+      case 'utilities':
+        return Icons.power;
+      case 'shopping':
+        return Icons.shopping_bag;
+      case 'education':
+        return Icons.school;
+      case 'health':
+        return Icons.medical_services;
+      case 'subscriptions':
+        return Icons.subscriptions;
+      case 'salary':
+        return Icons.account_balance_wallet;
+      case 'rent':
+        return Icons.home;
+      default:
+        return Icons.category;
+    }
   }
 
   @override
@@ -120,12 +167,13 @@ class _AnalyzePageState extends State<AnalyzePage>
 
     return Scaffold(
       appBar: AppBar(
-        surfaceTintColor: Colors.white,
+        surfaceTintColor: whiteColor,
         toolbarHeight: 2,
         centerTitle: true,
+        backgroundColor: primaryColor,
         actions: [
           IconButton(
-            icon: Icon(Icons.refresh),
+            icon: Icon(Icons.refresh, color: whiteColor),
             onPressed: () {
               // Manually trigger the refresh when the icon button is pressed
               setState(() {
@@ -138,6 +186,9 @@ class _AnalyzePageState extends State<AnalyzePage>
         ],
         bottom: TabBar(
           controller: _tabController,
+          indicatorColor: accentColor,
+          labelColor: whiteColor,
+          unselectedLabelColor: whiteColor.withOpacity(0.7),
           tabs: [
             Tab(text: 'Today'),
             Tab(text: 'This Week'),
@@ -158,10 +209,11 @@ class _AnalyzePageState extends State<AnalyzePage>
           },
         ),
       ),
-      backgroundColor: Colors.grey[200],
+      backgroundColor: whiteColor,
       body: isLoading
-          ? Center(child: CircularProgressIndicator())
+          ? Center(child: CircularProgressIndicator(color: primaryColor))
           : RefreshIndicator(
+              color: primaryColor,
               onRefresh: _onRefresh, // Trigger the refresh when pulled
               child: CustomScrollView(
                 slivers: [
@@ -170,13 +222,28 @@ class _AnalyzePageState extends State<AnalyzePage>
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 15.0,
-                        vertical: 10,
+                        vertical: 15,
                       ),
-                      child: Text(
-                        "$selectedFilter Transactions",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
+                      child: Container(
+                        padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                        decoration: BoxDecoration(
+                          color: primaryColor,
+                          borderRadius: BorderRadius.circular(25),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(Icons.access_time, color: whiteColor),
+                            SizedBox(width: 8),
+                            Text(
+                              "$selectedFilter Transactions",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                                color: whiteColor,
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -186,76 +253,90 @@ class _AnalyzePageState extends State<AnalyzePage>
                     delegate: SliverChildBuilderDelegate(
                       (BuildContext context, int index) {
                         final transaction = filteredTransactions[index];
-                        return Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15.0),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                      bottom: 10,
-                                      right: 10,
-                                      top: 20,
-                                    ),
-                                    child: Container(
-                                      height: 60,
-                                      width: 60,
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromARGB(
-                                            255, 253, 242, 195),
-                                        borderRadius: BorderRadius.circular(60),
-                                      ),
-                                      child: Center(
-                                        child: Icon(Icons
-                                            .food_bank), // Replace with category icon
-                                      ),
-                                    ),
-                                  ),
-                                  Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        transaction.category,
-                                        style: TextStyle(
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      Text(
-                                        "${transaction.date.day}-${transaction.date.month}-${transaction.date.year} ${transaction.date.hour}:${transaction.date.minute}",
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                      ),
-                                      if (transaction.description != null)
-                                        Text(
-                                          transaction.description!,
-                                          style: TextStyle(fontSize: 12),
-                                        ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              SizedBox(width: 10),
-                              Text(
-                                transaction.type == 'income'
-                                    ? "+ LKR ${transaction.amount.toStringAsFixed(2)}"
-                                    : "- LKR ${transaction.amount.toStringAsFixed(2)}",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: transaction.type == 'income'
-                                      ? Colors.green
-                                      : Colors.red,
-                                ),
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 15.0, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: whiteColor,
+                            borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.1),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset: Offset(0, 1),
                               ),
                             ],
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(10.0),
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
+                                  children: [
+                                    Container(
+                                      height: 50,
+                                      width: 50,
+                                      decoration: BoxDecoration(
+                                        color: lightBgColor,
+                                        borderRadius: BorderRadius.circular(25),
+                                      ),
+                                      child: Center(
+                                        child: Icon(
+                                          getCategoryIcon(transaction.category),
+                                          color: primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 15),
+                                    Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          transaction.category,
+                                          style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.bold,
+                                            color: primaryColor,
+                                          ),
+                                        ),
+                                        Text(
+                                          "${transaction.date.day}-${transaction.date.month}-${transaction.date.year} ${transaction.date.hour}:${transaction.date.minute}",
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.grey,
+                                          ),
+                                        ),
+                                        if (transaction.description != null)
+                                          Text(
+                                            transaction.description!,
+                                            style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey[700],
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Text(
+                                  transaction.type == 'income'
+                                      ? "+ LKR ${transaction.amount.toStringAsFixed(2)}"
+                                      : "- LKR ${transaction.amount.toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: transaction.type == 'income'
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         );
                       },
@@ -270,19 +351,42 @@ class _AnalyzePageState extends State<AnalyzePage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Income & Expenses",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.insert_chart, color: whiteColor),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Income & Expenses",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: whiteColor,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(height: 15),
                           Container(
                             height: 400, // Adjust based on your needs
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              color: whiteColor,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
                             ),
                             child: FinancialTrackerCharts(
                               transactions: filteredTransactions,
@@ -303,19 +407,42 @@ class _AnalyzePageState extends State<AnalyzePage>
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
-                            "Expenses Statistics",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 18,
+                          Container(
+                            padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                            decoration: BoxDecoration(
+                              color: primaryColor,
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.pie_chart, color: whiteColor),
+                                SizedBox(width: 8),
+                                Text(
+                                  "Expenses Statistics",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                    color: whiteColor,
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
                           SizedBox(height: 15),
                           Container(
                             height: 350 + (filteredTransactions.length * 2),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(25),
+                              color: whiteColor,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.1),
+                                  spreadRadius: 1,
+                                  blurRadius: 2,
+                                  offset: Offset(0, 1),
+                                ),
+                              ],
                             ),
                             child: PieChartSample2(
                                 transactions:
