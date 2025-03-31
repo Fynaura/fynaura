@@ -7,6 +7,11 @@ import 'package:http/http.dart' as http;
 import 'package:fynaura/widgets/analyze/money_chart.dart'; // Import MoneyChart
 import 'package:fynaura/widgets/analyze/pie_chart.dart'; // Import PieChart
 import 'package:intl/intl.dart'; // For date formatting
+import 'package:timezone/data/latest_all.dart' as tz;
+import 'package:timezone/timezone.dart' as tz;
+
+// Define Sri Lanka time zone constant
+const String SRI_LANKA_TIMEZONE = 'Asia/Colombo';
 
 class AnalyzePage extends StatefulWidget {
   const AnalyzePage({super.key});
@@ -29,14 +34,45 @@ class _AnalyzePageState extends State<AnalyzePage>
   List<Transaction> filteredTransactions = [];
   String selectedFilter = 'Today'; // Default filter is Today
   late TabController _tabController;
-
+  
+  // Create date formatter for Sri Lanka time
+  final DateFormat timeFormatter = DateFormat('dd-MM-yyyy HH:mm');
+  
   @override
   void initState() {
     super.initState();
     _tabController = TabController(
         length: 3, vsync: this); // Create a TabController with 3 tabs
+    
+    // Initialize time zones
+    _initTimeZones();
+    
     fetchHourlyBalanceData(); // Load hourly balance data when the page loads
     fetchTransactions(); // Fetch transactions for the list
+  }
+  
+  // Initialize time zones
+  void _initTimeZones() {
+    try {
+      tz.initializeTimeZones();
+      tz.setLocalLocation(tz.getLocation(SRI_LANKA_TIMEZONE));
+    } catch (e) {
+      print('Error initializing time zones: $e');
+    }
+  }
+
+  // Get current Sri Lanka time
+  tz.TZDateTime get sriLankaTime => tz.TZDateTime.now(tz.getLocation(SRI_LANKA_TIMEZONE));
+
+  // Convert DateTime to a formatted string with Sri Lanka time zone
+  String formatSriLankaTime(DateTime dateTime) {
+    // Convert to Sri Lanka time zone
+    final sriLankaDateTime = tz.TZDateTime.from(
+      dateTime, 
+      tz.getLocation(SRI_LANKA_TIMEZONE)
+    );
+    
+    return timeFormatter.format(sriLankaDateTime);
   }
 
   // Fetch hourly balance data from the backend
@@ -94,31 +130,48 @@ class _AnalyzePageState extends State<AnalyzePage>
 
   // Function to filter transactions based on the selected filter (Today, Week, Month)
   void filterTransactions(String filter) {
-    DateTime now = DateTime.now();
+    // Get current date in Sri Lanka time zone
+    tz.TZDateTime now = sriLankaTime;
     List<Transaction> filtered = [];
 
     if (filter == 'Today') {
       filtered = transactions.where((transaction) {
-        return transaction.date.day == now.day &&
-            transaction.date.month == now.month &&
-            transaction.date.year == now.year;
+        // Convert transaction date to Sri Lanka time zone
+        final txDate = tz.TZDateTime.from(transaction.date, tz.getLocation(SRI_LANKA_TIMEZONE));
+        return txDate.day == now.day &&
+            txDate.month == now.month &&
+            txDate.year == now.year;
       }).toList();
     } else if (filter == 'This Week') {
-      // Calculate the start of the week (Sunday) and end of the week (Saturday)
+      // Calculate the start of the week (Sunday) and end of the week (Saturday) in Sri Lanka time
       DateTime startOfWeek = now.subtract(Duration(days: now.weekday % 7));
-      startOfWeek = DateTime(startOfWeek.year, startOfWeek.month, startOfWeek.day);
+      startOfWeek = tz.TZDateTime(
+        tz.getLocation(SRI_LANKA_TIMEZONE),
+        startOfWeek.year, 
+        startOfWeek.month, 
+        startOfWeek.day
+      );
       
-      DateTime endOfWeek = startOfWeek.add(Duration(days: 6));
-      endOfWeek = DateTime(endOfWeek.year, endOfWeek.month, endOfWeek.day, 23, 59, 59);
+      DateTime endOfWeek = tz.TZDateTime(
+        tz.getLocation(SRI_LANKA_TIMEZONE),
+        startOfWeek.year, 
+        startOfWeek.month, 
+        startOfWeek.day + 6,
+        23, 59, 59
+      );
       
       filtered = transactions.where((transaction) {
-        return transaction.date.isAfter(startOfWeek.subtract(Duration(seconds: 1))) && 
-               transaction.date.isBefore(endOfWeek.add(Duration(seconds: 1)));
+        // Convert transaction date to Sri Lanka time zone
+        final txDate = tz.TZDateTime.from(transaction.date, tz.getLocation(SRI_LANKA_TIMEZONE));
+        return txDate.isAfter(startOfWeek.subtract(Duration(seconds: 1))) && 
+               txDate.isBefore(endOfWeek.add(Duration(seconds: 1)));
       }).toList();
     } else if (filter == 'This Month') {
       filtered = transactions.where((transaction) {
-        return transaction.date.month == now.month &&
-            transaction.date.year == now.year;
+        // Convert transaction date to Sri Lanka time zone
+        final txDate = tz.TZDateTime.from(transaction.date, tz.getLocation(SRI_LANKA_TIMEZONE));
+        return txDate.month == now.month &&
+            txDate.year == now.year;
       }).toList();
     }
 
@@ -305,7 +358,7 @@ class _AnalyzePageState extends State<AnalyzePage>
                                           ),
                                         ),
                                         Text(
-                                          "${transaction.date.day}-${transaction.date.month}-${transaction.date.year} ${transaction.date.hour}:${transaction.date.minute}",
+                                          formatSriLankaTime(transaction.date),
                                           style: TextStyle(
                                             fontSize: 10,
                                             fontWeight: FontWeight.bold,

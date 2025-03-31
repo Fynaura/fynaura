@@ -4,8 +4,11 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Transaction } from './schemas/transaction.schema';
-import * as moment from 'moment';
-import { TransactionDTO } from './entity/transaction.entity'; // Assuming this is the correct path for your DTO
+import * as moment from 'moment-timezone';
+import { TransactionDTO } from './entity/transaction.entity';
+
+// Define Sri Lanka timezone
+const SRI_LANKA_TIMEZONE = 'Asia/Colombo';
 
 @Injectable()
 export class TransactionsService {
@@ -15,6 +18,13 @@ export class TransactionsService {
   ) { }
 
   async create(createTransactionDto: CreateTransactionDto): Promise<Transaction> {
+    // Convert the date from local time to UTC for storage
+    if (createTransactionDto.date) {
+      // Parse the date as Sri Lanka time and convert to UTC for storage
+      const sriLankaDate = moment.tz(createTransactionDto.date, SRI_LANKA_TIMEZONE);
+      createTransactionDto.date = sriLankaDate.toDate();
+    }
+    
     const newTransaction = new this.transactionModel(createTransactionDto);
     return newTransaction.save();
   }
@@ -28,12 +38,21 @@ export class TransactionsService {
   }
 
   async getAllTransactions(): Promise<Transaction[]> {
-    return await this.transactionModel.find();
-
+    const transactions = await this.transactionModel.find();
+    
+    // Convert dates from UTC to Sri Lanka time zone for display
+    return transactions.map(transaction => {
+      const sriLankaDate = moment.utc(transaction.date).tz(SRI_LANKA_TIMEZONE);
+      return {
+        ...transaction.toObject(),
+        date: sriLankaDate.toDate(),
+      };
+    });
   }
 
   private getDateRange(period: string): { start: Date; end: Date } {
-    const now = moment();
+    // Create a moment object in Sri Lanka timezone
+    const now = moment().tz(SRI_LANKA_TIMEZONE);
 
     if (period === 'today') {
       return {
@@ -53,8 +72,6 @@ export class TransactionsService {
     }
     throw new Error('Invalid period');
   }
-
-  
 
   async getTotalExpense(uid: string, period: string): Promise<number> {
     const { start, end } = this.getDateRange(period);
@@ -78,8 +95,8 @@ export class TransactionsService {
     return expense.length > 0 ? expense[0].totalExpense : 0;
   }
 
-   // Function to fetch the total income for the specified period
-   async getTotalIncome(uid: string, period: string): Promise<number> {
+  // Function to fetch the total income for the specified period
+  async getTotalIncome(uid: string, period: string): Promise<number> {
     const { start, end } = this.getDateRange(period);
 
     const income = await this.transactionModel.aggregate([
@@ -103,8 +120,9 @@ export class TransactionsService {
 
   // Method to get the balance for every hour in the last 24 hours
   async getHourlyBalanceForLast24Hours(): Promise<TransactionDTO[]> {
-    const now = new Date();
-    const last24Hours = new Date(now.getTime() - 24 * 60 * 60 * 1000); // 24 hours ago
+    // Get current time in Sri Lanka timezone
+    const now = moment().tz(SRI_LANKA_TIMEZONE);
+    const last24Hours = moment(now).subtract(24, 'hours').toDate();
 
     // Fetch transactions from the last 24 hours
     const transactions = await this.transactionModel
@@ -113,11 +131,13 @@ export class TransactionsService {
       .exec();
 
     // Initialize an array to hold the balance data for each hour
-    const hourlyBalances = Array(24).fill(0); // There are 24 hours in a day, initialize with 0 balance
+    const hourlyBalances = Array(24).fill(0); // 24 hours in a day, initialize with 0 balance
 
-    // Iterate through the transactions to calculate the running balance for each hour
+    // Convert transactions to Sri Lanka time and calculate hourly balances
     transactions.forEach((transaction) => {
-      const hour = transaction.date.getHours(); // Get the hour of the transaction
+      // Convert transaction date to Sri Lanka time
+      const txDate = moment.utc(transaction.date).tz(SRI_LANKA_TIMEZONE);
+      const hour = txDate.hour(); // Get hour in Sri Lanka time
 
       if (transaction.type === 'income') {
         hourlyBalances[hour] += transaction.amount; // Add amount for 'income'
@@ -131,17 +151,24 @@ export class TransactionsService {
     const balanceHistory: TransactionDTO[] = hourlyBalances.map((balance, index) => {
       cumulativeBalance += balance; // Update cumulative balance
 
-      // Create the DTO for the current hour, with the required missing properties
+      // Create timestamp for this hour in Sri Lanka time
+      const hourTimestamp = moment(now)
+        .hour(index)
+        .minute(0)
+        .second(0)
+        .millisecond(0);
+
+      // Create the DTO for the current hour
       return {
-        timestamp: new Date(now.getFullYear(), now.getMonth(), now.getDate(), index), // Hourly timestamp
+        timestamp: hourTimestamp.toDate(), // Hourly timestamp in Sri Lanka time
         balance: cumulativeBalance,  // Running balance
         amount: balance,  // Amount of transactions for this hour
-        type: balance >= 0 ? 'income' : 'expense',  // Just an indicator for type (can be customized)
-        category: 'N/A', // Placeholder, you can modify as necessary
+        type: balance >= 0 ? 'income' : 'expense',  // Just an indicator for type
+        category: 'N/A', // Placeholder
         description: 'Hourly balance update', // Placeholder description
-        date: new Date(now.getFullYear(), now.getMonth(), now.getDate(), index), // Add the missing 'date' field
-        reminder: false, // Add the missing 'reminder' field, you can set this to false or adjust as needed
-        userId: 'N/A', // Placeholder, you can modify as necessary
+        date: hourTimestamp.toDate(), // Date field in Sri Lanka time
+        reminder: false, 
+        userId: 'N/A', // Placeholder
       };
     });
 
@@ -150,19 +177,43 @@ export class TransactionsService {
 
   async createBulk(bulkTransactions: CreateTransactionDto[]): Promise<{ status: number, message: string }> {
     try {
+      // Convert each transaction's date to UTC for storage
+      const processedTransactions = bulkTransactions.map(transaction => {
+        if (transaction.date) {
+          // Parse the date as Sri Lanka time and convert to UTC for storage
+          const sriLankaDate = moment.tz(transaction.date, SRI_LANKA_TIMEZONE);
+          return {
+            ...transaction,
+            date: sriLankaDate.toDate()
+          };
+        }
+        return transaction;
+      });
+      
       // Insert bulk transactions into the database
-      await this.transactionModel.insertMany(bulkTransactions);
+      await this.transactionModel.insertMany(processedTransactions);
 
       // Return 200 status code and a success message
       return { status: HttpStatus.OK, message: 'Bulk transactions created successfully' };
     } catch (error) {
       // Handle error and return a 500 status code for internal server error
+      console.error('Error creating bulk transactions:', error);
       return { status: HttpStatus.INTERNAL_SERVER_ERROR, message: 'Error creating bulk transactions' };
     }
   }
+
   // Method to retrieve transactions based on userId
   async findByUserId(userId: string): Promise<Transaction[]> {
-    return this.transactionModel.find({ userId }).exec();
+    const transactions = await this.transactionModel.find({ userId }).exec();
+    
+    // Convert dates from UTC to Sri Lanka time zone for display
+    return transactions.map(transaction => {
+      const sriLankaDate = moment.utc(transaction.date).tz(SRI_LANKA_TIMEZONE);
+      return {
+        ...transaction.toObject(),
+        date: sriLankaDate.toDate(),
+      };
+    });
   }
 
   async getTotalIncomeForUser(userId: string): Promise<number> {
@@ -184,6 +235,4 @@ export class TransactionsService {
     const totalExpense = transactions.reduce((acc, transaction) => acc + transaction.amount, 0);
     return totalExpense;
   }
-
-
 }
