@@ -10,6 +10,12 @@ class ExtractedTextScreen extends StatelessWidget {
   final String totalAmount;
   final List<Map<String, dynamic>> categorizedItems;
 
+  // Define app's color palette based on Dashboard/AnalyzePage
+  static const Color primaryColor = Color(0xFF254e7a);     // Primary blue
+  static const Color accentColor = Color(0xFF85c1e5);      // Light blue accent
+  static const Color lightBgColor = Color(0xFFEBF1FD);     // Light background
+  static const Color whiteColor = Colors.white;            // White background
+
   const ExtractedTextScreen({
     super.key,
     required this.totalAmount,
@@ -38,20 +44,68 @@ class ExtractedTextScreen extends StatelessWidget {
     var uri = Uri.parse(
         "http://192.168.127.53:3000/transaction/bulk"); // Replace with your API URL
 
-    var response = await http.post(
-      uri,
-      headers: {'Content-Type': 'application/json'},
-      body: json.encode(formattedData),
-    );
+    try {
+      // Show loading indicator
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 20),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  CircularProgressIndicator(color: primaryColor),
+                  SizedBox(width: 20),
+                  Text(
+                    "Saving transactions...",
+                    style: TextStyle(
+                      color: primaryColor,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      );
 
-    if (response.statusCode == 200) {
-      print("Data saved successfully!");
-      // Show success dialog
-      _showSuccessDialog(context);
-    } else {
-      print("Failed to save data. Status Code: ${response.statusCode}");
+      var response = await http.post(
+        uri,
+        headers: {'Content-Type': 'application/json'},
+        body: json.encode(formattedData),
+      );
+
+      // Close loading dialog
+      Navigator.of(context, rootNavigator: true).pop();
+
+      if (response.statusCode == 200) {
+        print("Data saved successfully!");
+        // Show success dialog
+        _showSuccessDialog(context);
+      } else {
+        print("Failed to save data. Status Code: ${response.statusCode}");
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text("Error: Could not save data."),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    } catch (e) {
+      // Close loading dialog if error occurs
+      Navigator.of(context, rootNavigator: true).pop();
+      print("Exception occurred: $e");
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Error: Could not save data.")),
+        SnackBar(
+          content: Text("An unexpected error occurred. Please try again."),
+          backgroundColor: Colors.red,
+        ),
       );
     }
   }
@@ -63,20 +117,24 @@ class ExtractedTextScreen extends StatelessWidget {
       builder: (BuildContext context) {
         return AlertDialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              const CircleAvatar(
+              CircleAvatar(
                 radius: 40,
-                backgroundColor: Colors.blue,
-                child: Icon(Icons.check, color: Colors.white, size: 40),
+                backgroundColor: primaryColor,
+                child: Icon(Icons.check, color: whiteColor, size: 40),
               ),
               const SizedBox(height: 16),
-              const Text(
+              Text(
                 "Transaction Added Successfully",
                 textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20, 
+                  fontWeight: FontWeight.bold,
+                  color: primaryColor,
+                ),
               ),
               const SizedBox(height: 16),
               SizedBox(
@@ -91,14 +149,25 @@ class ExtractedTextScreen extends StatelessWidget {
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    backgroundColor: primaryColor,
+                    foregroundColor: whiteColor,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    elevation: 2,
                   ),
-                  child: const Text("Add Another Transaction",
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: const Text(
+                    "Add Another Transaction",
+                    style: TextStyle(
+                      color: Colors.white, 
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 12),
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -129,11 +198,23 @@ class ExtractedTextScreen extends StatelessWidget {
                     }
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blue,
-                    padding: const EdgeInsets.symmetric(vertical: 8),
+                    backgroundColor: lightBgColor,
+                    foregroundColor: primaryColor,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                      side: BorderSide(color: primaryColor, width: 1.5),
+                    ),
+                    elevation: 0,
                   ),
-                  child: const Text("Home",
-                      style: TextStyle(color: Colors.white, fontSize: 16)),
+                  child: Text(
+                    "Go to Dashboard",
+                    style: TextStyle(
+                      color: primaryColor, 
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -146,21 +227,31 @@ class ExtractedTextScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: lightBgColor,
       appBar: AppBar(
-        foregroundColor: Colors.blue[300],
-        backgroundColor: Colors.grey[200],
-        title: const Text("Extracted Details"),
+        title: Text(
+          "Extracted Receipt Details",
+          style: TextStyle(
+            color: whiteColor,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: primaryColor,
+        elevation: 0,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 20),
-            child: TextButton(
+            padding: const EdgeInsets.only(right: 16),
+            child: TextButton.icon(
               onPressed: () => _saveData(context),
-              child: const Text(
+              icon: Icon(Icons.save, color: whiteColor),
+              label: Text(
                 "Save",
                 style: TextStyle(
-                    color: Colors.blue,
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold),
+                  color: whiteColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -171,89 +262,298 @@ class ExtractedTextScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            _buildDetailRow(
-                "Total Bill Amount", "\$$totalAmount", Colors.black),
-            const SizedBox(height: 5),
-            Expanded(
-              child: ListView.builder(
-                itemCount: categorizedItems.length,
-                itemBuilder: (context, index) {
-                  final item = categorizedItems[index];
-                  return _buildItemCard(item);
-                },
+            // Total Amount Header
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.payment, color: whiteColor),
+                  SizedBox(width: 8),
+                  Text(
+                    "Total Bill Amount",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: whiteColor,
+                    ),
+                  ),
+                ],
               ),
             ),
+            SizedBox(height: 10),
+            
+            // Total Amount Value
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              decoration: BoxDecoration(
+                color: whiteColor,
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: primaryColor.withOpacity(0.1),
+                    spreadRadius: 1,
+                    blurRadius: 3,
+                    offset: Offset(0, 2),
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "LKR $totalAmount",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            
+            SizedBox(height: 20),
+            
+            // Items Header
+            Container(
+              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+              decoration: BoxDecoration(
+                color: primaryColor,
+                borderRadius: BorderRadius.circular(25),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(Icons.receipt_long, color: whiteColor),
+                  SizedBox(width: 8),
+                  Text(
+                    "Receipt Items",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                      color: whiteColor,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(height: 15),
+            
+            // Items List
+            Expanded(
+              child: categorizedItems.isEmpty
+                  ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.receipt_long,
+                            size: 60,
+                            color: primaryColor.withOpacity(0.5),
+                          ),
+                          SizedBox(height: 10),
+                          Text(
+                            "No items detected in this receipt",
+                            style: TextStyle(
+                              color: primaryColor.withOpacity(0.7),
+                              fontSize: 16,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
+                  : ListView.builder(
+                      itemCount: categorizedItems.length,
+                      itemBuilder: (context, index) {
+                        final item = categorizedItems[index];
+                        return _buildItemCard(item);
+                      },
+                    ),
+            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        decoration: BoxDecoration(
+          color: whiteColor,
+          boxShadow: [
+            BoxShadow(
+              color: primaryColor.withOpacity(0.1),
+              spreadRadius: 1,
+              blurRadius: 3,
+              offset: Offset(0, -2),
+            ),
+          ],
+        ),
+        child: ElevatedButton(
+          onPressed: () => _saveData(context),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: primaryColor,
+            foregroundColor: whiteColor,
+            padding: EdgeInsets.symmetric(vertical: 15),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(15),
+            ),
+            elevation: 2,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.save, size: 20),
+              SizedBox(width: 10),
+              Text(
+                "Save Transaction",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
   Widget _buildItemCard(Map<String, dynamic> item) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      color: Colors.lightBlue[100],
-      margin: const EdgeInsets.symmetric(vertical: 10),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildText("Item", color: Colors.blue, isBold: true, size: 20),
-            const SizedBox(height: 10),
-            _buildRichText("Category    ", item['category']),
-            _buildRichText("Item name ", item['item']),
-            _buildRichText("Price           ", "\$${item['price']}",
-                color: Colors.black),
-            _buildRichText("Date            ", item['billdate']),
-            _buildRichText("Quantity     ", item['quantity'].toString()),
-          ],
-        ),
-      ),
-    );
-  }
+    // Determine a suitable icon based on item category
+    IconData categoryIcon = Icons.category;
+    final categoryName = (item['category'] ?? "").toString().toLowerCase();
+    
+    if (categoryName.contains('food') || categoryName.contains('grocery')) {
+      categoryIcon = Icons.restaurant;
+    } else if (categoryName.contains('transport') || categoryName.contains('travel')) {
+      categoryIcon = Icons.directions_car;
+    } else if (categoryName.contains('bill') || categoryName.contains('utilities')) {
+      categoryIcon = Icons.power;
+    } else if (categoryName.contains('shopping') || categoryName.contains('clothes')) {
+      categoryIcon = Icons.shopping_bag;
+    } else if (categoryName.contains('entertainment')) {
+      categoryIcon = Icons.movie;
+    } else if (categoryName.contains('health') || categoryName.contains('medical')) {
+      categoryIcon = Icons.medical_services;
+    } else if (categoryName.contains('education')) {
+      categoryIcon = Icons.school;
+    }
 
-  Widget _buildText(String text,
-      {Color? color, bool isBold = false, double size = 16}) {
-    return Text(
-      text,
-      style: TextStyle(
-          fontSize: size,
-          fontWeight: isBold ? FontWeight.bold : FontWeight.normal,
-          color: color),
-    );
-  }
-
-  Widget _buildRichText(String label, String value,
-      {Color color = Colors.black}) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 3),
-      child: RichText(
-        text: TextSpan(
-          style: TextStyle(
-              fontSize: 18, fontWeight: FontWeight.bold, color: Colors.black),
-          children: [
-            TextSpan(text: "$label: ", style: TextStyle(color: Colors.black)),
-            TextSpan(text: value, style: TextStyle(color: color)),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildDetailRow(String label, String value, Color color) {
-    return RichText(
-      text: TextSpan(
-        style:
-            TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: color),
-        children: [
-          TextSpan(text: "$label: "),
-          TextSpan(
-              text: value,
-              style: TextStyle(
-                  fontSize: 20, fontWeight: FontWeight.bold, color: color)),
+    return Container(
+      margin: EdgeInsets.only(bottom: 15),
+      decoration: BoxDecoration(
+        color: whiteColor,
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: primaryColor.withOpacity(0.1),
+            spreadRadius: 1,
+            blurRadius: 3,
+            offset: Offset(0, 2),
+          ),
         ],
       ),
+      child: Column(
+        children: [
+          // Item Header
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: primaryColor.withOpacity(0.1),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+            ),
+            child: Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.all(8),
+                  decoration: BoxDecoration(
+                    color: primaryColor.withOpacity(0.2),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    categoryIcon,
+                    color: primaryColor,
+                    size: 20,
+                  ),
+                ),
+                SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    item['item'] ?? "Unknown Item",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: primaryColor,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                  decoration: BoxDecoration(
+                    color: primaryColor,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Text(
+                    "LKR ${item['price']}",
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                      color: whiteColor,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          
+          // Item Details
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                _buildDetailRow("Category", item['category'] ?? "Uncategorized"),
+                SizedBox(height: 8),
+                _buildDetailRow("Quantity", item['quantity']?.toString() ?? "1"),
+                SizedBox(height: 8),
+                _buildDetailRow("Date", item['billdate'] ?? "Not specified"),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildDetailRow(String label, String value) {
+    return Row(
+      children: [
+        Text(
+          "$label:",
+          style: TextStyle(
+            fontSize: 14,
+            color: Colors.grey[600],
+          ),
+        ),
+        SizedBox(width: 8),
+        Expanded(
+          child: Text(
+            value,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: primaryColor,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
