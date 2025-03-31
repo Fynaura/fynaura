@@ -11,7 +11,7 @@ app = Flask(__name__)
 
 class GeminiBillExtractionTool:
     def __init__(self):
-        api_key = os.getenv("GEMINI_API_KEY")
+        api_key = "AIzaSyDzlwYV-9mLtar4ExXSfaEvq_aBwqs64nQ"
         if not api_key:
             raise ValueError("Missing GEMINI_API_KEY in environment variables")
 
