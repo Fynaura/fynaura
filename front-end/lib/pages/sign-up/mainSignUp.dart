@@ -20,10 +20,11 @@ class _MainSignupState extends State<Mainsignup> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
-
+  // Password visibility state
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
   final String apiUrl = 'http://192.168.127.53:3000/user/register';
-
 
   // Error and success message state variables
   String? passwordError;
@@ -167,6 +168,20 @@ class _MainSignupState extends State<Mainsignup> {
     // This function intentionally does nothing
   }
 
+  // Toggle password visibility
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
+  // Toggle confirm password visibility
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -290,16 +305,33 @@ class _MainSignupState extends State<Mainsignup> {
                 ),
 
               const SizedBox(height: 20),
+              // Password field with eye icon
               CustomInputField(
                 hintText: "Password",
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Color(0xFF8391A1),
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                ),
               ),
+              
               const SizedBox(height: 20),
+              // Confirm password field with eye icon
               CustomInputField(
                 hintText: "Confirm Password",
                 controller: confirmPasswordController,
-                obscureText: true,
+                obscureText: !_isConfirmPasswordVisible,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Color(0xFF8391A1),
+                  ),
+                  onPressed: _toggleConfirmPasswordVisibility,
+                ),
               ),
 
               // Password error message

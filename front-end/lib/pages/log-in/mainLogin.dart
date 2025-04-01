@@ -25,6 +25,9 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
 
+  // Password visibility state
+  bool _isPasswordVisible = false;
+
   final String apiUrl =
       'http://192.168.110.53:3000/user/login'; // API endpoint for login
 
@@ -73,6 +76,13 @@ class _MainloginState extends State<Mainlogin> {
 
   // Empty function to use when button should be disabled
   void _doNothing() {}
+
+  // Toggle password visibility
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
 
   // Login user method
   Future<void> loginUser() async {
@@ -240,7 +250,14 @@ class _MainloginState extends State<Mainlogin> {
               CustomInputField(
                 hintText: "Enter your password",
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Color(0xFF8391A1),
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                ),
               ),
 
               // Password error message
