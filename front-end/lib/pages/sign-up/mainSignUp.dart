@@ -20,9 +20,12 @@ class _MainSignupState extends State<Mainsignup> {
   TextEditingController passwordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
 
+  // Password visibility state
+  bool _isPasswordVisible = false;
+  bool _isConfirmPasswordVisible = false;
 
 
-  final String apiUrl = 'http://10.31.4.203:3000/user/register';
+  final String apiUrl = 'http://192.168.110.53:3000/user/register';
 
 
   // Error and success message state variables
@@ -85,86 +88,112 @@ class _MainSignupState extends State<Mainsignup> {
 
   // Register user method
   Future<void> registerUser() async {
-    // Validate form
-    if (!validateForm()) {
-      return;
-    }
+  // Validate form
+  if (!validateForm()) {
+    return;
+  }
 
-    // Show loading indicator
+  // Show loading indicator
+  setState(() {
+    isLoading = true;
+    generalError = null;
+    successMessage = null;
+  });
+
+  // Prepare the data to send to the backend
+  final Map<String, dynamic> data = {
+    'firstName': firstNameController.text,
+    'lastName': lastNameController.text,
+    'email': emailController.text,
+    'password': passwordController.text,
+    'confirmPassword': confirmPasswordController.text,
+  };
+
+  try {
+    // Send a POST request to the backend
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: {"Content-Type": "application/json"},
+      body: json.encode(data),
+    );
+
+    // Hide loading indicator
     setState(() {
-      isLoading = true;
-      generalError = null;
-      successMessage = null;
+      isLoading = false;
     });
 
-    // Prepare the data to send to the backend
-    final Map<String, dynamic> data = {
-      'firstName': firstNameController.text,
-      'lastName': lastNameController.text,
-      'email': emailController.text,
-      'password': passwordController.text,
-      'confirmPassword': confirmPasswordController.text,
-    };
+    // Parse the JSON response
+    final Map<String, dynamic> responseData = json.decode(response.body);
 
-    try {
-      // Send a POST request to the backend
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {"Content-Type": "application/json"},
-        body: json.encode(data),
+    // Check if the response indicates success
+    if (response.statusCode == 200 || response.statusCode == 201) {
+      // Registration successful
+      setState(() {
+        successMessage = responseData['message'] ?? 'Registration successful!';
+        generalError = null; // Clear any existing error
+      });
+
+      // Show modern success message with icon
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(Icons.check_circle, color: Colors.white),
+              SizedBox(width: 8),
+              Text(
+                'Registration Successful',
+                style: TextStyle(color: Colors.white),
+              ),
+            ],
+          ),
+          backgroundColor: Color(0xFF254e7a),
+        ),
       );
 
-      // Hide loading indicator
-      setState(() {
-        isLoading = false;
+      // Add a small delay before navigation
+      Future.delayed(const Duration(seconds: 2), () {
+        // Navigate to login page
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => const Mainlogin()),
+        );
       });
-
-      // Parse the JSON response
-      final Map<String, dynamic> responseData = json.decode(response.body);
-
-      // Check if the response indicates success
-      if (response.statusCode == 200 || response.statusCode == 201) {
-        // Registration successful
-        setState(() {
-          successMessage = responseData['message'] ?? 'Registration successful!';
-          generalError = null; // Clear any existing error
-        });
-
-        // Show success message
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-          content: Text(successMessage!),
-          backgroundColor: Colors.green,
-        ));
-
-        // Add a small delay before navigation
-        Future.delayed(const Duration(seconds: 2), () {
-          // Navigate to login page
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const Mainlogin()),
-          );
-        });
-      } else {
-        // Handle error response
-        setState(() {
-          generalError = responseData['message'] ?? "Registration failed";
-          successMessage = null; // Clear any existing success message
-        });
-      }
-    } catch (e) {
-      // Hide loading indicator
+    } else {
+      // Handle error response
       setState(() {
-        isLoading = false;
-        generalError = "Network error. Please check your connection and try again.";
+        generalError = responseData['message'] ?? "Registration failed";
         successMessage = null; // Clear any existing success message
       });
-      print("Exception occurred: $e");
     }
+  } catch (e) {
+    // Hide loading indicator
+    setState(() {
+      isLoading = false;
+      generalError = "Network error. Please check your connection and try again.";
+      successMessage = null; // Clear any existing success message
+    });
+    print("Exception occurred: $e");
   }
+}
 
   // Empty function to use when button should be disabled
   void _doNothing() {
     // This function intentionally does nothing
+  }
+
+  // Toggle password visibility
+  void _togglePasswordVisibility() {
+    setState(() {
+      _isPasswordVisible = !_isPasswordVisible;
+    });
+  }
+
+  // Toggle confirm password visibility
+  void _toggleConfirmPasswordVisibility() {
+    setState(() {
+      _isConfirmPasswordVisible = !_isConfirmPasswordVisible;
+    });
   }
 
   @override
@@ -290,16 +319,33 @@ class _MainSignupState extends State<Mainsignup> {
                 ),
 
               const SizedBox(height: 20),
+              // Password field with eye icon
               CustomInputField(
                 hintText: "Password",
                 controller: passwordController,
-                obscureText: true,
+                obscureText: !_isPasswordVisible,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Color(0xFF8391A1),
+                  ),
+                  onPressed: _togglePasswordVisibility,
+                ),
               ),
+              
               const SizedBox(height: 20),
+              // Confirm password field with eye icon
               CustomInputField(
                 hintText: "Confirm Password",
                 controller: confirmPasswordController,
-                obscureText: true,
+                obscureText: !_isConfirmPasswordVisible,
+                suffixIcon: IconButton(
+                  icon: Icon(
+                    _isConfirmPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                    color: Color(0xFF8391A1),
+                  ),
+                  onPressed: _toggleConfirmPasswordVisibility,
+                ),
               ),
 
               // Password error message

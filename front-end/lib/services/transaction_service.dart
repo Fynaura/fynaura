@@ -2,7 +2,9 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 
 class TransactionService {
-  final String baseUrl = "http://10.31.4.203:3000/transaction"; // Change to your actual backend URL
+
+  final String baseUrl = "http://192.168.110.53:3000/transaction"; // Change to your actual backend URL
+
 
   Future<void> createTransaction({
     required String type,
