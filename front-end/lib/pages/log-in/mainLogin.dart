@@ -26,7 +26,7 @@ class _MainloginState extends State<Mainlogin> {
   TextEditingController passwordController = TextEditingController();
 
   final String apiUrl =
-      'http://192.168.8.172:3000/user/login'; // API endpoint for login
+      'http://10.31.4.203:3000/user/login'; // API endpoint for login
 
   String? emailError;
   String? passwordError;
@@ -107,7 +107,7 @@ class _MainloginState extends State<Mainlogin> {
 
         // Send the idToken to the backend to get user details
         final userDetailsResponse = await http.get(
-          Uri.parse('http://192.168.8.172:3000/user/me?idToken=$idToken'),
+          Uri.parse('http://10.31.4.203:3000/user/me?idToken=$idToken'),
           headers: {"Authorization": "Bearer $idToken"},
         );
 

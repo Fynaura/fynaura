@@ -64,6 +64,15 @@ export class UserController {
     return this.userService.sendPasswordResetLink(sendPasswordResetDto.email);
   }
 
+  @Get('search')
+  async searchUsers(@Query('query') query: string) {
+    if (!query || query.trim().length < 1) {
+      return { users: [] };
+    }
+    const users = await this.userService.searchUsers(query);
+    return { users };
+  }
+
   @Get('check-exists/:userId')
   async checkUserExists(@Param('userId') userId: string) {
     const exists = await this.userService.checkUserExists(userId);
