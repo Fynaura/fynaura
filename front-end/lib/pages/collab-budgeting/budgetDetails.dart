@@ -45,6 +45,26 @@ class _BudgetDetailsState extends State<BudgetDetails> {
     _loadTransactions();
   }
 
+
+
+  Future<void> _loadCollaborators() async {
+    try {
+      final collaborators = await _budgetService.getCollaborators(widget.budgetId);
+      setState(() {
+        // Update avatars based on collaborators
+        avatars = collaborators.map((collaborator) => "images/user.png").toList();
+      });
+    } catch (e) {
+      print('Failed to load collaborators: $e');
+    }
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _loadCollaborators();  // Ensure collaborators are reloaded when the screen is displayed
+  }
+
   Future<void> _loadTransactions() async {
     try {
       final transactions = await _budgetService.getTransactions(widget.budgetId);
@@ -66,129 +86,288 @@ class _BudgetDetailsState extends State<BudgetDetails> {
     }
   }
 
+
+
   void _addAvatar() {
+    final TextEditingController searchController = TextEditingController();
     final TextEditingController userIdController = TextEditingController();
     bool isLoading = false;
     String? errorMessage;
+    List<Map<String, dynamic>> searchResults = [];
+    bool isSearching = false;
 
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return StatefulBuilder(
           builder: (context, setState) {
+            // Search function
+            Future<void> performSearch(String query) async {
+              if (query.isEmpty) {
+                setState(() {
+                  searchResults = [];
+                  isSearching = false;
+                  errorMessage = null;
+                });
+                return;
+              }
+
+              // Only search when there are at least 2 characters
+              if (query.length < 2) return;
+
+              setState(() {
+                isLoading = true;
+                isSearching = true;
+                errorMessage = null;
+              });
+
+              try {
+                final results = await _budgetService.searchUsers(query);
+
+                // Filter out current user
+                final filteredResults = results.where(
+                        (user) => user["userId"] != _userSession.userId
+                ).toList();
+
+                setState(() {
+                  searchResults = filteredResults;
+                  isLoading = false;
+                });
+              } catch (e) {
+                setState(() {
+                  errorMessage = "Error searching: $e";
+                  isLoading = false;
+                });
+              }
+            }
+
+            // Add collaborator function
+            Future<void> addCollaborator(String userId) async {
+              if (userId.isEmpty) {
+                setState(() {
+                  errorMessage = "Please enter a user ID";
+                });
+                return;
+              }
+
+              // Don't allow adding yourself as a collaborator
+              if (userId == _userSession.userId) {
+                setState(() {
+                  errorMessage = "You cannot add yourself as a collaborator";
+                });
+                return;
+              }
+
+              setState(() {
+                isLoading = true;
+                errorMessage = null;
+              });
+
+              try {
+                // Check if user exists
+                final userExists = await _budgetService.checkUserExists(userId);
+
+                if (!userExists) {
+                  setState(() {
+                    isLoading = false;
+                    errorMessage = "User does not exist";
+                  });
+                  return;
+                }
+
+                // Add collaborator to budget
+                await _budgetService.addCollaborator(
+                  widget.budgetId,
+                  userId,
+                );
+
+                // Update the UI state
+                this.setState(() {
+                  avatars.add("images/user.png"); // Add new avatar
+                  _loadCollaborators(); // Reload collaborators
+                });
+
+                Navigator.pop(context); // Close the popup
+
+                // Show success message
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text("Collaborator added successfully")),
+                );
+              } catch (e) {
+                setState(() {
+                  isLoading = false;
+                  errorMessage = "Failed to add collaborator: $e";
+                });
+              }
+            }
+
             return Dialog(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Icon(Icons.person_add, size: 24, color: Colors.black54),
-                        SizedBox(width: 8),
-                        Text(
-                          "Invite Collaborators",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
+              child: Container(
+                constraints: BoxConstraints(maxHeight: 500),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Header
+                      Row(
+                        children: [
+                          Icon(Icons.person_add, size: 24, color: Colors.black54),
+                          SizedBox(width: 8),
+                          Text(
+                            "Invite Collaborators",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          Spacer(),
+                          IconButton(
+                            icon: Icon(Icons.close, color: Colors.black54),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 10),
+                      Text("Your budget has been created. Invite your friends to join!"),
+                      SizedBox(height: 16),
+
+                      // Search field
+                      Text(
+                        "Search by name or user ID:",
+                        style: TextStyle(fontWeight: FontWeight.w500),
+                      ),
+                      SizedBox(height: 8),
+                      TextField(
+                        controller: searchController,
+                        decoration: InputDecoration(
+                          hintText: "Type to search...",
+                          prefixIcon: Icon(Icons.search),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          suffixIcon: searchController.text.isNotEmpty
+                              ? IconButton(
+                            icon: Icon(Icons.clear),
+                            onPressed: () {
+                              searchController.clear();
+                              setState(() {
+                                searchResults = [];
+                                errorMessage = null;
+                              });
+                            },
+                          )
+                              : null,
+                        ),
+                        onChanged: performSearch,
+                      ),
+
+                      if (errorMessage != null)
+                        Padding(
+                          padding: const EdgeInsets.only(top: 8.0),
+                          child: Text(
+                            errorMessage!,
+                            style: TextStyle(color: Colors.red, fontSize: 12),
                           ),
                         ),
-                        Spacer(),
-                        IconButton(
-                          icon: Icon(Icons.close, color: Colors.black54),
-                          onPressed: () => Navigator.pop(context),
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 10),
-                    Text("Your budget has been created. Invite your friends to join!"),
-                    SizedBox(height: 10),
-                    TextField(
-                      controller: userIdController,
-                      decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.person),
-                        hintText: "User ID",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        errorText: errorMessage,
+
+                      SizedBox(height: 8),
+
+                      // Search results
+                      if (isLoading)
+                        Center(
+                          child: Padding(
+                            padding: const EdgeInsets.all(16.0),
+                            child: CircularProgressIndicator(),
+                          ),
+                        )
+                      else if (isSearching && searchResults.isEmpty)
+                        Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Center(
+                            child: Text(
+                              "No matching users found",
+                              style: TextStyle(fontStyle: FontStyle.italic, color: Colors.grey),
+                            ),
+                          ),
+                        )
+                      else if (searchResults.isNotEmpty)
+                          Flexible(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: searchResults.length,
+                              itemBuilder: (context, index) {
+                                final user = searchResults[index];
+                                return Card(
+                                  margin: EdgeInsets.symmetric(vertical: 4),
+                                  child: ListTile(
+                                    leading: CircleAvatar(
+                                      backgroundImage: AssetImage("images/user.png"),
+                                      child: user["displayName"] != null && user["displayName"].isNotEmpty
+                                          ? null
+                                          : Icon(Icons.person, color: Colors.white),
+                                    ),
+                                    title: Text(user["displayName"] ?? "User ${user["userId"]}"),
+                                    subtitle: user["email"] != null && user["email"].isNotEmpty
+                                        ? Text(user["email"])
+                                        : Text("ID: ${user["userId"]}"),
+                                    trailing: IconButton(
+                                      icon: Icon(Icons.add_circle, color: Colors.blue),
+                                      onPressed: () => addCollaborator(user["userId"]),
+                                    ),
+                                    onTap: () => addCollaborator(user["userId"]),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+
+                      Divider(height: 32),
+
+                      // Direct entry section
+                      Text(
+                        "Or enter user ID directly:",
+                        style: TextStyle(fontWeight: FontWeight.w500),
                       ),
-                    ),
-                    SizedBox(height: 10),
-                    if (isLoading)
-                      Center(child: CircularProgressIndicator())
-                    else
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.black,
-                          foregroundColor: Colors.white,
-                          minimumSize: Size(double.infinity, 50),
-                        ),
-                        onPressed: () async {
-                          if (userIdController.text.isEmpty) {
-                            setState(() {
-                              errorMessage = "Please enter a user ID";
-                            });
-                            return;
-                          }
-
-                          // Don't allow adding yourself as a collaborator
-                          if (userIdController.text == _userSession.userId) {
-                            setState(() {
-                              errorMessage = "You cannot add yourself as a collaborator";
-                            });
-                            return;
-                          }
-
-                          setState(() {
-                            isLoading = true;
-                            errorMessage = null;
-                          });
-
-                          try {
-                            // Check if user exists
-                            final userExists = await _budgetService.checkUserExists(userIdController.text);
-
-                            if (!userExists) {
-                              setState(() {
-                                isLoading = false;
-                                errorMessage = "User does not exist";
-                              });
-                              return;
-                            }
-
-                            // Add collaborator to budget
-                            await _budgetService.addCollaborator(
-                              widget.budgetId,
-                              userIdController.text,
-                            );
-
-                            // Update the UI state
-                            this.setState(() {
-                              avatars.add("images/user.png"); // Add new avatar
-                            });
-
-                            Navigator.pop(context); // Close the popup
-
-                            // Show success message
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(content: Text("Collaborator added successfully")),
-                            );
-                          } catch (e) {
-                            setState(() {
-                              isLoading = false;
-                              errorMessage = "Failed to add collaborator: $e";
-                            });
-                          }
-                        },
-                        child: Text("Confirm"),
+                      SizedBox(height: 8),
+                      Row(
+                        children: [
+                          Expanded(
+                            child: TextField(
+                              controller: userIdController,
+                              decoration: InputDecoration(
+                                hintText: "Enter user ID",
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.black,
+                              foregroundColor: Colors.white,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              padding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+                            ),
+                            onPressed: () {
+                              if (userIdController.text.isNotEmpty) {
+                                addCollaborator(userIdController.text);
+                              }
+                            },
+                            child: Text("Add"),
+                          ),
+                        ],
                       ),
-                    SizedBox(height: 10),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             );
