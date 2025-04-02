@@ -78,7 +78,7 @@ class _AnalyzePageState extends State<AnalyzePage>
   // Fetch hourly balance data from the backend
   Future<void> fetchHourlyBalanceData() async {
     final response = await http.get(
-        Uri.parse('http://192.168.110.53:3000/transaction/hourly-balance'));
+        Uri.parse('http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/transaction/hourly-balance'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response and cast it as List<Map<String, dynamic>>
@@ -103,7 +103,7 @@ class _AnalyzePageState extends State<AnalyzePage>
     final userSession = UserSession();
     final uid = userSession.userId;
     final response = await http
-        .get(Uri.parse('http://192.168.110.53:3000/transaction/$uid'));
+        .get(Uri.parse('http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/transaction/$uid'));
 
     if (response.statusCode == 200) {
       // Parse the JSON response and map it to Transaction model

@@ -49,7 +49,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
         File compressedFile = File('${imageFile.path}_compressed_monochrome.jpg')
           ..writeAsBytesSync(compressedImage);
 
-        var uri = Uri.parse("http://192.168.110.53:3000/upload");
+        var uri = Uri.parse("http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/upload");
 
         var request = http.MultipartRequest("POST", uri);
 

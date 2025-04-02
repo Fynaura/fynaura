@@ -50,7 +50,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
 
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.110.53:3000/goals/user/$uid'),
+        Uri.parse('http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/goals/user/$uid'),
       );
 
       if (response.statusCode == 200) {
@@ -75,7 +75,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
       String incomeUrl = '';
       String expenseUrl = '';
       String baseUrl =
-          'http://192.168.110.53:3000/transaction'; // Make sure this matches your backend
+          'http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/transaction'; // Make sure this matches your backend
 
       // Construct the URLs based on the period selected
       if (period == 'today') {
