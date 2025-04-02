@@ -4,7 +4,9 @@ import 'package:http/http.dart' as http;
 import '../pages/user-session/UserSession.dart';
 
 class BudgetService {
+
   final String baseUrl = "http://192.168.110.53:3000";
+
 
   // Get all budgets (including those where user is a collaborator)
   Future<List<Map<String, dynamic>>> getBudgets() async {
@@ -178,10 +180,34 @@ class BudgetService {
     }
   }
 
+  // New method to search users
+  Future<List<Map<String, dynamic>>> searchUsers(String query) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/user/search?query=$query'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final List<dynamic> users = data['users'] ?? [];
+
+        return users.map<Map<String, dynamic>>((user) => {
+          "userId": user['userId'],
+          "displayName": user['displayName'],
+          "email": user['email'] ?? '',
+        }).toList();
+      } else {
+        throw Exception('Failed to search users: ${response.statusCode}');
+      }
+    } catch (e) {
+      throw Exception('Error searching users: $e');
+    }
+  }
+
   Future<bool> checkUserExists(String userId) async {
     try {
       final response = await http.get(
-        Uri.parse('$baseUrl/collab-budgets/check-exists/$userId'),
+        Uri.parse('$baseUrl/user/check-exists/$userId'),
       );
 
       if (response.statusCode == 200) {

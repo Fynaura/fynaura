@@ -260,4 +260,34 @@ export class UserService {
       throw error;
     }
   }
+
+  // New method to search users by name or ID
+  async searchUsers(query: string): Promise<any[]> {
+    console.log(`Searching users with query: ${query}`);
+    try {
+      // Search in MongoDB using regex for case-insensitive search
+      const mongoUsers = await this.userModel.find({
+        $or: [
+          { firstName: { $regex: query, $options: 'i' } },
+          { lastName: { $regex: query, $options: 'i' } },
+          { userId: { $regex: `^${query}`, $options: 'i' } } // Start with the query
+        ]
+      }).limit(10).exec();
+
+      // Format the results
+      return mongoUsers.map(user => ({
+        userId: user.userId,
+        displayName: `${user.firstName} ${user.lastName}`,
+        email: user.email
+      }));
+    } catch (error) {
+      console.error('Error searching users:', error);
+      throw new HttpException(
+        'Failed to search users',
+        HttpStatus.INTERNAL_SERVER_ERROR
+      );
+    }
+  }
+
+  
 }

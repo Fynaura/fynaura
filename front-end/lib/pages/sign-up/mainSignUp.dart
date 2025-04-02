@@ -24,7 +24,9 @@ class _MainSignupState extends State<Mainsignup> {
   bool _isPasswordVisible = false;
   bool _isConfirmPasswordVisible = false;
 
+
   final String apiUrl = 'http://192.168.110.53:3000/user/register';
+
 
   // Error and success message state variables
   String? passwordError;

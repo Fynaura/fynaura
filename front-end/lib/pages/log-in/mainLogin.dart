@@ -14,6 +14,7 @@
   String? displayName;
   String? email;
 
+ 
   class Mainlogin extends StatefulWidget {
     const Mainlogin({super.key});
 
@@ -129,6 +130,7 @@ Future<void> loginUser() async {
       return;
     }
 
+
     // Handle successful response - check for idToken which indicates successful login
     if (response.statusCode == 200 || responseData.containsKey('idToken')) {
       String? idToken = responseData['idToken'];
@@ -150,6 +152,7 @@ Future<void> loginUser() async {
             ),
             backgroundColor: Color(0xFF254e7a),
           ),
+
         );
 
         // Fetch user details
