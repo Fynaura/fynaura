@@ -13,8 +13,10 @@ import 'package:fynaura/services/transaction_service.dart';
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
 FlutterLocalNotificationsPlugin();
 
+
 // Time zone constant for Sri Jayawardenepura (same as Colombo)
 const String SRI_LANKA_TIMEZONE = 'Asia/Colombo';
+
 
 class TransactionDetailsPage extends StatefulWidget {
   @override
@@ -69,7 +71,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
 
   void _initNotifications() async {
     tz.initializeTimeZones();
+
     tz.setLocalLocation(tz.getLocation(SRI_LANKA_TIMEZONE));
+
 
     const AndroidInitializationSettings initializationSettingsAndroid =
     AndroidInitializationSettings('@mipmap/ic_launcher');
@@ -124,6 +128,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
   }
 
+
   // Convert a DateTime to TZDateTime in Sri Lanka time zone
   tz.TZDateTime _getSriLankaDateTime(DateTime dateTime) {
     tz.TZDateTime sriLankaTime = tz.TZDateTime(
@@ -137,6 +142,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
     return sriLankaTime;
   }
+
 
   void _onReminderTapped() {
     showDialog(
@@ -189,15 +195,19 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     final uid = userSession.userId;
 
     try {
+
       // Ensure we're using the correct time zone for the transaction date
       final transactionDate = selectedDate;
+
 
       await transactionService.createTransaction(
         type: type,
         category: selectedCategory,
         amount: double.parse(amountController.text),
         description: descriptionController.text,
+
         date: transactionDate,
+
         uid: uid,
       );
 
@@ -332,7 +342,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
                         buildModernOptionTile(
                           "Set Reminder",
                           Icons.alarm,
+
                           reminder ? DateFormat('MMMM d, y - h:mm a').format(selectedDate) + " (Sri Lanka Time)" : "Set Reminder",
+
                           context,
                           false,
                         ),
@@ -431,6 +443,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               setState(() => selectedCategory = result as String);
             }
           } else if (title == "Set Reminder") {
+
             // Use Sri Lanka time for the date picker initial date
             final sriLankaTime = _getSriLankaDateTime(DateTime.now());
             final DateTime initialDate = DateTime(
@@ -441,6 +454,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
               sriLankaTime.minute,
             );
             
+
             final DateTime? pickedDate = await showDatePicker(
               context: context,
               initialDate: initialDate,

@@ -63,27 +63,46 @@ export class CollabBudgetsService {
     if (!budget) {
       throw new NotFoundException('Budget not found');
     }
-
-    // If it's an expense, store it as is. If it's income, store it with negative amount
-    // This way we can use the same array for both expenses and income
+  
+    // Get the initial budget amount (the starting amount)
+    const initialAmount = budget.amount;
+  
+    // Create the transaction object with the isExpense field
     const transaction = {
       description: transactionDto.description,
-      amount: transactionDto.isExpense
-        ? transactionDto.amount
-        : -transactionDto.amount,
-      date: transactionDto.date,
+      amount: transactionDto.amount,
+      date: transactionDto.date || new Date().toISOString(),
       addedBy: transactionDto.addedBy,
-      isExpense: transactionDto.isExpense,
+      isExpense: transactionDto.isExpense, // Include isExpense field
     };
-
+  
+    // Add the transaction to expenses array
     budget.expenses.push(transaction);
-
-    if (transactionDto.isExpense) {
-      budget.amount -= transactionDto.amount;
-    } else {
-      budget.amount += transactionDto.amount;
-    }
-
+    
+    // Calculate total expenses (sum of all expense transactions)
+    const totalExpenses = budget.expenses
+      .filter(expense => expense.isExpense)
+      .reduce((sum, expense) => sum + expense.amount, 0);
+    
+    // Calculate total income (sum of all income transactions)
+    const totalIncome = budget.expenses
+      .filter(expense => !expense.isExpense)
+      .reduce((sum, expense) => sum + expense.amount, 0);
+    
+    // Calculate current remaining amount
+    const currentAmount = initialAmount - totalExpenses + totalIncome;
+    
+    // Calculate percentage remaining and ensure it's between 0-100
+    let percentageRemaining = (currentAmount / initialAmount) * 100;
+    percentageRemaining = Math.max(0, Math.min(100, percentageRemaining));
+    
+    // Round to 2 decimal places
+    percentageRemaining = Math.round(percentageRemaining * 100) / 100;
+    
+    // Update the remainPercentage field
+    budget.remainPercentage = percentageRemaining;
+  
+    // Save and return the updated budget
     return budget.save();
   }
   async addCollaborator(budgetId: string, userId: string): Promise<Budget> {

@@ -14,6 +14,12 @@ class CustomPopup extends StatefulWidget {
 }
 
 class _CustomPopupState extends State<CustomPopup> {
+  // Consistent color palette
+  static const Color primaryColor = Color(0xFF254e7a);     // Primary blue
+  static const Color accentColor = Color(0xFF85c1e5);      // Light blue accent
+  static const Color lightBgColor = Color(0xFFEBF1FD);     // Light background
+  static const Color whiteColor = Colors.white;            // White background
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _amountController = TextEditingController();
   String _selectedDate = "Select a Date";
@@ -32,9 +38,10 @@ class _CustomPopupState extends State<CustomPopup> {
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
-            primaryColor: Color(0xFF85C1E5),
+            primaryColor: primaryColor,
             colorScheme: ColorScheme.light(
-              primary: Color(0xFF85C1E5),
+              primary: primaryColor,
+              secondary: accentColor,
             ),
             buttonTheme: ButtonThemeData(
               textTheme: ButtonTextTheme.primary,
@@ -61,7 +68,8 @@ class _CustomPopupState extends State<CustomPopup> {
     }
   }
 
-  // Validation function for budget name
+  // Validation functions remain the same as in the previous implementation
+
   bool _validateName() {
     if (_nameController.text.isEmpty) {
       setState(() {
@@ -81,7 +89,6 @@ class _CustomPopupState extends State<CustomPopup> {
     }
   }
 
-  // Validation function for budget amount
   bool _validateAmount() {
     if (_amountController.text.isEmpty) {
       setState(() {
@@ -90,7 +97,6 @@ class _CustomPopupState extends State<CustomPopup> {
       return false;
     }
 
-    // Try to parse the amount as a number
     try {
       double amount = double.parse(_amountController.text);
       if (amount <= 0) {
@@ -117,7 +123,6 @@ class _CustomPopupState extends State<CustomPopup> {
     }
   }
 
-  // Validation function for date
   bool _validateDate() {
     if (_selectedDate == "Select a Date") {
       setState(() {
@@ -132,7 +137,6 @@ class _CustomPopupState extends State<CustomPopup> {
     }
   }
 
-  // Validate all fields
   bool _validateAll() {
     bool nameValid = _validateName();
     bool amountValid = _validateAmount();
@@ -144,108 +148,173 @@ class _CustomPopupState extends State<CustomPopup> {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Padding(
-        padding: const EdgeInsets.all(25.0),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "Create a New Budget",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.close),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              Text("Enter the following details!"),
-              const SizedBox(height: 20),
-
-              Text("Budget Name"),
-              CustomInputField(
-                hintText: "Christmas",
-                controller: _nameController,
-              ),
-              if (_nameError != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    _nameError!,
-                    style: TextStyle(color: Colors.red, fontSize: 12),
-                  ),
-                ),
-              const SizedBox(height: 20),
-
-              Text("Estimated Total Budget"),
-              CustomInputField(
-                hintText: "1000",
-                controller: _amountController,
-                keyboardType: TextInputType.number,
-              ),
-              if (_amountError != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    _amountError!,
-                    style: TextStyle(color: Colors.red, fontSize: 12),
-                  ),
-                ),
-              const SizedBox(height: 20),
-
-              Text("Select Date"),
-              GestureDetector(
-                onTap: () => _pickDate(context),
-                child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 12, horizontal: 15),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: whiteColor,
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(25.0),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header with gradient
+                Container(
                   decoration: BoxDecoration(
-                    border: Border.all(color: _dateError != null ? Colors.red : Colors.grey),
-                    borderRadius: BorderRadius.circular(10),
+                    gradient: LinearGradient(
+                      colors: [primaryColor, accentColor],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(15),
                   ),
-                  child: Text(
-                    _selectedDate,
-                    style: TextStyle(
-                        color: _selectedDate == "Select a Date" ? Colors.black54 : Colors.black,
-                        fontSize: 16
+                  padding: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "Create a New Budget",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold, 
+                          fontSize: 18, 
+                          color: whiteColor
+                        ),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.close, color: whiteColor),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+
+                const SizedBox(height: 20),
+                Text(
+                  "Enter the following details!",
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                Text(
+                  "Budget Name",
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                CustomInputField(
+                  hintText: "Christmas",
+                  controller: _nameController,
+                ),
+                if (_nameError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      _nameError!,
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+                const SizedBox(height: 20),
+
+                Text(
+                  "Estimated Total Budget",
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                CustomInputField(
+                  hintText: "1000",
+                  controller: _amountController,
+                  keyboardType: TextInputType.number,
+                ),
+                if (_amountError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      _amountError!,
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
+                  ),
+                const SizedBox(height: 20),
+
+                Text(
+                  "Select Date",
+                  style: TextStyle(
+                    color: primaryColor,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                GestureDetector(
+                  onTap: () => _pickDate(context),
+                  child: Container(
+                    padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+                    decoration: BoxDecoration(
+                      color: lightBgColor,
+                      border: Border.all(
+                        color: _dateError != null 
+                          ? Colors.red 
+                          : primaryColor.withOpacity(0.2)
+                      ),
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          _selectedDate,
+                          style: TextStyle(
+                            color: _selectedDate == "Select a Date" 
+                              ? primaryColor.withOpacity(0.5)
+                              : primaryColor,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Icon(
+                          Icons.calendar_today,
+                          color: primaryColor.withOpacity(0.6),
+                        ),
+                      ],
                     ),
                   ),
                 ),
-              ),
-              if (_dateError != null)
-                Padding(
-                  padding: const EdgeInsets.only(top: 5.0),
-                  child: Text(
-                    _dateError!,
-                    style: TextStyle(color: Colors.red, fontSize: 12),
+                if (_dateError != null)
+                  Padding(
+                    padding: const EdgeInsets.only(top: 5.0),
+                    child: Text(
+                      _dateError!,
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                    ),
                   ),
-                ),
-              const SizedBox(height: 30),
+                const SizedBox(height: 30),
 
-              CustomButton(
-                text: "Create Budget",
-                backgroundColor: const Color(0xFF1E232C),
-                textColor: Colors.white,
-                onPressed: () {
-                  if (_validateAll()) {
-                    widget.onBudgetCreated(
-                      _nameController.text,
-                      _amountController.text,
-                      _selectedDate,
-                    );
-                    Navigator.of(context).pop();
-                  }
-                },
-              ),
-            ],
+                CustomButton(
+                  text: "Create Budget",
+                  backgroundColor: primaryColor,
+                  textColor: whiteColor,
+                  onPressed: () {
+                    if (_validateAll()) {
+                      widget.onBudgetCreated(
+                        _nameController.text,
+                        _amountController.text,
+                        _selectedDate,
+                      );
+                      Navigator.of(context).pop();
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
