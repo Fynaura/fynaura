@@ -29,6 +29,7 @@ dependencies:
   uuid: ^3.0.7
 
   mime: ^2.0.0
+  mobile_scanner: ^3.0.0
 
 
 

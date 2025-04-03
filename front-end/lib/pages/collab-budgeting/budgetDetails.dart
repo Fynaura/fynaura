@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/collab-budgeting/qr_scanner.dart';
 import 'package:fynaura/widgets/backBtn.dart';
 import 'package:fynaura/services/budget_service.dart';
 import 'package:fynaura/pages/user-session/UserSession.dart';
@@ -217,6 +218,74 @@ class _BudgetDetailsState extends State<BudgetDetails> {
     List<Map<String, dynamic>> searchResults = [];
     bool isSearching = false;
 
+    // Function to handle QR code scanning
+    void scanQRCode() async {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) => QRScannerScreen(
+            onQRCodeScanned: (qrData) async {
+              try {
+                // Parse the QR code data
+                final userData = _budgetService.parseCollaboratorQrCode(qrData);
+
+                if (userData != null && userData.containsKey('userId')) {
+                  final userId = userData['userId'];
+
+                  // Don't allow adding yourself as a collaborator
+                  if (userId == _userSession.userId) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("You cannot add yourself as a collaborator"))
+                    );
+                    return;
+                  }
+
+                  // Show a loading indicator
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Adding collaborator..."))
+                  );
+
+                  // Check if user exists
+                  final userExists = await _budgetService.checkUserExists(userId);
+
+                  if (!userExists) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text("User does not exist"))
+                    );
+                    return;
+                  }
+
+                  // Add the user as a collaborator
+                  await _budgetService.addCollaborator(
+                    widget.budgetId,
+                    userId,
+                  );
+
+                  // Update the UI
+                  setState(() {
+                    avatars.add("images/user.png");
+                    _loadCollaborators();
+                  });
+
+                  // Show success message
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Collaborator added successfully"))
+                  );
+                } else {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Invalid QR code format"))
+                  );
+                }
+              } catch (e) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(content: Text("Failed to add collaborator: $e"))
+                );
+              }
+            },
+          ),
+        ),
+      );
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -346,6 +415,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
               ),
               elevation: 5,
               child: Container(
+
                 constraints: BoxConstraints(
                   maxHeight: maxHeight,
                   maxWidth: 380, // Reduced width to prevent horizontal overflow
@@ -368,6 +438,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                       ),
                       padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                       child: Row(
+
                         children: [
                           Container(
                             padding: EdgeInsets.all(8),
@@ -436,6 +507,27 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                             ),
                             SizedBox(height: 16),
 
+                                       // Scan QR Code button
+                      ElevatedButton.icon(
+                        icon: Icon(Icons.qr_code_scanner),
+                        label: Text("Scan QR Code"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Color(0xFF85C1E5),
+                          foregroundColor: Colors.white,
+                          minimumSize: Size(double.infinity, 50),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                        onPressed: () {
+                          Navigator.pop(context);
+                          scanQRCode();
+                        },
+                      ),
+
+                      SizedBox(height: 16),
+                      Divider(),
+                      SizedBox(height: 16),
                             // Search section
                             Text(
                               "Search by name or user ID",
@@ -484,6 +576,7 @@ class _BudgetDetailsState extends State<BudgetDetails> {
                                 onChanged: performSearch,
                               ),
                             ),
+
 
                             // Error message if any
                             if (errorMessage != null)

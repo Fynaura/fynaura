@@ -5,7 +5,7 @@ import '../pages/user-session/UserSession.dart';
 
 class BudgetService {
 
-  final String baseUrl = "http://192.168.110.53:3000";
+  final String baseUrl = "http://192.168.8.172:3000";
 
   // Get all budgets (including those where user is a collaborator)
   Future<List<Map<String, dynamic>>> getBudgets() async {
@@ -141,6 +141,20 @@ class BudgetService {
     } catch (e) {
       print('Error creating budget: $e');
       throw Exception('Error creating budget: $e');
+    }
+  }
+
+  Map<String, dynamic>? parseCollaboratorQrCode(String qrData) {
+    try {
+      final data = json.decode(qrData) as Map<String, dynamic>;
+      // Verify this is a collaborator invite QR code
+      if (data['type'] == 'collaborator_invite') {
+        return data;
+      }
+      return null;
+    } catch (e) {
+      print('Error parsing QR code data: $e');
+      return null;
     }
   }
 
