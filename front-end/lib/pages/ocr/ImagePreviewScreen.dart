@@ -28,6 +28,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
 
   // Function to compress, convert to monochrome, and upload the image
   Future<void> uploadImage(File imageFile) async {
+
     setState(() {
       _isLoading = true;
       _errorMessage = '';
@@ -80,6 +81,7 @@ class _ImagePreviewScreenState extends State<ImagePreviewScreen> {
                     ['predicted_category'] ??
                 "Unknown";
           }
+
 
           print(
               "Total Amount: $totalAmount, Category: $category"); // Debugging Line

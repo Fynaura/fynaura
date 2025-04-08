@@ -5,6 +5,7 @@ class CustomInputField extends StatelessWidget {
   final TextEditingController? controller; // Optional: Input controller
   final bool obscureText; // For password fields
   final TextInputType keyboardType; // Type of keyboard
+  final Widget? suffixIcon; // Added for eye icon
 
   const CustomInputField({
     Key? key,
@@ -12,6 +13,7 @@ class CustomInputField extends StatelessWidget {
     this.controller,
     this.obscureText = false,
     this.keyboardType = TextInputType.text,
+    this.suffixIcon, // New parameter for eye icon
   }) : super(key: key);
 
   @override
@@ -43,6 +45,7 @@ class CustomInputField extends StatelessWidget {
             color: Color(0xFF8391A1), // Hint text color
           ),
           border: InputBorder.none, // Remove default border
+          suffixIcon: suffixIcon, // Add the suffix icon
         ),
       ),
     );

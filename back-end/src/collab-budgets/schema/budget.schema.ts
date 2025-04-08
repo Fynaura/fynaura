@@ -13,6 +13,9 @@ export class Budget {
   @Prop({ required: true })
   amount: number;
 
+  @Prop({ default: 100 })
+  remainPercentage: number;
+
   @Prop({ required: true })
   date: string;
 
@@ -29,6 +32,7 @@ export class Budget {
       amount: number;
       date: string;
       addedBy: string;
+      isExpense: boolean;
     },
   ];
 
