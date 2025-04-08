@@ -31,7 +31,7 @@ class BudgetService {
           return decodedResponse.map<Map<String, dynamic>>((item) => {
             "id": item['_id'],
             "name": item['name'],
-            "amount": item['amount'],
+            "amount": item['amount'].toDouble(),
             "date": item['date'],
             "remainPercentage": item['remainPercentage'] ?? 100, // Get the remaining percentage
             "isPinned": item['isPinned'] ?? false,
@@ -55,7 +55,7 @@ class BudgetService {
             return budgets.map<Map<String, dynamic>>((item) => {
               "id": item['_id'] ?? item['id'], // Try both _id and id
               "name": item['name'],
-              "amount": item['amount'],
+              "amount": item['amount'].toDouble(),
               "date": item['date'],
               "remainPercentage": item['remainPercentage'] ?? 100, // Get the remaining percentage
               "isPinned": item['isPinned'] ?? false,
@@ -90,7 +90,7 @@ class BudgetService {
         return {
           "id": data['_id'] ?? data['id'],
           "name": data['name'],
-          "amount": data['amount'],
+          "amount": data['amount'].toDouble(),
           "date": data['date'],
           "remainPercentage": data['remainPercentage'] ?? 100, // Get the remain percentage
           "isPinned": data['isPinned'] ?? false,
@@ -223,11 +223,17 @@ class BudgetService {
       if (response.statusCode == 201) {
         // Parse the updated budget with the new percentage remaining
         final updatedBudget = json.decode(response.body);
+
+        // Explicitly convert numeric values to ensure proper types
+        final remainPercentage = updatedBudget['remainPercentage'] != null
+            ? double.parse(updatedBudget['remainPercentage'].toString())
+            : 100.0;
+
         return {
           "id": updatedBudget['_id'] ?? updatedBudget['id'],
           "name": updatedBudget['name'],
-          "amount": updatedBudget['amount'],
-          "remainPercentage": updatedBudget['remainPercentage'] ?? 100, // Get the updated percentage
+          "amount": updatedBudget['amount']?.toString() ?? "0",
+          "remainPercentage": remainPercentage,
         };
       } else {
         throw Exception('Failed to add transaction: ${response.statusCode}');

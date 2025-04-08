@@ -53,7 +53,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     try {
       final response = await http.get(
 
-        Uri.parse('http://192.168.110.53:3000/goals/user/$uid'),
+        Uri.parse('http://192.168.8.172:3000/goals/user/$uid'),
 
       );
 
@@ -80,7 +80,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       String expenseUrl = '';
       String baseUrl =
 
-          'http://192.168.110.53:3000/transaction'; // Make sure this matches your backend
+          'http://192.168.8.172:3000/transaction'; // Make sure this matches your backend
 
 
       // Construct the URLs based on the period selected
