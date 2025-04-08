@@ -4,6 +4,7 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/services/budget_service.dart';
+import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
 
 class DashboardScreen extends StatefulWidget {
   final String? displayName;
@@ -20,12 +21,13 @@ class DashboardScreen extends StatefulWidget {
   _DashboardScreenState createState() => _DashboardScreenState();
 }
 
-class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProviderStateMixin {
+class _DashboardScreenState extends State<DashboardScreen>
+    with SingleTickerProviderStateMixin {
   // Define app's color palette based on AnalyzePage
-  static const Color primaryColor = Color(0xFF254e7a);     // Primary blue
-  static const Color accentColor = Color(0xFF85c1e5);      // Light blue accent
-  static const Color lightBgColor = Color(0xFFEBF1FD);     // Light background
-  static const Color whiteColor = Colors.white;            // White background
+  static const Color primaryColor = Color(0xFF254e7a); // Primary blue
+  static const Color accentColor = Color(0xFF85c1e5); // Light blue accent
+  static const Color lightBgColor = Color(0xFFEBF1FD); // Light background
+  static const Color whiteColor = Colors.white; // White background
 
   late Future<List<Goal>> _userGoals;
   late Future<Map<String, dynamic>> _totalIncomeAndExpense;
@@ -122,7 +124,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
     _totalIncomeAndExpense = _fetchTotalIncomeAndExpense('today');
     _userGoals = _fetchUserGoals();
     _userBudgets = _fetchUserBudgets();
-    
+
     // Add listener to tab controller to update the period
     _tabController.addListener(() {
       if (!_tabController.indexIsChanging) {
@@ -134,7 +136,7 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
         } else {
           period = 'month';
         }
-        
+
         if (period != selectedPeriod) {
           setState(() {
             selectedPeriod = period;
@@ -252,10 +254,13 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     future: _totalIncomeAndExpense,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator(color: primaryColor));
+                        return Center(
+                            child:
+                                CircularProgressIndicator(color: primaryColor));
                       } else if (snapshot.hasError) {
-                        return Center(child: Text('Failed to load data', 
-                          style: TextStyle(color: Colors.red)));
+                        return Center(
+                            child: Text('Failed to load data',
+                                style: TextStyle(color: Colors.red)));
                       } else if (snapshot.hasData) {
                         final data = snapshot.data!;
                         return Row(
@@ -276,8 +281,9 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                           ],
                         );
                       } else {
-                        return Center(child: Text('No data available',
-                          style: TextStyle(color: Colors.grey)));
+                        return Center(
+                            child: Text('No data available',
+                                style: TextStyle(color: Colors.grey)));
                       }
                     },
                   ),
@@ -313,23 +319,61 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     future: _userBudgets,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator(color: primaryColor));
+                        return Center(
+                            child:
+                                CircularProgressIndicator(color: primaryColor));
                       } else if (snapshot.hasError) {
-                        return Center(child: Text('Failed to load budgets', 
-                          style: TextStyle(color: Colors.red)));
-                      } else if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                        return Center(
+                            child: Text('Failed to load budgets',
+                                style: TextStyle(color: Colors.red)));
+                      } else if (snapshot.hasData &&
+                          snapshot.data!.isNotEmpty) {
                         final budgets = snapshot.data!;
                         return SingleChildScrollView(
                           scrollDirection: Axis.horizontal,
                           child: Row(
                             children: budgets.map((budget) {
+                              // Calculate spent amount based on remaining percentage
+                              final budgetAmount = double.tryParse(
+                                      budget["amount"].toString()) ??
+                                  0.0;
+                              final remainPercentage =
+                                  (budget["remainPercentage"] ?? 100.0) / 100;
+                              final spentPercentage = 1.0 -
+                                  remainPercentage; // Inverse of remaining percentage
+                              final spentAmount =
+                                  budgetAmount * spentPercentage;
+
                               return Padding(
                                 padding: const EdgeInsets.only(right: 20.0),
-                                child: BudgetCard(
-                                  title: budget["name"] ?? "Unnamed Budget",
-                                  amount: "LKR ${budget["amount"].toString()}",
-                                  total: "LKR ${budget["amount"].toString()}",
-                                  progress: 0.7,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Navigate to Budget Details page when card is tapped
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => BudgetDetails(
+                                          budgetName: budget["name"] ??
+                                              "Unnamed Budget",
+                                          budgetAmount:
+                                              budget["amount"].toString(),
+                                          budgetDate: budget["date"] ?? "",
+                                          budgetId: budget["id"].toString(),
+                                        ),
+                                      ),
+                                    ).then((_) =>
+                                        _onRefresh()); // Refresh data when returning from details page
+                                  },
+                                  child: BudgetCard(
+                                    title: budget["name"] ?? "Unnamed Budget",
+                                    amount:
+                                        "LKR ${spentAmount.toStringAsFixed(2)}",
+                                    total:
+                                        "LKR ${budgetAmount.toStringAsFixed(2)}",
+                                    progress:
+                                        spentPercentage, // Use the calculated spent percentage
+                                    icon: Icons.account_balance_wallet,
+                                  ),
                                 ),
                               );
                             }).toList(),
@@ -339,8 +383,8 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: Text('No budgets available', 
-                              style: TextStyle(color: Colors.grey)),
+                            child: Text('No budgets available',
+                                style: TextStyle(color: Colors.grey)),
                           ),
                         );
                       }
@@ -378,16 +422,19 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                     future: _userGoals,
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator(color: primaryColor));
+                        return Center(
+                            child:
+                                CircularProgressIndicator(color: primaryColor));
                       } else if (snapshot.hasError) {
-                        return Center(child: Text('Failed to load goals', 
-                          style: TextStyle(color: Colors.red)));
+                        return Center(
+                            child: Text('Failed to load goals',
+                                style: TextStyle(color: Colors.red)));
                       } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                         return Center(
                           child: Padding(
                             padding: const EdgeInsets.all(20.0),
-                            child: Text('No goals found', 
-                              style: TextStyle(color: Colors.grey)),
+                            child: Text('No goals found',
+                                style: TextStyle(color: Colors.grey)),
                           ),
                         );
                       }
@@ -401,34 +448,45 @@ class _DashboardScreenState extends State<DashboardScreen> with SingleTickerProv
                           crossAxisCount: 2,
                           crossAxisSpacing: 20.0,
                           mainAxisSpacing: 20.0,
-                          childAspectRatio: 0.58, // Further adjusted to prevent overflow
+                          childAspectRatio:
+                              0.58, // Further adjusted to prevent overflow
                         ),
                         itemCount: goals.length,
                         itemBuilder: (context, index) {
                           final goal = goals[index];
                           final progress =
-                          (goal.savedAmount / goal.targetAmount)
-                              .clamp(0.0, 1.0);
-                          
+                              (goal.savedAmount / goal.targetAmount)
+                                  .clamp(0.0, 1.0);
+
                           // Determine icon based on goal name keywords
                           IconData goalIcon = Icons.emoji_events;
                           final goalName = goal.name.toLowerCase();
-                          if (goalName.contains('house') || goalName.contains('home')) {
+                          if (goalName.contains('house') ||
+                              goalName.contains('home')) {
                             goalIcon = Icons.home;
-                          } else if (goalName.contains('car') || goalName.contains('vehicle')) {
+                          } else if (goalName.contains('car') ||
+                              goalName.contains('vehicle')) {
                             goalIcon = Icons.directions_car;
-                          } else if (goalName.contains('education') || goalName.contains('school') || goalName.contains('college')) {
+                          } else if (goalName.contains('education') ||
+                              goalName.contains('school') ||
+                              goalName.contains('college')) {
                             goalIcon = Icons.school;
-                          } else if (goalName.contains('travel') || goalName.contains('vacation') || goalName.contains('trip')) {
+                          } else if (goalName.contains('travel') ||
+                              goalName.contains('vacation') ||
+                              goalName.contains('trip')) {
                             goalIcon = Icons.flight;
-                          } else if (goalName.contains('wedding') || goalName.contains('marriage')) {
+                          } else if (goalName.contains('wedding') ||
+                              goalName.contains('marriage')) {
                             goalIcon = Icons.favorite;
-                          } else if (goalName.contains('device') || goalName.contains('phone') || goalName.contains('tech')) {
+                          } else if (goalName.contains('device') ||
+                              goalName.contains('phone') ||
+                              goalName.contains('tech')) {
                             goalIcon = Icons.devices;
-                          } else if (goalName.contains('emergency') || goalName.contains('medical')) {
+                          } else if (goalName.contains('emergency') ||
+                              goalName.contains('medical')) {
                             goalIcon = Icons.medical_services;
                           }
-                          
+
                           return GoalCard(
                             title: goal.name,
                             progress: progress,
@@ -494,8 +552,8 @@ class IncomeExpenseCard extends StatelessWidget {
               Text(
                 title,
                 style: TextStyle(
-                  fontSize: 18, 
-                  fontWeight: FontWeight.bold, 
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
                   color: color,
                   letterSpacing: 0.5,
                 ),
@@ -506,8 +564,8 @@ class IncomeExpenseCard extends StatelessWidget {
           Text(
             amount,
             style: TextStyle(
-              fontSize: 20, 
-              fontWeight: FontWeight.bold, 
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
               color: color,
             ),
           ),
@@ -546,7 +604,7 @@ class BudgetCard extends StatelessWidget {
     } else if (progress >= 0.7) {
       statusColor = Colors.orange;
     }
-    
+
     // Status text based on progress
     String statusText = "On Track";
     if (progress >= 0.9) {
@@ -601,8 +659,8 @@ class BudgetCard extends StatelessWidget {
                 child: Text(
                   title,
                   style: TextStyle(
-                    fontSize: 18, 
-                    fontWeight: FontWeight.bold, 
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
                     color: Colors.white,
                     letterSpacing: 0.5,
                   ),
@@ -627,20 +685,20 @@ class BudgetCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           if (category != null) ...[
             SizedBox(height: 6),
             Text(
               category!,
               style: TextStyle(
-                fontSize: 12, 
+                fontSize: 12,
                 color: Colors.white.withOpacity(0.7),
               ),
             ),
           ],
-          
+
           SizedBox(height: 12),
-          
+
           // Amount info
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -689,9 +747,9 @@ class BudgetCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: 12),
-          
+
           // Progress bar
           ClipRRect(
             borderRadius: BorderRadius.circular(6),
@@ -705,7 +763,7 @@ class BudgetCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                   ),
                 ),
-                
+
                 // Progress bar fill
                 Container(
                   height: 12,
@@ -714,10 +772,16 @@ class BudgetCard extends StatelessWidget {
                     // Color transitions from green to yellow to red as progress increases
                     gradient: LinearGradient(
                       colors: [
-                        progress < 0.7 ? Colors.green : 
-                        progress < 0.9 ? Colors.orange : Colors.red,
-                        progress < 0.7 ? Colors.green.shade300 : 
-                        progress < 0.9 ? Colors.orangeAccent : Colors.redAccent,
+                        progress < 0.7
+                            ? Colors.green
+                            : progress < 0.9
+                                ? Colors.orange
+                                : Colors.red,
+                        progress < 0.7
+                            ? Colors.green.shade300
+                            : progress < 0.9
+                                ? Colors.orangeAccent
+                                : Colors.redAccent,
                       ],
                       begin: Alignment.centerLeft,
                       end: Alignment.centerRight,
@@ -725,15 +789,19 @@ class BudgetCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(6),
                     boxShadow: [
                       BoxShadow(
-                        color: (progress < 0.7 ? Colors.green : 
-                               progress < 0.9 ? Colors.orange : Colors.red).withOpacity(0.4),
+                        color: (progress < 0.7
+                                ? Colors.green
+                                : progress < 0.9
+                                    ? Colors.orange
+                                    : Colors.red)
+                            .withOpacity(0.4),
                         blurRadius: 4,
                         offset: Offset(0, 2),
                       ),
                     ],
                   ),
                 ),
-                
+
                 // Progress percentage
                 Positioned.fill(
                   child: Center(
@@ -750,9 +818,9 @@ class BudgetCard extends StatelessWidget {
               ],
             ),
           ),
-          
+
           SizedBox(height: 12),
-          
+
           // Remaining amount
           Container(
             width: double.infinity,
@@ -800,8 +868,8 @@ class GoalCard extends StatelessWidget {
   final IconData icon;
 
   const GoalCard({
-    Key? key, 
-    required this.title, 
+    Key? key,
+    required this.title,
     required this.progress,
     this.targetAmount,
     this.savedAmount,
@@ -816,7 +884,7 @@ class GoalCard extends StatelessWidget {
     if (targetDate != null) {
       daysRemaining = targetDate!.difference(DateTime.now()).inDays;
     }
-    
+
     // Determine status color based on progress
     Color statusColor = Colors.orange;
     if (progress >= 0.9) {
@@ -826,7 +894,7 @@ class GoalCard extends StatelessWidget {
     } else if (progress < 0.3) {
       statusColor = Colors.deepOrange;
     }
-    
+
     // Status text based on progress
     String statusText = "In Progress";
     if (progress >= 1.0) {
@@ -898,9 +966,9 @@ class GoalCard extends StatelessWidget {
               ),
             ],
           ),
-          
+
           SizedBox(height: 15),
-          
+
           // Progress indicator
           Stack(
             alignment: Alignment.center,
@@ -932,22 +1000,21 @@ class GoalCard extends StatelessWidget {
                       color: Colors.white,
                     ),
                   ),
-                  
                 ],
               ),
             ],
           ),
           if (savedAmount != null && targetAmount != null)
-                    Text(
-                      "Rs.${savedAmount?.toStringAsFixed(0)} / Rs.${targetAmount?.toStringAsFixed(0)}",
-                      style: TextStyle(
-                        fontSize: 10,
-                        color: Colors.white.withOpacity(0.9),
-                      ),
-                    ),
-          
+            Text(
+              "Rs.${savedAmount?.toStringAsFixed(0)} / Rs.${targetAmount?.toStringAsFixed(0)}",
+              style: TextStyle(
+                fontSize: 10,
+                color: Colors.white.withOpacity(0.9),
+              ),
+            ),
+
           SizedBox(height: 12),
-          
+
           // Status and days remaining
           Column(
             mainAxisSize: MainAxisSize.min,

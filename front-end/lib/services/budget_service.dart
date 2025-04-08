@@ -5,8 +5,7 @@ import '../pages/user-session/UserSession.dart';
 
 class BudgetService {
 
-  final String baseUrl = "http://192.168.110.53:3000";
-
+  final String baseUrl = "http://192.168.8.172:3000";
 
   // Get all budgets (including those where user is a collaborator)
   Future<List<Map<String, dynamic>>> getBudgets() async {
@@ -34,6 +33,7 @@ class BudgetService {
             "name": item['name'],
             "amount": item['amount'],
             "date": item['date'],
+            "remainPercentage": item['remainPercentage'] ?? 100, // Get the remaining percentage
             "isPinned": item['isPinned'] ?? false,
             "isOwner": item['userId'] == userId,
           }).toList();
@@ -57,6 +57,7 @@ class BudgetService {
               "name": item['name'],
               "amount": item['amount'],
               "date": item['date'],
+              "remainPercentage": item['remainPercentage'] ?? 100, // Get the remaining percentage
               "isPinned": item['isPinned'] ?? false,
               "isOwner": item['userId'] == userId,
             }).toList();
@@ -71,6 +72,38 @@ class BudgetService {
     } catch (e) {
       print('Error in getBudgets: $e');
       throw Exception('Error getting budgets: $e');
+    }
+  }
+
+  // Get a specific budget with details
+  Future<Map<String, dynamic>> getBudgetDetails(String budgetId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/collab-budgets/$budgetId'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final userSession = UserSession();
+        final userId = userSession.userId;
+        
+        return {
+          "id": data['_id'] ?? data['id'],
+          "name": data['name'],
+          "amount": data['amount'],
+          "date": data['date'],
+          "remainPercentage": data['remainPercentage'] ?? 100, // Get the remain percentage
+          "isPinned": data['isPinned'] ?? false,
+          "isOwner": data['userId'] == userId,
+          "collaborators": data['collaborators'] ?? [],
+          "expenses": data['expenses'] ?? [],
+        };
+      } else {
+        throw Exception('Failed to load budget details: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error in getBudgetDetails: $e');
+      throw Exception('Error getting budget details: $e');
     }
   }
 
@@ -100,6 +133,7 @@ class BudgetService {
           "name": data['name'],
           "amount": data['amount'],
           "date": data['date'],
+          "remainPercentage": data['remainPercentage'] ?? 100, // Initial percentage is 100%
         };
       } else {
         throw Exception('Failed to create budget: ${response.statusCode}');
@@ -107,6 +141,20 @@ class BudgetService {
     } catch (e) {
       print('Error creating budget: $e');
       throw Exception('Error creating budget: $e');
+    }
+  }
+
+  Map<String, dynamic>? parseCollaboratorQrCode(String qrData) {
+    try {
+      final data = json.decode(qrData) as Map<String, dynamic>;
+      // Verify this is a collaborator invite QR code
+      if (data['type'] == 'collaborator_invite') {
+        return data;
+      }
+      return null;
+    } catch (e) {
+      print('Error parsing QR code data: $e');
+      return null;
     }
   }
 
@@ -152,7 +200,7 @@ class BudgetService {
   }
 
   // Add a transaction to a budget
-  Future<void> addTransaction(
+  Future<Map<String, dynamic>> addTransaction(
       String budgetId,
       String description,
       double amount,
@@ -172,11 +220,41 @@ class BudgetService {
         }),
       );
 
-      if (response.statusCode != 201) {
+      if (response.statusCode == 201) {
+        // Parse the updated budget with the new percentage remaining
+        final updatedBudget = json.decode(response.body);
+        return {
+          "id": updatedBudget['_id'] ?? updatedBudget['id'],
+          "name": updatedBudget['name'],
+          "amount": updatedBudget['amount'],
+          "remainPercentage": updatedBudget['remainPercentage'] ?? 100, // Get the updated percentage
+        };
+      } else {
         throw Exception('Failed to add transaction: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error adding transaction: $e');
+    }
+  }
+
+  // Get current budget percentage remaining
+  Future<double> getRemainingPercentage(String budgetId) async {
+    try {
+      final response = await http.get(
+        Uri.parse('$baseUrl/collab-budgets/$budgetId'),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        // Return the remain percentage from the budget, defaulting to 100 if not found
+        return data['remainPercentage'] != null ? 
+          double.parse(data['remainPercentage'].toString()) : 100.0;
+      } else {
+        throw Exception('Failed to get remaining percentage: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error getting remaining percentage: $e');
+      throw Exception('Error getting remaining percentage: $e');
     }
   }
 
@@ -263,4 +341,3 @@ class BudgetService {
     }
   }
 }
-

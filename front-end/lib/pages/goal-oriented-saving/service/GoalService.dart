@@ -4,7 +4,7 @@ import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 
 class GoalService {
 
-  final String baseUrl = 'http://192.168.110.53:3000/goals'; // Replace with your backend URL
+  final String baseUrl = 'http://192.168.8.172:3000/goals'; // Replace with your backend URL
 
 
   // Create Goal
