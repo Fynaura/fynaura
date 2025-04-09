@@ -1,149 +1,144 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, Types } from 'mongoose';
+import { Model } from 'mongoose';
 import { Goal, GoalDocument } from '../goal-oriented-savings/schema/goal.schema';
 
+// Define interfaces for our return types
+interface NotificationData {
+  daysRemaining: number;
+  amountNeeded: number;
+  dailySavingNeeded: number;
+  progressPercentage: number;
+  isAlmostComplete: boolean;
+  isUrgentByTime: boolean;
+}
+
+interface UrgentGoalInfo {
+  goalId: string;
+  goalName: string;
+  daysRemaining: number;
+  amountNeeded: number;
+  dailySavingNeeded: number;
+  progressPercentage: number;
+  isUrgentByTime: boolean;
+  isUrgentByProgress: boolean;
+}
+
 @Injectable()
-export class GoalNotificationService {
+export class NotificationService {
   constructor(
     @InjectModel(Goal.name) private goalModel: Model<GoalDocument>,
   ) {}
 
-  /**
-   * Get notification data for a specific goal
-   * @param goalId The ID of the goal
-   * @returns Object containing days remaining and amount needed to save
-   */
-  async getGoalNotification(goalId: string): Promise<{
-    daysRemaining: number;
-    amountNeeded: number;
-  }> {
-    const goal = await this.goalModel.findById(goalId);
-    
-    if (!goal) {
-      throw new Error('Goal not found');
-    }
+  // Get notification data for a specific goal
+  async getGoalNotificationData(goalId: string): Promise<NotificationData> {
+    try {
+      const goal = await this.goalModel.findById(goalId).exec();
+      if (!goal) {
+        throw new Error('Goal not found');
+      }
 
-    // Calculate days remaining until due date
-    const daysRemaining = this.calculateDaysRemaining(goal.endDate);
-    
-    // Calculate remaining amount to save
-    const amountNeeded = goal.targetAmount - goal.savedAmount;
+      // Calculate days remaining
+      const currentDate = new Date();
+      const endDate = new Date(goal.endDate);
+      const timeDifference = endDate.getTime() - currentDate.getTime();
+      const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
 
-    return {
-      daysRemaining,
-      amountNeeded,
-    };
-  }
-
-  /**
-   * Get notification data for all goals of a user
-   * @param userId The ID of the user
-   * @returns Array of goals with notification data
-   */
-  async getUserGoalNotifications(userId: string): Promise<Array<{
-    goalId: string;
-    goalName: string;
-    daysRemaining: number;
-    amountNeeded: number;
-    targetAmount: number;
-    savedAmount: number;
-    progress: number;
-  }>> {
-    const goals = await this.goalModel.find({ 
-      userId, 
-      isCompleted: false 
-    });
-
-    return goals.map(goal => {
-      const daysRemaining = this.calculateDaysRemaining(goal.endDate);
-      const amountNeeded = goal.targetAmount - goal.savedAmount;
-      const progress = (goal.savedAmount / goal.targetAmount) * 100;
+      // Calculate amount needed to reach the target
+      const amountNeeded = Math.max(0, goal.targetAmount - goal.savedAmount);
       
-      // Safely convert the _id to string regardless of its type
-      const goalId = goal._id instanceof Types.ObjectId 
-        ? goal._id.toString() 
-        : String(goal._id);
+      // Calculate daily saving needed to reach the goal on time
+      const dailySavingNeeded = daysRemaining > 0 ? amountNeeded / daysRemaining : amountNeeded;
+      
+      // Calculate progress percentage
+      const progressPercentage = (goal.savedAmount / goal.targetAmount) * 100;
+      
+      // Check if the goal is almost complete (within 10% of target)
+      const isAlmostComplete = progressPercentage >= 90 && progressPercentage < 100;
 
       return {
-        goalId,
-        goalName: goal.name,
         daysRemaining,
         amountNeeded,
-        targetAmount: goal.targetAmount,
-        savedAmount: goal.savedAmount,
-        progress: Math.round(progress),
+        dailySavingNeeded,
+        progressPercentage,
+        isAlmostComplete,
+        isUrgentByTime: daysRemaining <= 7 && daysRemaining > 0,
       };
-    });
+    } catch (error) {
+      throw error;
+    }
   }
 
-  /**
-   * Calculate days remaining until a date
-   * @param endDate The end date in string format
-   * @returns Number of days remaining (can be negative if past due)
-   */
-  private calculateDaysRemaining(endDate: string): number {
-    const today = new Date();
-    const targetDate = new Date(endDate);
-    
-    // Reset time component to compare dates only
-    today.setHours(0, 0, 0, 0);
-    targetDate.setHours(0, 0, 0, 0);
-    
-    // Calculate difference in milliseconds and convert to days
-    const differenceInTime = targetDate.getTime() - today.getTime();
-    const differenceInDays = Math.ceil(differenceInTime / (1000 * 3600 * 24));
-    
-    return differenceInDays;
+  // Get urgent goals for a user (approaching deadline or almost complete)
+  async getUrgentGoals(userId: string, daysThreshold = 7): Promise<UrgentGoalInfo[]> {
+    try {
+      // Get all user's goals
+      const goals = await this.goalModel.find({ userId, isCompleted: false }).exec();
+      const currentDate = new Date();
+      const urgentGoals: UrgentGoalInfo[] = []; // Explicitly type the array
+
+      for (const goal of goals) {
+        // Calculate days remaining until deadline
+        const endDate = new Date(goal.endDate);
+        const timeDifference = endDate.getTime() - currentDate.getTime();
+        const daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
+
+        // Calculate amount needed and daily saving
+        const amountNeeded = Math.max(0, goal.targetAmount - goal.savedAmount);
+        const dailySavingNeeded = daysRemaining > 0 ? amountNeeded / daysRemaining : amountNeeded;
+        
+        // Calculate progress percentage
+        const progressPercentage = (goal.savedAmount / goal.targetAmount) * 100;
+        
+        // Check if goal is urgent by time (approaching deadline)
+        const isUrgentByTime = daysRemaining <= daysThreshold && daysRemaining > 0;
+        
+        // Check if goal is urgent by progress (almost complete)
+        const isUrgentByProgress = progressPercentage >= 90 && progressPercentage < 100;
+
+        // If urgent by either time or progress, add to urgent goals
+        if (isUrgentByTime || isUrgentByProgress) {
+          urgentGoals.push({
+            goalId: String(goal['_id']),  // Use bracket notation and convert to string
+            goalName: goal.name,
+            daysRemaining,
+            amountNeeded,
+            dailySavingNeeded,
+            progressPercentage,
+            isUrgentByTime,
+            isUrgentByProgress,
+          });
+        }
+      }
+
+      return urgentGoals;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  /**
-   * Get urgent goals that are near due date or have significant amount left to save
-   * @param userId The ID of the user
-   * @param daysThreshold Consider urgent if less than this many days remaining
-   * @param percentageThreshold Consider urgent if more than this percentage still needed
-   * @returns Array of urgent goals with notification data
-   */
-  async getUrgentGoalNotifications(
-    userId: string, 
-    daysThreshold = 7, 
-    percentageThreshold = 50
-  ): Promise<Array<{
-    goalId: string;
-    goalName: string;
-    daysRemaining: number;
-    amountNeeded: number;
-    targetAmount: number;
-    savedAmount: number;
-    progress: number;
-    isUrgentByTime: boolean;
-    isUrgentByAmount: boolean;
-    dailySavingNeeded: number;
-  }>> {
-    const allGoals = await this.getUserGoalNotifications(userId);
-    
-    // Filter for urgent goals
-    return allGoals
-      .filter(goal => {
-        const isUrgentByTime = goal.daysRemaining <= daysThreshold && goal.daysRemaining >= 0;
-        const percentageNeeded = (goal.amountNeeded / goal.targetAmount) * 100;
-        const isUrgentByAmount = percentageNeeded >= percentageThreshold;
-        
-        return isUrgentByTime || isUrgentByAmount;
-      })
-      .map(goal => {
-        // Calculate daily saving needed (if there are days remaining)
-        const dailySavingNeeded = goal.daysRemaining > 0 
-          ? Math.ceil(goal.amountNeeded / goal.daysRemaining) 
-          : goal.amountNeeded; // If past due, need full amount
-        
+  // Send notifications for goals that are almost complete (testing method)
+  async testAlmostCompleteNotification(goalId: string) {
+    try {
+      const notificationData = await this.getGoalNotificationData(goalId);
+      
+      if (notificationData.isAlmostComplete) {
+        console.log(`NOTIFICATION: Goal is almost complete! Only ${(100 - notificationData.progressPercentage).toFixed(1)}% to go!`);
         return {
-          ...goal,
-          isUrgentByTime: goal.daysRemaining <= daysThreshold && goal.daysRemaining >= 0,
-          isUrgentByAmount: (goal.amountNeeded / goal.targetAmount) * 100 >= percentageThreshold,
-          dailySavingNeeded,
+          success: true,
+          message: 'Almost complete notification would be sent',
+          data: notificationData
         };
-      });
+      } else {
+        return {
+          success: false,
+          message: 'Goal is not almost complete yet',
+          data: notificationData
+        };
+      }
+    } catch (error) {
+      throw error;
+    }
   }
 }

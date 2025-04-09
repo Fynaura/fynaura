@@ -7,12 +7,21 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:fynaura/services/notification_manager.dart';
+import 'package:fynaura/services/goal_notification_service.dart';
 
-void main() {
+void main() async {
   // Ensure Flutter binding is initialized
   WidgetsFlutterBinding.ensureInitialized();
   
-  initializeTimeZone(); // Initialize time zones globally
+  // Initialize time zones globally
+  await initializeTimeZone();
+  
+  // Initialize notification service early
+  final notificationManager = NotificationManager();
+  await notificationManager.initialize(null); // First initialization without context
+  
+  // Request permissions at app startup
+  await requestPermissions();
   
   runApp(MyApp());
 }
@@ -29,10 +38,11 @@ class MyApp extends StatelessWidget {
 }
 
 // Function to initialize time zones
-void initializeTimeZone() {
+Future<void> initializeTimeZone() async {
   tz.initializeTimeZones(); // Load all time zones
   tz.setLocalLocation(
       tz.getLocation("Asia/Colombo")); // Set to Sri Lanka time zone
+  print('🕒 Time zones initialized: Asia/Colombo');
 }
 
 class SplashScreen extends StatefulWidget {
@@ -48,16 +58,21 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   
   Future<void> _initialize() async {
-    // Request required permissions
-    await requestPermissions();
-    
-    // Navigate to the next screen after a 5-second delay
-    Timer(Duration(seconds: 5), () {
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(builder: (context) => Mainsignup()), // Navigate to SignUp page after 5 seconds
-      );
-    });
+    // Initialize the notification manager without context first
+    try {
+      // This second initialization is with context
+      print('📱 Initializing notifications from splash screen');
+      
+      // Navigate to the next screen after a 5-second delay
+      Timer(Duration(seconds: 5), () {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => Mainsignup()), // Navigate to SignUp page after 5 seconds
+        );
+      });
+    } catch (e) {
+      print('Error initializing: $e');
+    }
   }
   
   @override
@@ -67,7 +82,21 @@ class _SplashScreenState extends State<SplashScreen> {
     // Initialize the NotificationManager after the context is available
     WidgetsBinding.instance.addPostFrameCallback((_) {
       NotificationManager().initialize(context);
+      
+      // Check for goal notifications that might be at 90%
+      _checkForGoalNotifications();
     });
+  }
+  
+  Future<void> _checkForGoalNotifications() async {
+    try {
+      // Check if user is logged in before checking notifications
+      final notificationManager = NotificationManager();
+      await notificationManager.checkNotifications();
+      print('📱 Initial notification check complete');
+    } catch (e) {
+      print('Error checking notifications: $e');
+    }
   }
 
   @override
@@ -83,10 +112,12 @@ class _SplashScreenState extends State<SplashScreen> {
 
 Future<void> requestPermissions() async {
   // Request notification permission
-  await Permission.notification.request();
+  final notificationStatus = await Permission.notification.request();
+  print('📱 Notification permission status: $notificationStatus');
   
   // Request exact alarms permission (for scheduling notifications)
   if (await Permission.scheduleExactAlarm.isDenied) {
-    await Permission.scheduleExactAlarm.request();
+    final alarmStatus = await Permission.scheduleExactAlarm.request();
+    print('📱 Schedule exact alarm permission status: $alarmStatus');
   }
 }
