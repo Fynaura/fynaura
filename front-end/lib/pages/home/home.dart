@@ -6,6 +6,9 @@ import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/services/budget_service.dart';
 import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
 
+
+import '../log-in/mainLogin.dart';
+
 class DashboardScreen extends StatefulWidget {
   final String? displayName;
   final String? email;
@@ -65,6 +68,43 @@ class _DashboardScreenState extends State<DashboardScreen>
       }
     } catch (e) {
       throw Exception('Failed to fetch goals: $e');
+    }
+  }
+
+  // Add this method to the _DashboardScreenState class in front-end/lib/pages/home/home.dart
+
+  void _logout() async {
+    // Show confirmation dialog
+    bool confirm = await showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text("Logout"),
+          content: Text("Are you sure you want to logout?"),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(false),
+              child: Text("Cancel"),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(true),
+              child: Text("Logout", style: TextStyle(color: Colors.red)),
+            ),
+          ],
+        );
+      },
+    ) ?? false;
+
+    if (confirm) {
+      // Clear user session
+      final userSession = UserSession();
+      await userSession.clearUserData();
+
+      // Navigate to login screen
+      Navigator.of(context).pushAndRemoveUntil(
+        MaterialPageRoute(builder: (context) => Mainlogin()),
+            (route) => false, // This will remove all previous routes
+      );
     }
   }
 
@@ -197,6 +237,15 @@ class _DashboardScreenState extends State<DashboardScreen>
           IconButton(
             icon: Icon(Icons.notifications, color: whiteColor),
             onPressed: () {},
+          ),
+
+          // Add logout button
+          IconButton(
+            icon: Icon(Icons.logout, color: whiteColor),
+            onPressed: () {
+              // No functionality for now - button is muted
+              // This can be replaced with _logout() function when needed
+            },
           ),
           IconButton(
             icon: Icon(Icons.refresh, color: whiteColor),

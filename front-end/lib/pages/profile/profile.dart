@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/goal-oriented-saving/Goalpage.dart';
-import 'package:fynaura/pages/profile/edit_profile_page.dart';
 import '../goal-oriented-saving/model/Goal.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
+
+
+import 'QRCodeDialog.dart'; // Import the QR code dialog
 
 class ProfilePage extends StatefulWidget {
   @override
@@ -13,6 +16,20 @@ class _ProfilePageState extends State<ProfilePage> {
   int auraPoints = 1000; // Example points
   List<Goal> goals = []; // Example empty list of goals
   String selectedCurrency = "USD"; // Default currency
+
+  // Get user information from UserSession
+  late String username;
+  late String userId;
+
+  @override
+  void initState() {
+    super.initState();
+
+    // Get user data from the UserSession singleton
+    final userSession = UserSession();
+    username = userSession.displayName ?? "No Username";
+    userId = userSession.userId ?? "No User ID";
+  }
 
   void _selectAvatar() {
     showDialog(
@@ -94,6 +111,18 @@ class _ProfilePageState extends State<ProfilePage> {
     });
   }
 
+  void _showQRCode() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return QRCodeDialog(
+          userId: userId,
+          username: username,
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,36 +166,51 @@ class _ProfilePageState extends State<ProfilePage> {
                     padding: EdgeInsets.fromLTRB(16, 70, 16, 30),
                     child: Column(
                       children: [
-                        // Profile Name
+                        // Username with larger font
                         Text(
-                          "@Itunuoluwa",
+                          username,
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 22,
                             fontWeight: FontWeight.bold,
                             letterSpacing: 0.5,
                           ),
                         ),
-                        SizedBox(height: 16),
+                        SizedBox(height: 6),
 
-                        // Edit Profile button with text
-                        InkWell(
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => ProfileEditorPage()),
-                            );
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                        // User ID with smaller font
+                        Text(
+                          "ID: $userId",
+                          style: TextStyle(
+                            fontSize: 14,
+                            color: Colors.grey[600],
+                            letterSpacing: 0.5,
+                          ),
+                        ),
+
+                        // QR Code button
+                        SizedBox(height: 16),
+                        GestureDetector(
+                          onTap: _showQRCode,
+                          child: Container(
+                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Color(0xFFEBF1FD),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Color(0xFF254e7a).withOpacity(0.3)),
+                            ),
                             child: Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                Icon(Icons.edit, color: Color(0xFF85C1E5), size: 20),
+                                Icon(
+                                  Icons.qr_code,
+                                  color: Color(0xFF254e7a),
+                                  size: 20,
+                                ),
                                 SizedBox(width: 8),
                                 Text(
-                                  "Edit Profile",
+                                  "My QR Code",
                                   style: TextStyle(
-                                    color: Color(0xFF85C1E5),
+                                    color: Color(0xFF254e7a),
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),

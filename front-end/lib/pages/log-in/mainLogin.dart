@@ -30,7 +30,7 @@
     bool _isPasswordVisible = false;
 
     final String apiUrl =
-        'http://192.168.8.172:3000/user/login'; // API endpoint for login
+        'http://192.168.110.53:3000/user/login'; // API endpoint for login
 
     String? emailError;
     String? passwordError;
@@ -158,7 +158,7 @@ Future<void> loginUser() async {
         // Fetch user details
         try {
           final userDetailsResponse = await http.get(
-            Uri.parse('http://192.168.8.172:3000/user/me?idToken=$idToken'),
+            Uri.parse('http://192.168.110.53:3000/user/me?idToken=$idToken'),
             headers: {"Authorization": "Bearer $idToken"},
           );
 
@@ -169,19 +169,24 @@ Future<void> loginUser() async {
             userSession.userId = userDetails['uid'];
             userSession.displayName = userDetails['displayName'];
             userSession.email = userDetails['email'];
+
+            // Save the session data for persistence
+            await userSession.saveUserData();
             
             // Set the global user ID
             userId = userDetails['uid'];
 
             // Navigate after a short delay
             Future.delayed(const Duration(seconds: 1), () {
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MainScreen(),
                 ),
+                    (Route<dynamic> route) => false, // This ensures no previous routes are kept in the stack
               );
             });
+
           } else {
             setState(() {
               generalError = 'Failed to fetch user details.';
