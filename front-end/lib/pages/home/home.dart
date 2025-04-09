@@ -6,7 +6,7 @@ import 'dart:convert';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/services/budget_service.dart';
 import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
-
+import '../chat/chatbot_screen.dart';
 import '../log-in/mainLogin.dart';
 
 
@@ -556,6 +556,20 @@ class _DashboardScreenState extends State<DashboardScreen>
             ),
           ),
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => ChatbotScreen()),
+          );
+        },
+        backgroundColor: accentColor,
+        child: Icon(
+          Icons.chat_bubble,
+          color: whiteColor,
+        ),
+        tooltip: 'Chat with AI Assistant',
       ),
     );
   }
