@@ -24,6 +24,7 @@ import { AppService } from './app.service';
 import { AuthGuard } from './guard/auth.guard';
 import { UploadModule } from './upload/upload.module';
 import { GoalModule } from './goal-oriented-savings/goal.module';
+import { GoalNotificationModule } from './notification/notification.module';
 
 
 
@@ -54,6 +55,7 @@ import { GoalModule } from './goal-oriented-savings/goal.module';
     UserModule,
     UploadModule,
     GoalModule,
+    GoalNotificationModule,
     
   ],
   controllers: [AppController],

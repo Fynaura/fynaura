@@ -6,6 +6,7 @@ import 'package:fynaura/pages/goal-oriented-saving/service/GoalService.dart'
 import 'package:uuid/uuid.dart';
 import 'package:intl/intl.dart';
 import 'dart:math' show max;
+import 'package:fynaura/widgets/goal_notification_widget.dart';
 
 bool isMongoId(String id) {
   final regex = RegExp(r'^[a-f\d]{24}$');
@@ -448,6 +449,7 @@ class _GoalDetailScreenState extends State<GoalDetailScreen>
       },
     );
   }
+  
 
   @override
   Widget build(BuildContext context) {
@@ -559,83 +561,93 @@ class _GoalDetailScreenState extends State<GoalDetailScreen>
 
   // Helper method to build the goal header section
   Widget _buildGoalHeader() {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        // Goal image or icon
-        Container(
-          height: 80,
-          width: 80,
-          decoration: BoxDecoration(
-            color: lightBgColor,
-            borderRadius: BorderRadius.circular(15),
-            border: Border.all(
-              color: primaryColor.withOpacity(0.3),
-              width: 2,
+  return Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Goal image or icon
+          Container(
+            height: 80,
+            width: 80,
+            decoration: BoxDecoration(
+              color: lightBgColor,
+              borderRadius: BorderRadius.circular(15),
+              border: Border.all(
+                color: primaryColor.withOpacity(0.3),
+                width: 2,
+              ),
+            ),
+            child: Center(
+              child: goal.image != null
+                  ? ClipRRect(
+                      borderRadius: BorderRadius.circular(15),
+                      child: Image.network(
+                        goal.image!,
+                        height: 80,
+                        width: 80,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Icon(
+                            Icons.image_not_supported,
+                            color: primaryColor,
+                            size: 40,
+                          );
+                        },
+                      ),
+                    )
+                  : Icon(
+                      _getGoalIcon(),
+                      color: primaryColor,
+                      size: 40,
+                    ),
             ),
           ),
-          child: Center(
-            child: goal.image != null
-                ? ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.network(
-                      goal.image!,
-                      height: 80,
-                      width: 80,
-                      fit: BoxFit.cover,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Icon(
-                          Icons.image_not_supported,
-                          color: primaryColor,
-                          size: 40,
-                        );
-                      },
-                    ),
-                  )
-                : Icon(
-                    _getGoalIcon(),
-                    color: primaryColor,
-                    size: 40,
-                  ),
-          ),
-        ),
-        SizedBox(width: 15),
+          SizedBox(width: 15),
 
-        // Goal details
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                goal.name,
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold,
-                  color: primaryColor,
+          // Goal details
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  goal.name,
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: primaryColor,
+                  ),
                 ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                'Target: LKR ${goal.targetAmount.toStringAsFixed(2)}',
-                style: TextStyle(
-                  color: Colors.grey[700],
-                  fontSize: 16,
+                SizedBox(height: 5),
+                Text(
+                  'Target: LKR ${goal.targetAmount.toStringAsFixed(2)}',
+                  style: TextStyle(
+                    color: Colors.grey[700],
+                    fontSize: 16,
+                  ),
                 ),
-              ),
-              SizedBox(height: 5),
-              Text(
-                'Timeline: ${_formatDate(goal.startDate)} - ${_formatDate(goal.endDate)}',
-                style: TextStyle(
-                  color: Colors.grey[600],
-                  fontSize: 14,
+                SizedBox(height: 5),
+                Text(
+                  'Timeline: ${_formatDate(goal.startDate)} - ${_formatDate(goal.endDate)}',
+                  style: TextStyle(
+                    color: Colors.grey[600],
+                    fontSize: 14,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ],
-    );
-  }
+        ],
+      ),
+      
+      // Add the notification widget after the main header content
+      // Only show for goals that aren't completed
+      if (!goal.isCompleted)
+        GoalNotificationWidget(goal: goal),
+    ],
+  );
+}
 
   // Helper method to build progress section
   Widget _buildProgressSection(double progress) {
