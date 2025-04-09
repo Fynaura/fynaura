@@ -1,17 +1,20 @@
+// Modify front-end/lib/main.dart
+
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/Analize/analyze_page.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
+import 'package:fynaura/pages/home/main_screen.dart'; // Add this import
+import 'package:fynaura/pages/user-session/UserSession.dart'; // Add this import
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 
 void main() {
-
+  WidgetsFlutterBinding.ensureInitialized(); // Add this line
   initializeTimeZone(); // Initialize time zones globally
   runApp(MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
@@ -42,16 +45,30 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     requestAlarmPermission();  // Request permission when app starts
+    _checkLoginStatus(); // Check if user is already logged in
+  }
 
-    // Navigate to the next screen after a 5-second delay
-    Timer(Duration(seconds: 5), () {
+  // Add method to check login status
+  Future<void> _checkLoginStatus() async {
+    final userSession = UserSession();
+    bool isLoggedIn = await userSession.loadUserData();
+
+    // Give a short delay for splash screen to be visible
+    await Future.delayed(Duration(seconds: 2));
+
+    if (isLoggedIn) {
+      // User is already logged in, go to MainScreen
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => Mainsignup()), // Navigate to SignUp page after 5 seconds
-        // Alternatively, you can navigate to AnalyzePage()
-        // MaterialPageRoute(builder: (context) => AnalyzePage()),
+        MaterialPageRoute(builder: (context) => MainScreen()),
       );
-    });
+    } else {
+      // User is not logged in, go to SignUp screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Mainsignup()),
+      );
+    }
   }
 
   @override
