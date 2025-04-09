@@ -1,24 +1,43 @@
-// Modify front-end/lib/main.dart
-
 import 'package:flutter/material.dart';
 import 'package:fynaura/pages/Analize/analyze_page.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
-import 'package:fynaura/pages/home/main_screen.dart'; // Add this import
-import 'package:fynaura/pages/user-session/UserSession.dart'; // Add this import
+import 'package:fynaura/pages/home/main_screen.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
+import 'package:fynaura/services/notification_manager.dart';
+import 'package:fynaura/services/goal_notification_service.dart';
 
-void main() {
-  WidgetsFlutterBinding.ensureInitialized(); // Add this line
-  initializeTimeZone(); // Initialize time zones globally
+void main() async {
+  // Ensure Flutter binding is initialized
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize time zones globally
+  await initializeTimeZone();
+  
+  // Initialize notification service early
+  final notificationManager = NotificationManager();
+  await notificationManager.initialize(null);
+  
+  // Request permissions at app startup
+  await requestPermissions();
+
   runApp(MyApp());
 }
 
+// Function to initialize time zones
+Future<void> initializeTimeZone() async {
+  tz.initializeTimeZones(); // Load all time zones
+  tz.setLocalLocation(
+      tz.getLocation("Asia/Colombo")); // Set to Sri Lanka time zone
+  print('🕒 Time zones initialized: Asia/Colombo');
+}
+
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);  // Add const constructor here
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,13 +45,6 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),  // Set the home screen to the SplashScreen
     );
   }
-}
-
-// Function to initialize time zones
-void initializeTimeZone() {
-  tz.initializeTimeZones(); // Load all time zones
-  tz.setLocalLocation(
-      tz.getLocation("Asia/Kolkata")); // Change to your preferred default
 }
 
 class SplashScreen extends StatefulWidget {
@@ -44,16 +56,22 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    requestAlarmPermission();  // Request permission when app starts
-    _checkLoginStatus(); // Check if user is already logged in
+    _initialize();
   }
+  
+  Future<void> _initialize() async {
+    // Request alarm permission
+    await requestAlarmPermission();
 
-  // Add method to check login status
-  Future<void> _checkLoginStatus() async {
+    // Initialize notifications
+    final notificationManager = NotificationManager();
+    await notificationManager.initialize(null);
+
+    // Check login status
     final userSession = UserSession();
     bool isLoggedIn = await userSession.loadUserData();
 
-    // Give a short delay for splash screen to be visible
+    // Wait for 2-3 seconds to show splash screen
     await Future.delayed(Duration(seconds: 2));
 
     if (isLoggedIn) {
@@ -70,6 +88,29 @@ class _SplashScreenState extends State<SplashScreen> {
       );
     }
   }
+  
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    
+    // Initialize the NotificationManager after the context is available
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      NotificationManager().initialize(context);
+      
+      // Check for goal notifications that might be at 90%
+      _checkForGoalNotifications();
+    });
+  }
+  
+  Future<void> _checkForGoalNotifications() async {
+    try {
+      final notificationManager = NotificationManager();
+      await notificationManager.checkNotifications();
+      print('📱 Initial notification check complete');
+    } catch (e) {
+      print('Error checking notifications: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,9 +123,26 @@ class _SplashScreenState extends State<SplashScreen> {
   }
 }
 
-
-void requestAlarmPermission() async {
+Future<void> requestPermissions() async {
+  // Request notification permission
+  final notificationStatus = await Permission.notification.request();
+  print('📱 Notification permission status: $notificationStatus');
+  
+  // Request exact alarms permission (for scheduling notifications)
   if (await Permission.scheduleExactAlarm.isDenied) {
-    await Permission.scheduleExactAlarm.request();
+    final alarmStatus = await Permission.scheduleExactAlarm.request();
+    print('📱 Schedule exact alarm permission status: $alarmStatus');
+  }
+}
+
+Future<void> requestAlarmPermission() async {
+  // Request notification permission
+  final notificationStatus = await Permission.notification.request();
+  print('📱 Notification permission status: $notificationStatus');
+  
+  // Request exact alarms permission (for scheduling notifications)
+  if (await Permission.scheduleExactAlarm.isDenied) {
+    final alarmStatus = await Permission.scheduleExactAlarm.request();
+    print('📱 Schedule exact alarm permission status: $alarmStatus');
   }
 }

@@ -11,12 +11,10 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:fynaura/services/transaction_service.dart';
 
 final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-FlutterLocalNotificationsPlugin();
-
+    FlutterLocalNotificationsPlugin();
 
 // Time zone constant for Sri Jayawardenepura (same as Colombo)
 const String SRI_LANKA_TIMEZONE = 'Asia/Colombo';
-
 
 class TransactionDetailsPage extends StatefulWidget {
   @override
@@ -74,12 +72,11 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
 
     tz.setLocalLocation(tz.getLocation(SRI_LANKA_TIMEZONE));
 
-
     const AndroidInitializationSettings initializationSettingsAndroid =
-    AndroidInitializationSettings('@mipmap/ic_launcher');
+        AndroidInitializationSettings('@mipmap/ic_launcher');
 
     final InitializationSettings initializationSettings =
-    InitializationSettings(android: initializationSettingsAndroid);
+        InitializationSettings(android: initializationSettingsAndroid);
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
@@ -91,7 +88,8 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
 
   Future<void> _scheduleReminder() async {
     bool? granted = await flutterLocalNotificationsPlugin
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        .resolvePlatformSpecificImplementation<
+            AndroidFlutterLocalNotificationsPlugin>()
         ?.requestNotificationsPermission();
 
     if (granted == false) {
@@ -103,9 +101,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
 
     // Ensure the scheduled date is properly set in Sri Lanka time zone
     tz.TZDateTime scheduledDate = _getSriLankaDateTime(selectedDate);
-    
+
     const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
+        AndroidNotificationDetails(
       'reminder_channel',
       'Reminders',
       importance: Importance.high,
@@ -113,7 +111,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
 
     const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
+        NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       0,
@@ -123,11 +121,10 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       platformChannelSpecifics,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       uiLocalNotificationDateInterpretation:
-      UILocalNotificationDateInterpretation.absoluteTime,
+          UILocalNotificationDateInterpretation.absoluteTime,
       matchDateTimeComponents: DateTimeComponents.dateAndTime,
     );
   }
-
 
   // Convert a DateTime to TZDateTime in Sri Lanka time zone
   tz.TZDateTime _getSriLankaDateTime(DateTime dateTime) {
@@ -142,7 +139,6 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     );
     return sriLankaTime;
   }
-
 
   void _onReminderTapped() {
     showDialog(
@@ -195,19 +191,15 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     final uid = userSession.userId;
 
     try {
-
       // Ensure we're using the correct time zone for the transaction date
       final transactionDate = selectedDate;
-
 
       await transactionService.createTransaction(
         type: type,
         category: selectedCategory,
         amount: double.parse(amountController.text),
         description: descriptionController.text,
-
         date: transactionDate,
-
         uid: uid,
       );
 
@@ -221,7 +213,7 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
                 Icon(Icons.check_circle, color: Colors.white),
                 SizedBox(width: 8),
                 Text(
-                  'Reminder Set Successfully',
+                  'Expense Added Successfully with Date',
                   style: TextStyle(color: Colors.white),
                 ),
               ],
@@ -304,57 +296,81 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
           ),
         ],
       ),
-      body: Container(
-        color: Color(0xFF254e7a),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-
-              SizedBox(height: 10),
-              buildModernAmountField(),
-              SizedBox(height: 10),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  buildToggleButton("Income", !isExpense),
-                  SizedBox(width: 15),
-                  buildToggleButton("Expense", isExpense),
-                ],
-              ),
-              SizedBox(height: 30),
-
-              Expanded(
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(25),
-                      topRight: Radius.circular(25),
+      body: GestureDetector(
+        onTap: () {
+          // Dismiss keyboard when tapping outside
+          FocusScope.of(context).unfocus();
+        },
+        child: Container(
+          color: Color(0xFF254e7a),
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              children: [
+                SizedBox(height: 10),
+                buildModernAmountField(),
+                SizedBox(height: 10),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildToggleButton("Income", !isExpense),
+                    SizedBox(width: 15),
+                    buildToggleButton("Expense", isExpense),
+                  ],
+                ),
+                SizedBox(height: 30),
+                Expanded(
+                  child: Container(
+                    padding: EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25),
+                      ),
+                    ),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        return SingleChildScrollView(
+                          child: ConstrainedBox(
+                            constraints: BoxConstraints(
+                              minHeight: constraints.maxHeight,
+                              minWidth: constraints.maxWidth,
+                            ),
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    buildModernOptionTile("Category", Icons.toc,
+                                        selectedCategory, context, true),
+                                    buildModernDescriptionField(),
+                                    if (isExpense)
+                                      buildModernOptionTile(
+                                        "Set Date",
+                                        Icons.alarm,
+                                        reminder
+                                            ? DateFormat('MMMM d, y - h:mm a')
+                                                    .format(selectedDate) +
+                                                " (Sri Lanka Time)"
+                                            : "Set Date",
+                                        context,
+                                        false,
+                                      ),
+                                    SizedBox(height: 20),
+                                  ],
+                                ),
+                                buildCameraGalleryButtons(),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   ),
-                  child: Column(
-                    children: [
-                      buildModernOptionTile("Category", Icons.toc, selectedCategory, context, true),
-                      buildModernDescriptionField(),
-                      if (isExpense)
-                        buildModernOptionTile(
-                          "Set Reminder",
-                          Icons.alarm,
-
-                          reminder ? DateFormat('MMMM d, y - h:mm a').format(selectedDate) + " (Sri Lanka Time)" : "Set Reminder",
-
-                          context,
-                          false,
-                        ),
-                      SizedBox(height: 20),
-                      buildCameraGalleryButtons(),  // Gallery and Camera buttons inside the white card
-                    ],
-                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -371,7 +387,9 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       },
       child: Text(
         text,
-        style: TextStyle(color: Color(0xFF254e7a)),  // Changed color for "Income" and "Expense"
+        style: TextStyle(
+            color:
+                Color(0xFF254e7a)), // Changed color for "Income" and "Expense"
       ),
       style: ElevatedButton.styleFrom(
         backgroundColor: selected ? const Color(0xFF85c1e5) : Color(0xFFEBF1FD),
@@ -387,11 +405,13 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
     return TextField(
       controller: amountController,
       keyboardType: TextInputType.number,
-      style: const TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
+      style: const TextStyle(
+          fontSize: 32, fontWeight: FontWeight.bold, color: Colors.white),
       textAlign: TextAlign.center,
       decoration: const InputDecoration(
         hintText: "00",
-        hintStyle: TextStyle(fontSize: 32, fontWeight: FontWeight.w300, color: Colors.grey),
+        hintStyle: TextStyle(
+            fontSize: 32, fontWeight: FontWeight.w300, color: Colors.grey),
         border: InputBorder.none,
       ),
       onChanged: (value) {
@@ -411,7 +431,10 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
         controller: descriptionController,
         decoration: InputDecoration(
           hintText: "Add Description",
-          hintStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w400, color: Color(0xFF254e7a)),
+          hintStyle: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w400,
+              color: Color(0xFF254e7a)),
           border: InputBorder.none,
           prefixIcon: Icon(Icons.edit, color: Color(0xFF254e7a)),
         ),
@@ -419,78 +442,129 @@ class _TransactionDetailsPageState extends State<TransactionDetailsPage> {
       ),
     );
   }
-
-  Widget buildModernOptionTile(String title, IconData icon, String hint, BuildContext context, bool isCategory) {
-    return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      decoration: BoxDecoration(
-        color:Color(0xFFEBF1FD),
-        borderRadius: BorderRadius.circular(25),
+Widget buildModernOptionTile(String title, IconData icon, String hint,
+    BuildContext context, bool isCategory) {
+  return Container(
+    margin: EdgeInsets.symmetric(vertical: 5),
+    decoration: BoxDecoration(
+      color: Color(0xFFEBF1FD),
+      borderRadius: BorderRadius.circular(25),
+    ),
+    child: ListTile(
+      leading: Icon(icon, color: Color(0xFF254e7a)),
+      title: Text(
+        hint,
+        style: TextStyle(color: Color(0xFF254e7a)),
       ),
-      child: ListTile(
-        leading: Icon(icon, color: Color(0xFF254e7a)),
-        title: Text(
-          hint,
-          style: TextStyle(color: Color(0xFF254e7a)),
-        ),
-        onTap: () async {
-          if (isCategory) {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => TransactionCategoryPage(isExpense: isExpense)),
-            );
-            if (result != null) {
-              setState(() => selectedCategory = result as String);
-            }
-          } else if (title == "Set Reminder") {
-
-            // Use Sri Lanka time for the date picker initial date
-            final sriLankaTime = _getSriLankaDateTime(DateTime.now());
-            final DateTime initialDate = DateTime(
-              sriLankaTime.year,
-              sriLankaTime.month,
-              sriLankaTime.day,
-              sriLankaTime.hour,
-              sriLankaTime.minute,
-            );
-            
-
-            final DateTime? pickedDate = await showDatePicker(
-              context: context,
-              initialDate: initialDate,
-              firstDate: initialDate,
-              lastDate: DateTime(2100),
-            );
-            
-            if (pickedDate != null) {
-              final TimeOfDay? pickedTime = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.fromDateTime(initialDate),
-              );
-              
-              if (pickedTime != null) {
-                setState(() {
-                  selectedDate = DateTime(
-                    pickedDate.year,
-                    pickedDate.month,
-                    pickedDate.day,
-                    pickedTime.hour,
-                    pickedTime.minute,
-                  );
-                  reminder = true;
-                });
-              } else {
-                setState(() {
-                  reminder = false;
-                });
-              }
-            }
+      onTap: () async {
+        if (isCategory) {
+          final result = await Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    TransactionCategoryPage(isExpense: isExpense)),
+          );
+          if (result != null) {
+            setState(() => selectedCategory = result as String);
           }
-        },
-      ),
-    );
-  }
+        } else if (title == "Set Date") {
+          // Use Sri Lanka time for the date picker initial date
+          final sriLankaTime = _getSriLankaDateTime(DateTime.now());
+          final DateTime initialDate = DateTime(
+            sriLankaTime.year,
+            sriLankaTime.month,
+            sriLankaTime.day,
+            sriLankaTime.hour,
+            sriLankaTime.minute,
+          );
 
+          final DateTime? pickedDate = await showDatePicker(
+            context: context,
+            initialDate: initialDate,
+            firstDate: initialDate,
+            lastDate: DateTime(2100),
+            builder: (context, child) {
+              return Theme(
+                data: ThemeData.light().copyWith(
+                  primaryColor: Color(0xFF254e7a),
+                  colorScheme: ColorScheme.light(
+                    primary: Color(0xFF254e7a),     // Header and selected date background
+                    secondary: Color(0xFF85c1e5),    // Accent color
+                    onPrimary: Colors.white,         // Header text color
+                    onSurface: Color(0xFF254e7a),    // Calendar text color
+                  ),
+                  buttonTheme: ButtonThemeData(
+                    textTheme: ButtonTextTheme.primary,
+                  ),
+                  dialogTheme: DialogTheme(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+                child: child!,
+              );
+            },
+          );
+
+          // If user cancels date picker, revert reminder to false
+          if (pickedDate == null) {
+            setState(() {
+              reminder = false;
+            });
+            return;
+          }
+
+          final TimeOfDay? pickedTime = await showTimePicker(
+            context: context,
+            initialTime: TimeOfDay.fromDateTime(initialDate),
+            builder: (context, child) {
+              return Theme(
+                data: ThemeData.light().copyWith(
+                  primaryColor: Color(0xFF254e7a),
+                  colorScheme: ColorScheme.light(
+                    primary: Color(0xFF254e7a),     // Selected time background
+                    secondary: Color(0xFF85c1e5),    // Accent color
+                    onPrimary: Colors.white,         // Selected time text color
+                    onSurface: Color(0xFF254e7a),    // Time picker text color
+                  ),
+                  buttonTheme: ButtonThemeData(
+                    textTheme: ButtonTextTheme.primary,
+                  ),
+                  dialogTheme: DialogTheme(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
+                    ),
+                  ),
+                ),
+                child: child!,
+              );
+            },
+          );
+
+          // If user cancels time picker, revert reminder to false
+          if (pickedTime == null) {
+            setState(() {
+              reminder = false;
+            });
+            return;
+          }
+
+          setState(() {
+            selectedDate = DateTime(
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              pickedTime.hour,
+              pickedTime.minute,
+            );
+            reminder = true;
+          });
+        }
+      },
+    ),
+  );
+}
   Widget buildCameraGalleryButtons() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
