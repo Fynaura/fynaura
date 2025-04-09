@@ -3,6 +3,8 @@ import 'package:fynaura/pages/Analize/analyze_page.dart';
 import 'dart:async';
 import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
+import 'package:fynaura/pages/home/main_screen.dart';
+import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
@@ -18,12 +20,20 @@ void main() async {
   
   // Initialize notification service early
   final notificationManager = NotificationManager();
-  await notificationManager.initialize(null); // First initialization without context
+  await notificationManager.initialize(null);
   
   // Request permissions at app startup
   await requestPermissions();
-  
+
   runApp(MyApp());
+}
+
+// Function to initialize time zones
+Future<void> initializeTimeZone() async {
+  tz.initializeTimeZones(); // Load all time zones
+  tz.setLocalLocation(
+      tz.getLocation("Asia/Colombo")); // Set to Sri Lanka time zone
+  print('🕒 Time zones initialized: Asia/Colombo');
 }
 
 class MyApp extends StatelessWidget {
@@ -35,14 +45,6 @@ class MyApp extends StatelessWidget {
       home: SplashScreen(),  // Set the home screen to the SplashScreen
     );
   }
-}
-
-// Function to initialize time zones
-Future<void> initializeTimeZone() async {
-  tz.initializeTimeZones(); // Load all time zones
-  tz.setLocalLocation(
-      tz.getLocation("Asia/Colombo")); // Set to Sri Lanka time zone
-  print('🕒 Time zones initialized: Asia/Colombo');
 }
 
 class SplashScreen extends StatefulWidget {
@@ -58,20 +60,32 @@ class _SplashScreenState extends State<SplashScreen> {
   }
   
   Future<void> _initialize() async {
-    // Initialize the notification manager without context first
-    try {
-      // This second initialization is with context
-      print('📱 Initializing notifications from splash screen');
-      
-      // Navigate to the next screen after a 5-second delay
-      Timer(Duration(seconds: 5), () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => Mainsignup()), // Navigate to SignUp page after 5 seconds
-        );
-      });
-    } catch (e) {
-      print('Error initializing: $e');
+    // Request alarm permission
+    await requestAlarmPermission();
+
+    // Initialize notifications
+    final notificationManager = NotificationManager();
+    await notificationManager.initialize(null);
+
+    // Check login status
+    final userSession = UserSession();
+    bool isLoggedIn = await userSession.loadUserData();
+
+    // Wait for 2-3 seconds to show splash screen
+    await Future.delayed(Duration(seconds: 2));
+
+    if (isLoggedIn) {
+      // User is already logged in, go to MainScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => MainScreen()),
+      );
+    } else {
+      // User is not logged in, go to SignUp screen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => Mainsignup()),
+      );
     }
   }
   
@@ -90,7 +104,6 @@ class _SplashScreenState extends State<SplashScreen> {
   
   Future<void> _checkForGoalNotifications() async {
     try {
-      // Check if user is logged in before checking notifications
       final notificationManager = NotificationManager();
       await notificationManager.checkNotifications();
       print('📱 Initial notification check complete');
@@ -111,6 +124,18 @@ class _SplashScreenState extends State<SplashScreen> {
 }
 
 Future<void> requestPermissions() async {
+  // Request notification permission
+  final notificationStatus = await Permission.notification.request();
+  print('📱 Notification permission status: $notificationStatus');
+  
+  // Request exact alarms permission (for scheduling notifications)
+  if (await Permission.scheduleExactAlarm.isDenied) {
+    final alarmStatus = await Permission.scheduleExactAlarm.request();
+    print('📱 Schedule exact alarm permission status: $alarmStatus');
+  }
+}
+
+Future<void> requestAlarmPermission() async {
   // Request notification permission
   final notificationStatus = await Permission.notification.request();
   print('📱 Notification permission status: $notificationStatus');

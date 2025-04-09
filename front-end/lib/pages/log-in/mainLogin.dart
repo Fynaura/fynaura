@@ -169,19 +169,24 @@ Future<void> loginUser() async {
             userSession.userId = userDetails['uid'];
             userSession.displayName = userDetails['displayName'];
             userSession.email = userDetails['email'];
+
+            // Save the session data for persistence
+            await userSession.saveUserData();
             
             // Set the global user ID
             userId = userDetails['uid'];
 
             // Navigate after a short delay
             Future.delayed(const Duration(seconds: 1), () {
-              Navigator.pushReplacement(
+              Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
                   builder: (context) => MainScreen(),
                 ),
+                    (Route<dynamic> route) => false, // This ensures no previous routes are kept in the stack
               );
             });
+
           } else {
             setState(() {
               generalError = 'Failed to fetch user details.';
