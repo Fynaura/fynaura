@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:fynaura/pages/Analize/analyze_page.dart';
 import 'dart:async';
-import 'package:fynaura/pages/log-in/mainLogin.dart';
 import 'package:fynaura/pages/sign-up/mainSignUp.dart';
 import 'package:fynaura/pages/home/main_screen.dart';
 import 'package:fynaura/pages/user-session/UserSession.dart';
@@ -9,7 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:timezone/data/latest_all.dart' as tz;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:fynaura/services/notification_manager.dart';
-import 'package:fynaura/services/goal_notification_service.dart';
+
 
 void main() async {
   // Ensure Flutter binding is initialized
