@@ -1,24 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:fynaura/pages/home/main_screen.dart';
 import 'package:fynaura/pages/user-session/UserSession.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fynaura/pages/goal-oriented-saving/model/Goal.dart';
 import 'package:fynaura/services/budget_service.dart';
 import 'package:fynaura/pages/collab-budgeting/budgetDetails.dart';
-
-
 import '../chat/chatbot_screen.dart';
 import '../log-in/mainLogin.dart';
+
 
 class DashboardScreen extends StatefulWidget {
   final String? displayName;
   final String? email;
+  // Add callback for logout
+  final Function? logoutCallback;
 
-  // Constructor to receive the user details and uid
+  // Updated constructor to receive the logout callback
   const DashboardScreen({
     Key? key,
     required this.displayName,
     required this.email,
+    this.logoutCallback,
   }) : super(key: key);
 
   @override
@@ -56,9 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     try {
       final response = await http.get(
-
         Uri.parse('http://192.168.110.53:3000/goals/user/$uid'),
-
       );
 
       if (response.statusCode == 200) {
@@ -74,40 +75,44 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   // Add this method to the _DashboardScreenState class in front-end/lib/pages/home/home.dart
 
-  void _logout() async {
-    // Show confirmation dialog
-    bool confirm = await showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text("Logout"),
-          content: Text("Are you sure you want to logout?"),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(false),
-              child: Text("Cancel"),
-            ),
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(true),
-              child: Text("Logout", style: TextStyle(color: Colors.red)),
-            ),
-          ],
-        );
-      },
-    ) ?? false;
+// void _logout() async {
+//   // Show confirmation dialog
+//   bool confirm = await showDialog(
+//         context: context,
+//         builder: (BuildContext context) {
+//           return AlertDialog(
+//             title: Text("Logout"),
+//             content: Text("Are you sure you want to logout?"),
+//             actions: [
+//               TextButton(
+//                 onPressed: () => Navigator.of(context).pop(false),
+//                 child: Text("Cancel"),
+//               ),
+//               TextButton(
+//                 onPressed: () => Navigator.of(context).pop(true),
+//                 child: Text("Logout", style: TextStyle(color: Colors.red)),
+//               ),
+//             ],
+//           );
+//         },
+//       ) ??
+//       false;
 
-    if (confirm) {
-      // Clear user session
-      final userSession = UserSession();
-      await userSession.clearUserData();
+//   if (confirm) {
+//     // Clear user session
+//     final userSession = UserSession();
+//     await userSession.clearUserData();
+    
+//     // Update the global login state
+//     isUserLoggedIn = false;
 
-      // Navigate to login screen
-      Navigator.of(context).pushAndRemoveUntil(
-        MaterialPageRoute(builder: (context) => Mainlogin()),
-            (route) => false, // This will remove all previous routes
-      );
-    }
-  }
+//     // Navigate to login screen and remove all previous routes
+//     Navigator.of(context).pushAndRemoveUntil(
+//       MaterialPageRoute(builder: (context) => Mainlogin()),
+//       (Route<dynamic> route) => false,
+//     );
+//   }
+// }
 
   // Function to fetch total income and expense from the API
   Future<Map<String, dynamic>> _fetchTotalIncomeAndExpense(
@@ -120,9 +125,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       String incomeUrl = '';
       String expenseUrl = '';
       String baseUrl =
-
           'http://192.168.110.53:3000/transaction'; // Make sure this matches your backend
-
 
       // Construct the URLs based on the period selected
       if (period == 'today') {
@@ -203,7 +206,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     });
   }
 
-  @override
+   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: primaryColor,
@@ -240,13 +243,12 @@ class _DashboardScreenState extends State<DashboardScreen>
             onPressed: () {},
           ),
 
-          // Add logout button
+          // Update logout button to use the callback
           IconButton(
             icon: Icon(Icons.logout, color: whiteColor),
-            onPressed: () {
-              // No functionality for now - button is muted
-              // This can be replaced with _logout() function when needed
-            },
+            onPressed: widget.logoutCallback != null 
+              ? () => widget.logoutCallback!() 
+              : null,
           ),
           IconButton(
             icon: Icon(Icons.refresh, color: whiteColor),

@@ -27,15 +27,22 @@ class UserSession {
 
   // Load user data from secure storage
   Future<bool> loadUserData() async {
-    final isLoggedIn = await _storage.read(key: 'isLoggedIn');
+    try {
+      final isLoggedIn = await _storage.read(key: 'isLoggedIn');
 
-    if (isLoggedIn == 'true') {
-      userId = await _storage.read(key: 'userId');
-      displayName = await _storage.read(key: 'displayName');
-      email = await _storage.read(key: 'email');
-      return true;
+      if (isLoggedIn == 'true') {
+        userId = await _storage.read(key: 'userId');
+        displayName = await _storage.read(key: 'displayName');
+        email = await _storage.read(key: 'email');
+        
+        // Additional check to ensure all required fields are present
+        return userId != null && displayName != null && email != null;
+      }
+      return false;
+    } catch (e) {
+      print("Error loading user data: $e");
+      return false;
     }
-    return false;
   }
 
   // Clear user data from secure storage (logout)
