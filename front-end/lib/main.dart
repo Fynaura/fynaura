@@ -71,8 +71,8 @@ class _SplashScreenState extends State<SplashScreen> {
     final userSession = UserSession();
     bool isLoggedIn = await userSession.loadUserData();
 
-    // Wait for 2-3 seconds to show splash screen
-    await Future.delayed(Duration(seconds: 2));
+    // Wait for 5 seconds to show splash screen
+    await Future.delayed(Duration(seconds: 5));
 
     if (isLoggedIn) {
       // User is already logged in, go to MainScreen
@@ -115,9 +115,9 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFF85C1E5),  // Set the background color
+      backgroundColor: Color(0xFF254e7a),  // Set the background color
       body: Center(
-        child: Image.asset('images/fynaura.png'),  // Display the splash screen image
+        child: Image.asset('images/splash.gif'),  // Display the splash screen image
       ),
     );
   }
