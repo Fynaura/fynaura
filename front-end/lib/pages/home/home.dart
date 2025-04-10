@@ -59,7 +59,7 @@ class _DashboardScreenState extends State<DashboardScreen>
 
     try {
       final response = await http.get(
-        Uri.parse('http://192.168.110.53:3000/goals/user/$uid'),
+        Uri.parse('http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/goals/user/$uid'),
       );
 
       if (response.statusCode == 200) {
@@ -73,46 +73,7 @@ class _DashboardScreenState extends State<DashboardScreen>
     }
   }
 
-  // Add this method to the _DashboardScreenState class in front-end/lib/pages/home/home.dart
 
-// void _logout() async {
-//   // Show confirmation dialog
-//   bool confirm = await showDialog(
-//         context: context,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text("Logout"),
-//             content: Text("Are you sure you want to logout?"),
-//             actions: [
-//               TextButton(
-//                 onPressed: () => Navigator.of(context).pop(false),
-//                 child: Text("Cancel"),
-//               ),
-//               TextButton(
-//                 onPressed: () => Navigator.of(context).pop(true),
-//                 child: Text("Logout", style: TextStyle(color: Colors.red)),
-//               ),
-//             ],
-//           );
-//         },
-//       ) ??
-//       false;
-
-//   if (confirm) {
-//     // Clear user session
-//     final userSession = UserSession();
-//     await userSession.clearUserData();
-    
-//     // Update the global login state
-//     isUserLoggedIn = false;
-
-//     // Navigate to login screen and remove all previous routes
-//     Navigator.of(context).pushAndRemoveUntil(
-//       MaterialPageRoute(builder: (context) => Mainlogin()),
-//       (Route<dynamic> route) => false,
-//     );
-//   }
-// }
 
   // Function to fetch total income and expense from the API
   Future<Map<String, dynamic>> _fetchTotalIncomeAndExpense(
@@ -125,7 +86,7 @@ class _DashboardScreenState extends State<DashboardScreen>
       String incomeUrl = '';
       String expenseUrl = '';
       String baseUrl =
-          'http://192.168.110.53:3000/transaction'; // Make sure this matches your backend
+          'http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/transaction'; // Make sure this matches your backend
 
       // Construct the URLs based on the period selected
       if (period == 'today') {

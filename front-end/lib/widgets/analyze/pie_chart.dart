@@ -4,7 +4,6 @@ import 'package:fynaura/pages/Analize/TransactionModel.dart';
 
 class PieChartSample2 extends StatefulWidget {
   final List<Transaction> transactions;
-
   const PieChartSample2({super.key, required this.transactions});
 
   @override

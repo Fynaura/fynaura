@@ -42,7 +42,7 @@ class ExtractedTextScreen extends StatelessWidget {
     }).toList();
 
     var uri = Uri.parse(
-        "http://192.168.8.172:3000/transaction/bulk"); // Replace with your API URL
+        "http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/transaction/bulk"); // Replace with your API URL
 
     try {
       // Show loading indicator

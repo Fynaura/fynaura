@@ -11,7 +11,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class GoalNotificationService {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
-  final String baseUrl = 'http://192.168.110.53:3000/goals/notifications'; // Update with your server URL
+  final String baseUrl = 'http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/goals/notifications'; // Update with your server URL
   
   // Initialize the notification service
   Future<void> initialize() async {

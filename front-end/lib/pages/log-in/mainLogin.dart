@@ -31,7 +31,7 @@ class _MainloginState extends State<Mainlogin> {
   bool _isPasswordVisible = false;
 
   final String apiUrl =
-      'http://192.168.110.53:3000/user/login'; // API endpoint for login
+      'http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/user/login'; // API endpoint for login
 
   String? emailError;
   String? passwordError;
@@ -160,7 +160,7 @@ class _MainloginState extends State<Mainlogin> {
           // Fetch user details
           try {
             final userDetailsResponse = await http.get(
-              Uri.parse('http://192.168.110.53:3000/user/me?idToken=$idToken'),
+              Uri.parse('http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000/user/me?idToken=$idToken'),
               headers: {"Authorization": "Bearer $idToken"},
             );
 

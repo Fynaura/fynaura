@@ -5,7 +5,7 @@ import '../pages/user-session/UserSession.dart';
 
 class BudgetService {
 
-  final String baseUrl = "http://192.168.8.172:3000";
+  final String baseUrl = "http://ec2-13-213-44-124.ap-southeast-1.compute.amazonaws.com:3000";
 
   // Get all budgets (including those where user is a collaborator)
   Future<List<Map<String, dynamic>>> getBudgets() async {
