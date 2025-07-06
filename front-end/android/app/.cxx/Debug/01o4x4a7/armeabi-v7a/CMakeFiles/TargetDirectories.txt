@@ -1,2 +1,0 @@
-C:/IIT Notes/L5 - Degree/Software Development Group Project/Actice/New folder (2)/fynaura/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/edit_cache.dir
-C:/IIT Notes/L5 - Degree/Software Development Group Project/Actice/New folder (2)/fynaura/front-end/android/app/.cxx/Debug/01o4x4a7/armeabi-v7a/CMakeFiles/rebuild_cache.dir

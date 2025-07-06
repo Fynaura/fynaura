@@ -1,2 +1,0 @@
-C:/Users/ASUS/Desktop/sdgp_profile/fynaura/front-end/android/app/.cxx/Debug/585p265a/x86/CMakeFiles/edit_cache.dir
-C:/Users/ASUS/Desktop/sdgp_profile/fynaura/front-end/android/app/.cxx/Debug/585p265a/x86/CMakeFiles/rebuild_cache.dir
